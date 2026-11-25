@@ -9,7 +9,7 @@
     {"date": "2026-11-24", "status": "done", "title": "Radar hardware ordered", "detail": "Ai-Thinker RD-03D 24 GHz radar and ESP32-S3 bridge."},
     {"date": "2026-11-24", "status": "active", "title": "Acoustic node bring-up", "detail": "First node assembled on breadboard. Microphone input under repair."},
     {"date": "2026-12-01", "status": "planned", "title": "Radar integration", "detail": "RD-03D targets into the C2 node over UDP 47012."},
-    {"date": "2026-12-05", "status": "planned", "title": "Multi-sensor bench demo", "detail": "Radar, acoustic and camera detections fused. Custody held when radar line of sight is lost."},
+    {"date": "2026-12-05", "status": "planned", "title": "Multi-sensor bench demo", "detail": "Radar, acoustic and camera detections fused. Track held when radar line of sight is lost."},
     {"date": "2026-12-08", "status": "planned", "title": "System complete", "detail": "Target date."},
     {"date": "2026-12-15", "status": "planned", "title": "Final deadline", "detail": "Project closeout."}
   ]
