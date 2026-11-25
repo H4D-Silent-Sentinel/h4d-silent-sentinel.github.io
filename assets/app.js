@@ -236,7 +236,7 @@
     li.addEventListener("click", () => {
       const lo = i === 0 ? 0 : (pn.bounds ? pn.bounds[i - 1] : i / pn.n), hi = pn.bounds ? (pn.bounds[i] ?? 1) : (i + 1) / pn.n;
       const top = pn.sec.offsetTop + ((lo + hi) / 2) * (pn.sec.offsetHeight - innerHeight);
-      scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
+      (window.__pagerGo || (y => scrollTo(0, y)))(top);
     });
   }));
 
@@ -276,17 +276,26 @@
     const hearingAt = d => NODES.filter(n => Math.hypot(n.x - d.x, n.y - d.y) < HEAR);
     // drone path occupies 0.06..0.94 of the pinned scroll
     const Q = p => (p - 0.06) / 0.88;
+    // acoustic localization needs several LoRa reports before it updates the target: coast in between
+    const RES = 800, seenTab = new Uint8Array(RES + 1), lastSeen = new Float32Array(RES + 1);
+    for (let i = 0, ls = -1; i <= RES; i++) { const pp = i / RES; seenTab[i] = radarSees(posAt(Q(pp))) ? 1 : 0; if (seenTab[i]) ls = pp; lastSeen[i] = ls; }
+    const ACQ = 0.07;
     const state = p => {
       const d = posAt(Q(p)), seen = radarSees(d), hearing = hearingAt(d);
+      const i = Math.max(0, Math.min(RES, Math.round(p * RES)));
+      const acoustic = !seen && hearing.length >= 2 && lastSeen[i] >= 0 && p - lastSeen[i] > ACQ;
       let est = { x: d.x, y: d.y }, sigma = 1.3;
       if (!seen) {
-        if (hearing.length >= 2) {
+        if (acoustic) {
           let wx = 0, wy = 0, ws = 0;
           for (const n of hearing) { const w = 1 / Math.max(4, Math.hypot(n.x - d.x, n.y - d.y)) ** 2; wx += n.x * w; wy += n.y * w; ws += w; }
           est = { x: d.x * 0.82 + (wx / ws) * 0.18, y: d.y * 0.82 + (wy / ws) * 0.18 }; sigma = 4.5;
+        } else if (lastSeen[i] >= 0) {
+          const pL = lastSeen[i], a = posAt(Q(pL)), b = posAt(Q(pL - 0.01)), k = (p - pL) / 0.01;
+          est = { x: a.x + (a.x - b.x) * k, y: a.y + (a.y - b.y) * k }; sigma = 3 + (p - pL) * 60;
         } else sigma = 7;
       }
-      return { d, seen, hearing, est, sigma };
+      return { d, seen, hearing, est, sigma, acoustic };
     };
     // step boundaries from the simulation itself: radar lost, acoustic holding, radar back
     if (pin) {
@@ -294,7 +303,7 @@
       for (let i = 0; i <= 400; i++) {
         const p = i / 400, s = state(p);
         if (lost === null && !s.seen && p > 0.06) lost = p;
-        if (lost !== null && held === null && !s.seen && s.hearing.length >= 2) held = Math.max(p, lost + 0.06);
+        if (lost !== null && held === null && s.acoustic) held = p;
         if (held !== null && back === null && s.seen) back = p;
       }
       pin.bounds = [lost ?? 0.25, held ?? 0.4, back ?? 0.8];
@@ -312,8 +321,8 @@
       const cx = wide ? w * 0.66 : w * 0.5, cy = wide ? h * 0.52 : h * 0.27;
       const X = x => cx + x * s, Y = y => cy + y * s;
       const st = state(p);
-      const src = [st.seen && "Radar", !st.seen && st.hearing.length >= 2 && "Acoustic"].filter(Boolean).join(" + ") || (Q(p) < 0 ? "—" : "Coast");
-      const col = st.seen ? RAD : ACC;
+      const src = [st.seen && "Radar", st.acoustic && "Acoustic"].filter(Boolean).join(" + ") || (Q(p) < 0 ? "—" : "Coast");
+      const col = st.seen ? RAD : st.acoustic ? ACC : "190,196,204";
 
       c.fillStyle = "#000"; c.fillRect(0, 0, w, h);
       c.strokeStyle = "rgba(255,255,255,0.04)"; c.lineWidth = 1;
@@ -347,12 +356,12 @@
       const live = Q(p) >= 0;
       if (live) {
         c.setLineDash([3, 5]);
-        if (!st.seen) for (const n of st.hearing) { c.strokeStyle = `rgba(${ACC},0.35)`; c.beginPath(); c.moveTo(X(n.x), Y(n.y)); c.lineTo(X(st.est.x), Y(st.est.y)); c.stroke(); }
+        if (st.acoustic) for (const n of st.hearing) { c.strokeStyle = `rgba(${ACC},0.35)`; c.beginPath(); c.moveTo(X(n.x), Y(n.y)); c.lineTo(X(st.est.x), Y(st.est.y)); c.stroke(); }
         if (st.seen) { c.strokeStyle = `rgba(${RAD},0.45)`; c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y)); c.lineTo(X(st.est.x), Y(st.est.y)); c.stroke(); }
         c.setLineDash([]);
       }
       for (const n of NODES) {
-        const on = live && st.hearing.includes(n);
+        const on = live && st.acoustic && st.hearing.includes(n);
         if (on && !reduce) for (let k = 0; k < 2; k++) {
           const ph = (t * 0.8 + k * 0.5) % 1;
           c.strokeStyle = `rgba(${ACC},${0.5 * (1 - ph)})`; c.beginPath(); c.arc(X(n.x), Y(n.y), (1 + ph * 9) * s, 0, Math.PI * 2); c.stroke();
@@ -374,25 +383,123 @@
           const pp = p - span + (span * i) / N;
           if (Q(pp) < 0) continue;
           const sp = state(pp);
-          if (prev) { c.strokeStyle = `rgba(${sp.seen ? RAD : ACC},${0.85 * (i / N)})`; c.beginPath(); c.moveTo(X(prev.x), Y(prev.y)); c.lineTo(X(sp.est.x), Y(sp.est.y)); c.stroke(); }
+          if (prev) { c.strokeStyle = sp.seen ? `rgba(${RAD},${0.85 * (i / N)})` : sp.acoustic ? `rgba(${ACC},${0.85 * (i / N)})` : `rgba(160,166,174,${0.6 * (i / N)})`; c.beginPath(); c.moveTo(X(prev.x), Y(prev.y)); c.lineTo(X(sp.est.x), Y(sp.est.y)); c.stroke(); }
           prev = sp.est;
         }
         c.lineWidth = 1;
-        c.strokeStyle = `rgba(${col},0.45)`; c.setLineDash(st.seen || st.hearing.length >= 2 ? [] : [4, 4]);
+        c.strokeStyle = `rgba(${col},0.45)`; c.setLineDash(st.seen || st.acoustic ? [] : [4, 4]);
         c.beginPath(); c.arc(X(st.est.x), Y(st.est.y), st.sigma * s, 0, Math.PI * 2); c.stroke(); c.setLineDash([]);
         c.strokeStyle = `rgb(${col})`; c.lineWidth = 1.8;
         c.beginPath(); c.moveTo(X(st.est.x), Y(st.est.y) - 8); c.lineTo(X(st.est.x) + 8, Y(st.est.y)); c.lineTo(X(st.est.x), Y(st.est.y) + 8); c.lineTo(X(st.est.x) - 8, Y(st.est.y)); c.closePath(); c.stroke();
         c.lineWidth = 1; c.textAlign = "left"; c.font = `500 ${fs + 1}px 'IBM Plex Mono', monospace`; c.fillStyle = `rgb(${col})`;
         c.fillText(`TRK-01 · ${src.toUpperCase()}`, X(st.est.x) + 14, Y(st.est.y) - 12);
       }
-      const key = `${src}|${st.hearing.length}|${st.seen}|${live}`;
+      const key = `${src}|${st.hearing.length}|${st.seen}|${st.acoustic}|${live}`;
       if (key !== lastKey) {
         lastKey = key;
-        ro.src.textContent = live ? src : "—"; ro.nodes.textContent = live ? `${st.hearing.length} / ${NODES.length}` : "—"; ro.radar.textContent = live ? (st.seen ? "Contact" : "No contact") : "—";
+        ro.src.textContent = live ? src : "—"; ro.nodes.textContent = live ? `${st.acoustic ? st.hearing.length : 0} / ${NODES.length}` : "—"; ro.radar.textContent = live ? (st.seen ? "Contact" : "No contact") : "—";
       }
     };
   })();
   updatePins();
+
+  // snap points: one per step inside pinned sections, start and end of the streak section
+  const placeSnaps = () => {
+    document.querySelectorAll(".snap").forEach(el => el.remove());
+    const mark = (sec, y) => { const m = document.createElement("i"); m.className = "snap"; m.style.top = `${Math.round(y)}px`; sec.appendChild(m); };
+    pins.forEach(pn => {
+      const run = pn.sec.offsetHeight - innerHeight;
+      const edges = [0, ...(pn.bounds || Array.from({ length: pn.n - 1 }, (_, i) => (i + 1) / pn.n)), 1];
+      for (let k = 0; k < pn.n; k++) mark(pn.sec, ((edges[k] + edges[k + 1]) / 2) * run);
+    });
+    const sk = document.getElementById("streaks");
+    if (sk) { mark(sk, 0); mark(sk, sk.offsetHeight - innerHeight); }
+  };
+  placeSnaps();
+  addEventListener("resize", placeSnaps);
+
+  // ---------- paging: one wheel gesture, swipe or key = one page or one step ----------
+  const pager = (() => {
+    document.documentElement.classList.add("paged");
+    const vh = () => innerHeight;
+    const points = () => {
+      const ys = [0];
+      document.querySelectorAll(".slide").forEach(s => {
+        const top = s.getBoundingClientRect().top + scrollY, h = s.offsetHeight;
+        ys.push(top);
+        for (let y = top + vh() * 0.85; y < top + h - vh(); y += vh() * 0.85) ys.push(y);
+        if (h > vh() + 40) ys.push(top + h - vh());
+      });
+      document.querySelectorAll(".snap").forEach(m => ys.push(m.getBoundingClientRect().top + scrollY));
+      const max = document.documentElement.scrollHeight - vh();
+      ys.push(max);
+      const out = [];
+      ys.map(y => Math.round(Math.min(max, Math.max(0, y)))).sort((a, b) => a - b).forEach(y => { if (!out.length || y - out[out.length - 1] > 40) out.push(y); });
+      return out;
+    };
+    let busy = false, quietAt = 0, accum = 0, raf = 0;
+    const ease = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    const go = y => {
+      cancelAnimationFrame(raf);
+      const y0 = scrollY, dy = y - y0;
+      if (Math.abs(dy) < 2) return;
+      if (reduce) { scrollTo(0, y); return; }
+      busy = true;
+      const dur = Math.min(1100, 650 + Math.abs(dy) * 0.15), t0 = performance.now();
+      const step = now => {
+        const f = Math.min(1, (now - t0) / dur);
+        scrollTo(0, y0 + dy * ease(f));
+        if (f < 1) raf = requestAnimationFrame(step); else { busy = false; quietAt = performance.now(); }
+      };
+      raf = requestAnimationFrame(step);
+    };
+    const move = dir => {
+      const ps = points(), y = scrollY;
+      const target = dir > 0 ? ps.find(p => p > y + 4) : [...ps].reverse().find(p => p < y - 4);
+      if (target !== undefined) go(target);
+    };
+    let lastWheel = 0;
+    addEventListener("wheel", e => {
+      if (e.ctrlKey) return;                        // pinch zoom
+      const inner = e.target.closest(".feed, .diagram, iframe");
+      if (inner && inner.scrollHeight > inner.clientHeight && e.target.closest(".feed")) return;
+      e.preventDefault();
+      const now = performance.now();
+      const gap = now - lastWheel; lastWheel = now;
+      if (busy) return;
+      if (gap < 180 && now - quietAt < 600) return;  // trackpad inertia from the last gesture
+      accum = gap > 180 ? e.deltaY : accum + e.deltaY;
+      if (Math.abs(accum) >= 18) { move(Math.sign(accum)); accum = 0; }
+    }, { passive: false });
+    addEventListener("keydown", e => {
+      if (e.target.closest("input, textarea, select, [contenteditable]")) return;
+      const k = e.key;
+      if (["ArrowDown", "PageDown", " "].includes(k) && !e.shiftKey) { e.preventDefault(); if (!busy) move(1); }
+      else if (["ArrowUp", "PageUp"].includes(k) || (k === " " && e.shiftKey)) { e.preventDefault(); if (!busy) move(-1); }
+      else if (k === "Home") { e.preventDefault(); go(0); }
+      else if (k === "End") { e.preventDefault(); go(document.documentElement.scrollHeight - innerHeight); }
+    });
+    let ty = null;
+    addEventListener("touchstart", e => { ty = e.touches[0].clientY; }, { passive: true });
+    addEventListener("touchmove", e => { if (ty !== null && !e.target.closest(".feed, .diagram")) e.preventDefault(); }, { passive: false });
+    addEventListener("touchend", e => {
+      if (ty === null) return;
+      const d = ty - e.changedTouches[0].clientY; ty = null;
+      if (Math.abs(d) > 40 && !busy) move(Math.sign(d));
+    }, { passive: true });
+    // in-page links animate with the same easing
+    document.addEventListener("click", e => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a) return;
+      const el = document.querySelector(a.getAttribute("href"));
+      if (!el) return;
+      e.preventDefault();
+      go(el.getBoundingClientRect().top + scrollY);
+      history.replaceState(null, "", a.getAttribute("href"));
+    });
+    window.__pagerGo = go;
+    return { go };
+  })();
 
   // engine: draw only visible canvases
   const items = [...document.querySelectorAll("canvas[data-fx]")].map(el => ({ el, ctx: el.getContext("2d"), fx: FX[el.dataset.fx], w: 0, h: 0, vis: false }));

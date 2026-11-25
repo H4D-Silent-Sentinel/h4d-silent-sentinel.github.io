@@ -284,3 +284,7 @@ footer { position: relative; z-index: 2; background: #000; border-top: 1px solid
   #capability .step-body { min-height: 8em; } #capability .step-body p { font-size: 14px; }
   .pin .readout { grid-template-columns: 1fr 1fr; }
 }
+
+/* ---------- paging: snap points read by app.js ---------- */
+html.paged { scroll-behavior: auto; }
+.snap { position: absolute; left: 0; width: 1px; height: 1px; pointer-events: none; }
