@@ -1,0 +1,389 @@
+{
+ "org": "H4D-Silent-Sentinel",
+ "repos": [
+  {
+   "name": "sentinel-c2",
+   "description": "",
+   "url": "https://github.com/H4D-Silent-Sentinel/sentinel-c2",
+   "pushed_at": "2026-11-24T21:26:23Z",
+   "commits_7d": 9,
+   "commits_60d": 9
+  },
+  {
+   "name": "radar",
+   "description": "Bench radar (RD-03D) for the Silent Sentinel handoff demo",
+   "url": "https://github.com/H4D-Silent-Sentinel/radar",
+   "pushed_at": "2026-11-23T05:14:21Z",
+   "commits_7d": 3,
+   "commits_60d": 3
+  },
+  {
+   "name": "silent-sentinel",
+   "description": "Passive acoustic sensor network for tracking drones through urban occlusion",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel",
+   "pushed_at": "2026-11-23T04:36:23Z",
+   "commits_7d": 6,
+   "commits_60d": 19
+  },
+  {
+   "name": "Visual-Tracker",
+   "description": "Computer Vision to track Drones",
+   "url": "https://github.com/H4D-Silent-Sentinel/Visual-Tracker",
+   "pushed_at": "2026-11-22T21:33:21Z",
+   "commits_7d": 1,
+   "commits_60d": 12
+  }
+ ],
+ "events": [
+  {
+   "type": "commit",
+   "repo": "sentinel-c2",
+   "title": "Update README.md",
+   "author": "trzaidi",
+   "date": "2026-11-24T21:26:22Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/sentinel-c2/commit/491a4471d6024b618b9e8996421d1937317c9f51"
+  },
+  {
+   "type": "commit",
+   "repo": "radar",
+   "title": "3D-printed enclosure (OpenSCAD + STLs); USB-serial adapter power note",
+   "author": "trzaidi",
+   "date": "2026-11-23T05:13:46Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/radar/commit/0f14824fffd4b73e2e1097c6958ece306a318211"
+  },
+  {
+   "type": "commit",
+   "repo": "radar",
+   "title": "Update README.md",
+   "author": "trzaidi",
+   "date": "2026-11-23T05:13:28Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/radar/commit/3cea1f34d37ce778a6b7be2c2d5bebec1e040dc6"
+  },
+  {
+   "type": "commit",
+   "repo": "radar",
+   "title": "RD-03D bench radar: parser, ESP32-S3 bridge, docs, silent-sentinel integration patch",
+   "author": "trzaidi",
+   "date": "2026-11-23T04:36:34Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/radar/commit/06c1bb0fba88aec8170edfe96c722f777cfc6de9"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Revert \"Bench radar (RD-03D) feeding the tracker: radar-to-acoustic handoff demo\"",
+   "author": "trzaidi",
+   "date": "2026-11-23T04:36:18Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/c8170c93a26993db38a7268aefc8a76074e786a2"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Revert \"Keep the existing bench site and map view unchanged; radar bench gets its own site file\"",
+   "author": "trzaidi",
+   "date": "2026-11-23T04:36:18Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/77882b55c60ca36bb6886f92dd29a00f0e2b2ee4"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Revert \"Radar test uses the radar bench site\"",
+   "author": "trzaidi",
+   "date": "2026-11-23T04:36:18Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/73a5da117b45e4db21f8b446a280dd41274ec9e3"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Radar test uses the radar bench site",
+   "author": "trzaidi",
+   "date": "2026-11-23T04:34:06Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/e4aef97bd2b9e1ead19ed35f02d49a563db6f40b"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Keep the existing bench site and map view unchanged; radar bench gets its own site file",
+   "author": "trzaidi",
+   "date": "2026-11-23T04:33:57Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/b67f0134b961a2bcb58967a64362e4afd58008fe"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Bench radar (RD-03D) feeding the tracker: radar-to-acoustic handoff demo",
+   "author": "trzaidi",
+   "date": "2026-11-23T04:06:58Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/c109519938a48cbe625885e6d67af232d95b96b2"
+  },
+  {
+   "type": "merge",
+   "repo": "sentinel-c2",
+   "title": "Fake radar",
+   "author": "DomPica",
+   "date": "2026-11-22T22:01:58Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/sentinel-c2/pull/1"
+  },
+  {
+   "type": "commit",
+   "repo": "sentinel-c2",
+   "title": "Moving cameras: show chaser-1 where it is and where it points",
+   "author": "claude",
+   "date": "2026-11-22T21:22:41Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/sentinel-c2/commit/bdb20830856c515c9e97be589ea654bf71603987"
+  },
+  {
+   "type": "commit",
+   "repo": "sentinel-c2",
+   "title": "Camera tab: phone stand-in toggle; name the stand-in wherever the drone is",
+   "author": "claude",
+   "date": "2026-11-22T21:12:52Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/sentinel-c2/commit/0a7b6f365bca8a5fbd2c172d1371d9eca8afe704"
+  },
+  {
+   "type": "commit",
+   "repo": "sentinel-c2",
+   "title": "Camera tab: start Visual-Tracker from the C2 app and show its live view",
+   "author": "claude",
+   "date": "2026-11-22T21:00:36Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/sentinel-c2/commit/31134c127a9323b5be14fbe0bff016ddad6a55e8"
+  },
+  {
+   "type": "commit",
+   "repo": "sentinel-c2",
+   "title": "Operator app: plain-language dashboard, radar scope, one-command demo",
+   "author": "claude",
+   "date": "2026-11-22T20:48:37Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/sentinel-c2/commit/a53afbaf58b8027b80550c63f5a338e24d922103"
+  },
+  {
+   "type": "commit",
+   "repo": "sentinel-c2",
+   "title": "Don't hang on serial close (macOS); find sibling checkouts in tests",
+   "author": "DomPica",
+   "date": "2026-11-22T20:36:20Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/sentinel-c2/commit/756f30d2c015efb92b95b642a3b28ee4abeabe85"
+  },
+  {
+   "type": "commit",
+   "repo": "sentinel-c2",
+   "title": "Add radar input and a simulated radar for testing",
+   "author": "DomPica",
+   "date": "2026-11-22T20:36:20Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/sentinel-c2/commit/a5a3818ecc13c00b3f7d379c712b75587951f75d"
+  },
+  {
+   "type": "commit",
+   "repo": "sentinel-c2",
+   "title": "sentinel-c2: hub between the ESP32 node network and the Visual-Trackers",
+   "author": "DomPica",
+   "date": "2026-11-22T20:12:25Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/sentinel-c2/commit/6a3551bfc8e255fb983a91072761c675721bc04d"
+  },
+  {
+   "type": "commit",
+   "repo": "Visual-Tracker",
+   "title": "v4: drone types, aircraft negatives, motion blur; add to dashboard",
+   "author": "Noahchocolumbia",
+   "date": "2026-11-22T19:20:19Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/Visual-Tracker/commit/581fed58f6e0efc7fe36e977445c3c14ca6fb2b4"
+  },
+  {
+   "type": "merge",
+   "repo": "Visual-Tracker",
+   "title": "Verify YOLO drone candidates with a local VLM and add evaluation collections",
+   "author": "mrbornpro",
+   "date": "2026-11-18T01:07:56Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/Visual-Tracker/pull/1"
+  },
+  {
+   "type": "commit",
+   "repo": "Visual-Tracker",
+   "title": "feat: collect labeled evaluation sets and report drone false positives",
+   "author": "mrbornpro",
+   "date": "2026-11-18T00:56:37Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/Visual-Tracker/commit/224203b012417c7219c11ad193399b42d650baed"
+  },
+  {
+   "type": "commit",
+   "repo": "Visual-Tracker",
+   "title": "feat: verify YOLO candidates with broad VLM labels",
+   "author": "mrbornpro",
+   "date": "2026-11-18T00:38:17Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/Visual-Tracker/commit/b7cf8ee8bb56f018616b98ebebdf77e0b4e1799c"
+  },
+  {
+   "type": "commit",
+   "repo": "Visual-Tracker",
+   "title": "fix: request camera access from a native Mac launcher",
+   "author": "mrbornpro",
+   "date": "2026-11-18T00:07:35Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/Visual-Tracker/commit/bca7299f4f7caef695dacbdad58f4c0cdc0027dd"
+  },
+  {
+   "type": "commit",
+   "repo": "Visual-Tracker",
+   "title": "feat: launch the local VLM and tracker dashboard together",
+   "author": "mrbornpro",
+   "date": "2026-11-17T23:49:34Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/Visual-Tracker/commit/6acbe8c2540559b3d0329c04377f7f946dc0a33c"
+  },
+  {
+   "type": "commit",
+   "repo": "Visual-Tracker",
+   "title": "feat: verify drone tracks with a local VLM and organize scripts",
+   "author": "mrbornpro",
+   "date": "2026-11-17T23:44:26Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/Visual-Tracker/commit/f2bccf7ae22f908c00bf39f4f64482fca0fbcda4"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Slide images: cropped schematic and breadboard layout",
+   "author": "trzaidi",
+   "date": "2026-11-17T20:49:10Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/a555c9fb3410a762c9977d79bded4809db66524e"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Breadboard: ESP32 as placed (J1 in b42-b63)",
+   "author": "trzaidi",
+   "date": "2026-11-17T20:20:00Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/14112293dec11f8f494481c40583db33945730ee"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Breadboard: demo build as placed (mic j1-6, RFM95W j21-29, wires from column h)",
+   "author": "trzaidi",
+   "date": "2026-11-17T20:16:42Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/9c28ebc6b16cfa6e639136a396147f1ce2b4ac63"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Node: 'raw' console command for checking mic wiring",
+   "author": "trzaidi",
+   "date": "2026-11-17T20:12:01Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/18a4ad4511973e3e5584be36eea366e9c3096731"
+  },
+  {
+   "type": "commit",
+   "repo": "Visual-Tracker",
+   "title": "Collect tab: record, label, use it",
+   "author": "Noahchocolumbia",
+   "date": "2026-11-17T19:58:42Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/Visual-Tracker/commit/1cba2e2342990d31df87b94f90eceb878f6e195d"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Laptop-microphone node (cuas listen) for demos; don't reset the ESP32 when opening its serial port",
+   "author": "trzaidi",
+   "date": "2026-11-17T19:57:48Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/31f58511da7a8d338ed4ac1c63d34c4b046f79da"
+  },
+  {
+   "type": "commit",
+   "repo": "Visual-Tracker",
+   "title": "Live tab HUD look, iPhone camera, recording delete, Start Tracker launcher",
+   "author": "Noahchocolumbia",
+   "date": "2026-11-17T19:51:54Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/Visual-Tracker/commit/95b86a60aa5a24f50c386c82b1cbdae334e542cf"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Breadboard: mics in columns c and h so they clear the rails",
+   "author": "trzaidi",
+   "date": "2026-11-17T19:46:03Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/80ea9c38197187c4fa8e477847e4485e09ae2123"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Breadboard: use the mic's real pin order (SEL..3V)",
+   "author": "trzaidi",
+   "date": "2026-11-17T19:41:50Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/a232b765bf80fb0dc77eeb1fa0cb5ba8172fbf2c"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Breadboard layout for the first node",
+   "author": "trzaidi",
+   "date": "2026-11-17T19:38:49Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/fec0e71b29c2f3c48340bb5389625e88d8a19da9"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Dual-port USB console, node mirrors packets over USB, schematic Rev A1 (PNG/PDF), demo bench site",
+   "author": "trzaidi",
+   "date": "2026-11-17T19:19:04Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/2e8cf6f6373ee6c00045df9407d59fa2febed414"
+  },
+  {
+   "type": "commit",
+   "repo": "Visual-Tracker",
+   "title": "Revise 'Run it' section and update results formatting",
+   "author": "trzaidi",
+   "date": "2026-11-17T19:14:44Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/Visual-Tracker/commit/d6291ddb99765b02f424598dfd58a882b7625550"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Refine README content and section headers",
+   "author": "trzaidi",
+   "date": "2026-11-17T19:12:24Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/5c9e41af6953b50f4a1b26b05b2e29af059d508a"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Base station: loudness localization, Kalman tracker, Jetson interface, CoT, live map, simulator, tests",
+   "author": "trzaidi",
+   "date": "2026-11-17T19:07:12Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/c3486b569c04513c1306b07e8375dacfb6b8d36e"
+  },
+  {
+   "type": "commit",
+   "repo": "Visual-Tracker",
+   "title": "Visual tracker: drone detector, tests, and review dashboard",
+   "author": "Noahchocolumbia",
+   "date": "2026-11-17T19:02:14Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/Visual-Tracker/commit/fa121342c9e153b056828caed9e0978b11191159"
+  },
+  {
+   "type": "commit",
+   "repo": "Visual-Tracker",
+   "title": "Initial commit",
+   "author": "Noahchocolumbia",
+   "date": "2026-11-17T18:56:50Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/Visual-Tracker/commit/c15b28dd60ce210f8ef02dadbaf7edbe79373e72"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Add README",
+   "author": "trzaidi",
+   "date": "2026-11-17T18:53:02Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/77dcf65ae1fb3c1e3e35e1eb4f0901dc975fc1d6"
+  },
+  {
+   "type": "commit",
+   "repo": "silent-sentinel",
+   "title": "Silent Sentinel: node + base firmware, reference comb detector, wiring docs",
+   "author": "trzaidi",
+   "date": "2026-11-17T18:42:38Z",
+   "url": "https://github.com/H4D-Silent-Sentinel/silent-sentinel/commit/3a433e188305841379fa8fa74802be17eabbeacf"
+  }
+ ],
+ "totals": {
+  "commits_7d": 19,
+  "commits_60d": 43,
+  "merges_60d": 2
+ },
+ "generated_at": "2026-11-25T01:54:03Z"
+}

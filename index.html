@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Silent Sentinel</title>
+<meta name="description" content="Passive acoustic tracking of small drones beyond radar and camera line of sight.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Silent Sentinel home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="3" fill="#ffb547"/><path d="M9 9a10 10 0 0 0 0 14M23 9a10 10 0 0 1 0 14M5 5a15.5 15.5 0 0 0 0 22M27 5a15.5 15.5 0 0 1 0 22" fill="none" stroke="#eef2f5" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>SILENT SENTINEL</span>
+    </a>
+    <ul>
+      <li><a href="#capability">Capability</a></li>
+      <li><a href="#system">System</a></li>
+      <li><a href="#progress">Progress</a></li>
+      <li><a href="#briefings">Briefings</a></li>
+      <li><a href="#team">Team</a></li>
+    </ul>
+    <a class="btn solid" href="#briefings">Latest briefing <span class="arrow">→</span></a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" aria-label="Silent Sentinel">
+    <div class="wrap hero-grid">
+      <div class="hero-text">
+        <div class="eyebrow"><b>C-UAS</b> · Counter-Unmanned Aircraft Systems</div>
+        <h1>Silent Sentinel</h1>
+        <p class="lede">Passive acoustic tracking of small drones beyond radar and camera line of sight.</p>
+        <div class="actions">
+          <a class="btn solid" href="#system">System <span class="arrow">→</span></a>
+          <a class="btn" href="#briefings">Latest briefing</a>
+        </div>
+      </div>
+      <figure class="console">
+        <div class="console-bar"><span>Simulation · radar-to-acoustic handoff</span><span class="live">Running</span></div>
+        <canvas id="scene" aria-label="Simulated drone track passing from radar coverage to acoustic node coverage"></canvas>
+        <dl class="readout">
+          <div><dt>Track</dt><dd>TRK-01</dd></div>
+          <div><dt>Source</dt><dd id="ro-src">—</dd></div>
+          <div><dt>Nodes hearing</dt><dd id="ro-nodes">—</dd></div>
+          <div><dt>Radar</dt><dd id="ro-radar">—</dd></div>
+        </dl>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band" id="capability">
+    <div class="wrap">
+      <div class="head">
+        <div><div class="eyebrow">Capability</div><h2>Track custody beyond line of sight</h2></div>
+        <p>Group 1 UAS (unmanned aircraft systems) drop out of radar and camera coverage behind buildings and at low altitude. Acoustic nodes hold the track until another sensor reacquires.</p>
+      </div>
+      <div class="caps">
+        <div class="cap"><span class="k">Detect</span><h3>Passive acoustic detection</h3><p>Four MEMS (micro-electro-mechanical systems) microphones per node detect rotor blade-pass harmonics. Receive-only.</p></div>
+        <div class="cap"><span class="k">Locate</span><h3>Loudness localization</h3><p>Position from relative sound level across nodes. Reports over LoRa (Long Range) radio, 915 MHz.</p></div>
+        <div class="cap"><span class="k">Hold</span><h3>Multi-sensor fusion</h3><p>Acoustic, radar and camera reports fuse into one Kalman track. The track number persists across sensor handoff.</p></div>
+        <div class="cap"><span class="k">Cue</span><h3>Sensor re-cueing</h3><p>Predicted position cues cameras, the chaser drone and nodes. Tracks export to TAK (Team Awareness Kit) as CoT (Cursor on Target).</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="system">
+    <div class="wrap">
+      <div class="head">
+        <div><div class="eyebrow">System</div><h2>Architecture</h2></div>
+        <p>Every unit and link: <b>wired</b>, <b>LoRa radio</b> and <b>IP network</b>. Orange marks components not yet built.</p>
+      </div>
+      <div class="diagram">
+<svg viewBox="0 0 1200 720" role="img" aria-label="Silent Sentinel system: six listening nodes report over LoRa 915 MHz to a base receiver, which connects to the base laptop over USB serial. The radar station connects to the laptop over USB. Visual-Tracker cameras connect to sentinel-c2 over UDP on Wi-Fi or Ethernet.">
+        <defs>
+          <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+          <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--new)"/></marker>
+          <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker>
+        </defs>
+
+        <!-- LISTENING NODE x6 -->
+        <rect x="36" y="76" width="420" height="250" rx="8" fill="var(--panel)" stroke="var(--line)"/>
+        <rect x="28" y="68" width="420" height="250" rx="8" fill="var(--panel)" stroke="var(--line)"/>
+        <rect x="20" y="60" width="420" height="250" rx="8" fill="var(--panel)" stroke="currentColor" stroke-width="1.5"/>
+        <text x="20" y="48" fill="currentColor" font-size="13" font-weight="600">LISTENING NODE ×6</text>
+        <g fill="var(--panel)" stroke="currentColor">
+          <rect x="36" y="84" width="100" height="34" rx="4"/><rect x="36" y="128" width="100" height="34" rx="4"/>
+          <rect x="36" y="188" width="100" height="34" rx="4"/><rect x="36" y="232" width="100" height="34" rx="4"/>
+        </g>
+        <g fill="currentColor" font-size="11" text-anchor="middle">
+          <text x="86" y="105">ICS-43434 mic</text><text x="86" y="149">ICS-43434 mic</text>
+          <text x="86" y="209">ICS-43434 mic</text><text x="86" y="253">ICS-43434 mic</text>
+        </g>
+        <g stroke="currentColor" fill="none">
+          <polyline points="136,101 160,101 160,145 136,145"/><line x1="160" y1="123" x2="208" y2="123" marker-end="url(#a1)"/>
+          <polyline points="136,205 160,205 160,249 136,249"/><line x1="160" y1="227" x2="208" y2="227" marker-end="url(#a1)"/>
+        </g>
+        <text x="166" y="116" fill="var(--muted)" font-size="11">I2S0</text>
+        <text x="166" y="220" fill="var(--muted)" font-size="11">I2S1</text>
+        <rect x="210" y="100" width="90" height="150" rx="4" fill="var(--panel)" stroke="currentColor"/>
+        <text x="255" y="170" text-anchor="middle" fill="currentColor" font-size="12">ESP32-S3</text>
+        <text x="255" y="186" text-anchor="middle" fill="var(--muted)" font-size="11">detector</text>
+        <line x1="300" y1="180" x2="333" y2="180" stroke="currentColor" marker-start="url(#a1)" marker-end="url(#a1)"/>
+        <text x="303" y="172" fill="var(--muted)" font-size="11">SPI</text>
+        <rect x="335" y="150" width="90" height="60" rx="4" fill="var(--panel)" stroke="currentColor"/>
+        <text x="380" y="176" text-anchor="middle" fill="currentColor" font-size="12">RFM95W</text>
+        <text x="380" y="192" text-anchor="middle" fill="var(--muted)" font-size="11">LoRa radio</text>
+        <line x1="380" y1="150" x2="380" y2="112" stroke="currentColor"/><path d="M370,104 L380,114 L390,104" fill="none" stroke="currentColor"/>
+
+        <!-- LORA LINK -->
+        <line x1="396" y1="98" x2="664" y2="98" stroke="var(--accent)" stroke-width="2" stroke-dasharray="8 5" marker-start="url(#a3)" marker-end="url(#a3)"/>
+        <text x="560" y="86" text-anchor="middle" fill="var(--accent)" font-size="12">LoRa 915 MHz</text>
+        <text x="560" y="118" text-anchor="middle" fill="var(--muted)" font-size="11">detections → · ← HINT cues</text>
+
+        <!-- BASE RECEIVER -->
+        <text x="700" y="148" fill="currentColor" font-size="13" font-weight="600">BASE RECEIVER</text>
+        <rect x="620" y="160" width="260" height="80" rx="8" fill="var(--panel)" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="635" y="175" width="90" height="50" rx="4" fill="var(--panel)" stroke="currentColor"/>
+        <text x="680" y="204" text-anchor="middle" fill="currentColor" font-size="12">RFM95W</text>
+        <line x1="680" y1="175" x2="680" y2="112" stroke="currentColor"/><path d="M670,104 L680,114 L690,104" fill="none" stroke="currentColor"/>
+        <line x1="725" y1="200" x2="773" y2="200" stroke="currentColor" marker-start="url(#a1)" marker-end="url(#a1)"/>
+        <text x="737" y="192" fill="var(--muted)" font-size="11">SPI</text>
+        <rect x="775" y="175" width="90" height="50" rx="4" fill="var(--panel)" stroke="currentColor"/>
+        <text x="820" y="204" text-anchor="middle" fill="currentColor" font-size="12">ESP32-S3</text>
+
+        <!-- USB base -> laptop -->
+        <line x1="820" y1="225" x2="820" y2="358" stroke="currentColor" stroke-width="2" marker-start="url(#a1)" marker-end="url(#a1)"/>
+        <text x="830" y="290" fill="currentColor" font-size="11">USB serial</text>
+        <text x="830" y="305" fill="var(--muted)" font-size="11">PKT ↓ · TX ↑</text>
+
+        <!-- VISUAL TRACKERS -->
+        <text x="960" y="48" fill="currentColor" font-size="13" font-weight="600">VISUAL-TRACKER</text>
+        <rect x="960" y="60" width="220" height="64" rx="8" fill="var(--panel)" stroke="currentColor" stroke-width="1.5"/>
+        <text x="975" y="86" fill="currentColor" font-size="12">Camera post-1</text>
+        <text x="975" y="104" fill="var(--muted)" font-size="11">Mac + camera, YOLO + VLM</text>
+        <rect x="960" y="140" width="220" height="64" rx="8" fill="var(--panel)" stroke="currentColor" stroke-width="1.5"/>
+        <text x="975" y="166" fill="currentColor" font-size="12">Chaser drone</text>
+        <text x="975" y="184" fill="var(--muted)" font-size="11">Jetson Orin Nano + camera</text>
+        <g stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 4" fill="none">
+          <line x1="1070" y1="124" x2="1070" y2="140"/>
+          <polyline points="1070,204 1070,420 792,420"/>
+        </g>
+        <polygon points="792,420 802,415 802,425" fill="currentColor"/>
+        <text x="1060" y="262" text-anchor="end" fill="currentColor" font-size="11">Wi-Fi / Ethernet</text>
+        <text x="1060" y="278" text-anchor="end" fill="var(--muted)" font-size="11">UDP</text>
+        <text x="868" y="410" text-anchor="middle" fill="currentColor" font-size="11">visual → :47010</text>
+        <text x="868" y="438" text-anchor="middle" fill="var(--muted)" font-size="11">← cue, status :47011</text>
+
+        <!-- BASE LAPTOP -->
+        <text x="520" y="348" fill="currentColor" font-size="13" font-weight="600">BASE LAPTOP</text>
+        <rect x="520" y="360" width="440" height="320" rx="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="560" y="384" width="230" height="140" rx="6" fill="var(--panel)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="675" y="414" text-anchor="middle" fill="var(--accent)" font-size="13">sentinel-c2</text>
+        <text x="675" y="442" text-anchor="middle" fill="currentColor" font-size="11">loudness localization</text>
+        <text x="675" y="460" text-anchor="middle" fill="currentColor" font-size="11">Kalman tracker</text>
+        <text x="675" y="478" text-anchor="middle" fill="currentColor" font-size="11">fusion: acoustic + radar + camera</text>
+        <text x="675" y="500" text-anchor="middle" fill="var(--muted)" font-size="11">HINT downlink</text>
+        <rect x="560" y="600" width="230" height="56" rx="6" fill="var(--panel)" stroke="var(--new)" stroke-width="2"/>
+        <text x="675" y="624" text-anchor="middle" fill="var(--new)" font-size="12">radar sender (planned)</text>
+        <text x="675" y="642" text-anchor="middle" fill="var(--muted)" font-size="11">rd03d.py</text>
+        <line x1="675" y1="600" x2="675" y2="526" stroke="var(--new)" stroke-width="2" marker-end="url(#a2)"/>
+        <text x="665" y="560" text-anchor="end" fill="var(--new)" font-size="11">UDP :47012</text><text x="665" y="576" text-anchor="end" fill="var(--new)" font-size="11">localhost</text>
+        <g font-size="11">
+          <rect x="810" y="470" width="130" height="28" rx="4" fill="var(--panel)" stroke="currentColor"/><text x="875" y="488" text-anchor="middle" fill="currentColor">Dashboard :8090</text>
+          <rect x="810" y="508" width="130" height="28" rx="4" fill="var(--panel)" stroke="currentColor"/><text x="875" y="526" text-anchor="middle" fill="currentColor">Map :8080</text>
+          <rect x="810" y="546" width="130" height="28" rx="4" fill="var(--panel)" stroke="currentColor"/><text x="875" y="564" text-anchor="middle" fill="currentColor">CoT → TAK (opt.)</text>
+        </g>
+        <polyline points="808,484 800,484 800,560 808,560" fill="none" stroke="currentColor"/>
+        <line x1="800" y1="522" x2="808" y2="522" stroke="currentColor"/>
+        <line x1="790" y1="500" x2="800" y2="500" stroke="currentColor"/>
+
+        <!-- RADAR STATION -->
+        <text x="20" y="508" fill="currentColor" font-size="13" font-weight="600">RADAR STATION ×1</text>
+        <rect x="20" y="520" width="420" height="150" rx="8" fill="var(--panel)" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="40" y="560" width="110" height="60" rx="4" fill="var(--panel)" stroke="currentColor"/>
+        <text x="95" y="586" text-anchor="middle" fill="currentColor" font-size="12">RD-03D</text>
+        <text x="95" y="604" text-anchor="middle" fill="var(--muted)" font-size="11">24 GHz radar</text>
+        <line x1="150" y1="590" x2="268" y2="590" stroke="currentColor" marker-start="url(#a1)" marker-end="url(#a1)"/>
+        <text x="209" y="580" text-anchor="middle" fill="var(--muted)" font-size="11">UART 256000</text>
+        <text x="209" y="610" text-anchor="middle" fill="var(--muted)" font-size="10">TX→17 · RX←18</text>
+        <text x="209" y="624" text-anchor="middle" fill="var(--muted)" font-size="10">5 V · GND</text>
+        <rect x="270" y="560" width="110" height="60" rx="4" fill="var(--panel)" stroke="currentColor"/>
+        <text x="325" y="586" text-anchor="middle" fill="currentColor" font-size="12">ESP32-S3</text>
+        <text x="325" y="604" text-anchor="middle" fill="var(--muted)" font-size="11">bridge</text>
+        <polyline points="380,590 470,590 470,628 558,628" fill="none" stroke="currentColor" stroke-width="2"/>
+        <polygon points="558,628 548,623 548,633" fill="currentColor"/>
+        <text x="478" y="618" fill="currentColor" font-size="11">USB</text>
+
+        <!-- LEGEND -->
+        <g font-size="11">
+          <line x1="20" y1="400" x2="60" y2="400" stroke="currentColor" stroke-width="2"/><text x="70" y="404" fill="currentColor">wired</text>
+          <line x1="20" y1="424" x2="60" y2="424" stroke="var(--accent)" stroke-width="2" stroke-dasharray="8 5"/><text x="70" y="428" fill="currentColor">LoRa radio</text>
+          <line x1="20" y1="448" x2="60" y2="448" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 4"/><text x="70" y="452" fill="currentColor">IP network (UDP)</text>
+          <rect x="190" y="392" width="40" height="16" rx="3" fill="none" stroke="var(--new)" stroke-width="2"/><text x="240" y="404" fill="currentColor">not yet built</text>
+        </g>
+      </svg>
+      </div>
+      <dl class="specs">
+        <div><dt>Listening nodes</dt><dd>6<small>ESP32-S3</small></dd></div>
+        <div><dt>Mics per node</dt><dd>4<small>ICS-43434, I2S</small></dd></div>
+        <div><dt>Node link</dt><dd>915 MHz<small>LoRa, SF7, 500 kHz</small></dd></div>
+        <div><dt>Radar</dt><dd>24 GHz<small>RD-03D, 8 m</small></dd></div>
+        <div><dt>Fusion</dt><dd>Kalman<small>sentinel-c2</small></dd></div>
+        <div><dt>Node cost</dt><dd>~$125<small>per node</small></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="band" id="progress">
+    <div class="wrap">
+      <div class="head">
+        <div><div class="eyebrow">Progress</div><h2>Status</h2></div>
+        <p>Milestones and repository activity. Activity refreshes hourly from GitHub.</p>
+      </div>
+      <div class="progress">
+        <div>
+          <dl class="countdown">
+            <div><dt>Target · Dec 8</dt><dd id="cd-target">—</dd></div>
+            <div><dt>Deadline · Dec 15</dt><dd id="cd-deadline">—</dd></div>
+          </dl>
+          <ol class="timeline" id="timeline"></ol>
+        </div>
+        <div>
+          <dl class="stats">
+            <div><dt>Commits · 7 days</dt><dd id="st-7">—</dd></div>
+            <div><dt>Commits · 60 days</dt><dd id="st-60">—</dd></div>
+            <div><dt>Merged PRs</dt><dd id="st-pr">—</dd></div>
+          </dl>
+          <div class="feed-head"><h3>Activity</h3><span class="live" id="updated">Loading</span></div>
+          <ul class="feed" id="feed"></ul>
+          <div class="repos" id="repos"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="briefings">
+    <div class="wrap">
+      <div class="head">
+        <div><div class="eyebrow">Briefings</div><h2>Weekly briefings</h2></div>
+        <p>Latest deck first. Present opens Google Slides full screen.</p>
+      </div>
+      <div class="briefing">
+        <div class="screen" id="screen">
+          <div class="cover">
+            <div class="eyebrow" id="latest-label">Latest</div>
+            <div class="d" id="latest-date">—</div>
+            <div class="actions">
+              <a class="btn solid" id="present" href="#" target="_blank" rel="noopener">Present <span class="arrow">→</span></a>
+              <button class="btn" id="load-deck" type="button">View here</button>
+            </div>
+          </div>
+        </div>
+        <div class="side">
+          <h3>Archive</h3>
+          <ul class="archive" id="archive"></ul>
+          <p class="note">Unpublished decks require team Google access.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="team">
+    <div class="wrap">
+      <div class="head">
+        <div><div class="eyebrow">Team</div><h2>Team</h2></div>
+        <p>Hacking for Defense (H4D), Columbia University. Problem sponsor: U.S. Central Command.</p>
+      </div>
+      <div class="team">
+        <div><b>Anissa Basu</b><span>Computer Science &amp; Economics</span></div>
+        <div><b>Noah Cho</b><span>Computer Science</span></div>
+        <div><b>Tommy Li</b><span>Computer Science</span></div>
+        <div><b>Alex Nazarova</b><span>Information Science</span></div>
+        <div><b>Domenico Pica</b><span>Computer Science &amp; EALAC</span></div>
+        <div><b>Vihaan Shah</b><span>Mechanical Engineering, CS &amp; Aerospace</span></div>
+        <div><b>Tai Zaidi</b><span>Computer Science</span></div>
+        <div class="prog"><b>COMS 4995 · Fall 2026</b><span>CENTCOM-4: Drone Hide and Seek</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Silent Sentinel · Hacking for Defense, Columbia University</span>
+    <a href="https://github.com/H4D-Silent-Sentinel">github.com/H4D-Silent-Sentinel</a>
+  </div>
+</footer>
+
+<script src="assets/app.js" defer></script>
+</body>
+</html>
