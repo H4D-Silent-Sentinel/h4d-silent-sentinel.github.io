@@ -1,183 +1,354 @@
 (() => {
   "use strict";
-
-  // ---------- Hero: fused-track simulation ----------
-  const W = 1000, H = 600;
-  const COL = [[40, 150], [190, 320], [360, 490], [530, 660], [700, 830], [870, 980]];
-  const ROW = [[30, 150], [190, 300], [340, 450], [490, 590]];
-  const RADAR = { x: 18, y: 320, yaw: 0, half: Math.PI / 3, range: 560 };
-  const NODES = [[170, 170], [510, 170], [850, 170], [170, 470], [510, 470], [850, 470]].map(([x, y]) => ({ x, y }));
-  const HEAR = 250;
-  const PATH = [[40, 320], [515, 320], [515, 170], [850, 170], [850, 470], [345, 470], [345, 320], [40, 320]];
-  const SPEED = 62;
-
-  let seed = 7;
-  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-  const BUILD = [];
-  for (const [x0, x1] of COL) for (const [y0, y1] of ROW) {
-    const split = rnd() < 0.55;
-    if (split) {
-      const m = x0 + (x1 - x0) * (0.4 + rnd() * 0.2);
-      BUILD.push({ x: x0, y: y0, w: m - x0 - 6, h: y1 - y0, hgt: rnd() });
-      BUILD.push({ x: m + 6, y: y0, w: x1 - m - 6, h: y1 - y0, hgt: rnd() });
-    } else BUILD.push({ x: x0, y: y0, w: x1 - x0, h: y1 - y0, hgt: rnd() });
-  }
-
-  const segLen = [];
-  let total = 0;
-  for (let i = 0; i < PATH.length - 1; i++) {
-    const l = Math.hypot(PATH[i + 1][0] - PATH[i][0], PATH[i + 1][1] - PATH[i][1]);
-    segLen.push(l); total += l;
-  }
-  function at(d) {
-    d = ((d % total) + total) % total;
-    for (let i = 0; i < segLen.length; i++) {
-      if (d <= segLen[i]) {
-        const f = d / segLen[i], a = PATH[i], b = PATH[i + 1];
-        return { x: a[0] + (b[0] - a[0]) * f, y: a[1] + (b[1] - a[1]) * f };
-      }
-      d -= segLen[i];
-    }
-    return { x: PATH[0][0], y: PATH[0][1] };
-  }
-
-  function segHitsRect(x1, y1, x2, y2, r) {
-    let t0 = 0, t1 = 1;
-    const dx = x2 - x1, dy = y2 - y1;
-    const p = [-dx, dx, -dy, dy], q = [x1 - r.x, r.x + r.w - x1, y1 - r.y, r.y + r.h - y1];
-    for (let i = 0; i < 4; i++) {
-      if (p[i] === 0) { if (q[i] < 0) return false; continue; }
-      const t = q[i] / p[i];
-      if (p[i] < 0) { if (t > t1) return false; if (t > t0) t0 = t; }
-      else { if (t < t0) return false; if (t < t1) t1 = t; }
-    }
-    return true;
-  }
-  function radarSees(p) {
-    const dx = p.x - RADAR.x, dy = p.y - RADAR.y, r = Math.hypot(dx, dy);
-    if (r > RADAR.range) return false;
-    const ang = Math.atan2(dy, dx) - RADAR.yaw;
-    if (Math.abs(Math.atan2(Math.sin(ang), Math.cos(ang))) > RADAR.half) return false;
-    return !BUILD.some(b => segHitsRect(RADAR.x, RADAR.y, p.x, p.y, b));
-  }
-
-  const canvas = document.getElementById("scene");
-  const ctx = canvas.getContext("2d");
-  const ro = { src: document.getElementById("ro-src"), nodes: document.getElementById("ro-nodes"), radar: document.getElementById("ro-radar") };
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let view = { s: 1, ox: 0, oy: 0 }, cw = 0, ch = 0;
 
-  function resize() {
-    const dpr = Math.min(devicePixelRatio || 1, 2);
-    cw = canvas.clientWidth; ch = canvas.clientHeight;
-    canvas.width = Math.round(cw * dpr); canvas.height = Math.round(ch * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const s = Math.min(cw / W, ch / H);
-    view = { s, ox: (cw - W * s) / 2, oy: (ch - H * s) / 2 };
-  }
-  const X = x => view.ox + x * view.s, Y = y => view.oy + y * view.s;
+  // ---------- header + menu ----------
+  const nav = document.getElementById("nav");
+  const menuBtn = document.getElementById("menu-btn");
+  menuBtn.addEventListener("click", () => menuBtn.setAttribute("aria-expanded", nav.classList.toggle("open")));
+  document.querySelectorAll("#menu a").forEach(a => a.addEventListener("click", () => { nav.classList.remove("open"); menuBtn.setAttribute("aria-expanded", "false"); }));
 
-  const trail = [];
-  let est = null, lastSrc = "", lastRO = 0;
+  // ---------- section dots ----------
+  const secs = [...document.querySelectorAll("[data-sec]")];
+  const dotsEl = document.getElementById("dots");
+  dotsEl.innerHTML = secs.map(s => `<a href="#${s.id || ""}" data-for="${s.dataset.sec}"><span>${s.dataset.sec}</span></a>`).join("");
+  const dots = [...dotsEl.children];
+  secs.forEach((s, i) => { if (!s.id) { s.id = "s" + i; dots[i].href = "#s" + i; } });
+  const menuLinks = [...document.querySelectorAll("#menu a")];
+  const secIO = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    const i = secs.indexOf(e.target);
+    dots.forEach((d, k) => d.classList.toggle("on", k === i));
+    menuLinks.forEach(l => l.classList.toggle("on", l.getAttribute("href") === "#" + e.target.id));
+  }), { rootMargin: "-48% 0px -48% 0px" });
+  secs.forEach(s => secIO.observe(s));
 
-  function frame(tms) {
-    const t = tms / 1000;
-    const d = at(t * SPEED);
-    const seen = radarSees(d);
-    const hearing = NODES.filter(n => Math.hypot(n.x - d.x, n.y - d.y) < HEAR);
-    const src = seen ? "radar" : hearing.length ? "acoustic" : "coast";
-    const sigma = seen ? 2 : hearing.length >= 2 ? 9 : 16;
-    const nx = d.x + Math.sin(t * 3.1) * sigma * 0.5, ny = d.y + Math.cos(t * 2.3) * sigma * 0.5;
-    est = est ? { x: est.x + (nx - est.x) * 0.18, y: est.y + (ny - est.y) * 0.18 } : { x: nx, y: ny };
-    trail.push({ x: est.x, y: est.y, src, t });
-    while (trail.length && t - trail[0].t > 7) trail.shift();
+  // ---------- headline letter reveal ----------
+  const heads = [...document.querySelectorAll("[data-scramble]")];
+  heads.forEach(h => {
+    h.setAttribute("aria-label", h.textContent.replace(/\s+/g, " ").trim());
+    const walk = node => [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(w => {
+          if (!w) return;
+          if (/^\s+$/.test(w)) { frag.append(" "); return; }
+          const word = document.createElement("span");
+          word.style.whiteSpace = "nowrap"; word.setAttribute("aria-hidden", "true");
+          word.innerHTML = [...w].map(c => `<span class="ch">${c}</span>`).join("");
+          frag.append(word);
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1 && n.tagName !== "BR") walk(n);
+    });
+    walk(h);
+  });
+  const play = h => {
+    const chs = [...h.querySelectorAll(".ch")];
+    if (reduce) { chs.forEach(c => c.className = "ch on"); return; }
+    const order = chs.map(c => [Math.random(), c]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+    const step = Math.min(55, 1100 / chs.length);
+    order.forEach((c, i) => {
+      const t0 = i * step;
+      const outline = Math.random() < 0.45;
+      if (outline) setTimeout(() => c.className = "ch o", t0);
+      setTimeout(() => c.className = "ch g", t0 + (outline ? 260 : 0));
+      setTimeout(() => c.className = "ch on", t0 + 420 + Math.random() * 380);
+    });
+  };
+  const headIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { play(e.target); headIO.unobserve(e.target); } }), { threshold: 0.35 });
+  heads.forEach(h => headIO.observe(h));
 
-    ctx.clearRect(0, 0, cw, ch);
-    ctx.fillStyle = "#000"; ctx.fillRect(0, 0, cw, ch);
+  const revIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); revIO.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+  document.querySelectorAll(".slide .wrap > :not([data-scramble]):not(.eyebrow), .slide .two > *, footer .wrap").forEach(el => { el.classList.add("reveal"); revIO.observe(el); });
 
-    // grid
-    ctx.strokeStyle = "rgba(220,230,240,0.035)"; ctx.lineWidth = 1;
-    for (let gx = 0; gx <= W; gx += 25) { ctx.beginPath(); ctx.moveTo(X(gx), Y(0)); ctx.lineTo(X(gx), Y(H)); ctx.stroke(); }
-    for (let gy = 0; gy <= H; gy += 25) { ctx.beginPath(); ctx.moveTo(X(0), Y(gy)); ctx.lineTo(X(W), Y(gy)); ctx.stroke(); }
+  // ---------- canvas effects ----------
+  const rand = (s => () => (s = (s * 16807) % 2147483647) / 2147483647)(11);
+  const FX = {};
 
-    // radar coverage wedge
-    const wedge = () => { ctx.beginPath(); ctx.moveTo(X(RADAR.x), Y(RADAR.y)); ctx.arc(X(RADAR.x), Y(RADAR.y), RADAR.range * view.s, RADAR.yaw - RADAR.half, RADAR.yaw + RADAR.half); ctx.closePath(); };
-    const g = ctx.createRadialGradient(X(RADAR.x), Y(RADAR.y), 0, X(RADAR.x), Y(RADAR.y), RADAR.range * view.s);
-    g.addColorStop(0, "rgba(127,178,255,0.16)"); g.addColorStop(1, "rgba(127,178,255,0.02)");
-    wedge(); ctx.fillStyle = g; ctx.fill();
-    ctx.strokeStyle = "rgba(127,178,255,0.22)"; ctx.stroke();
-    const sw = RADAR.yaw + Math.sin(t * 1.4) * RADAR.half;
-    ctx.strokeStyle = "rgba(127,178,255,0.45)"; ctx.beginPath(); ctx.moveTo(X(RADAR.x), Y(RADAR.y));
-    ctx.lineTo(X(RADAR.x + Math.cos(sw) * RADAR.range), Y(RADAR.y + Math.sin(sw) * RADAR.range)); ctx.stroke();
-
-    // buildings
-    for (const b of BUILD) {
-      ctx.fillStyle = `rgba(14,18,24,${0.92 + b.hgt * 0.08})`;
-      ctx.fillRect(X(b.x), Y(b.y), b.w * view.s, b.h * view.s);
-      ctx.strokeStyle = "rgba(220,230,240,0.07)";
-      ctx.strokeRect(X(b.x) + 0.5, Y(b.y) + 0.5, b.w * view.s - 1, b.h * view.s - 1);
-    }
-
-    // node links to estimate
-    for (const n of hearing) {
-      ctx.strokeStyle = "rgba(255,181,71,0.22)"; ctx.setLineDash([3, 5]);
-      ctx.beginPath(); ctx.moveTo(X(n.x), Y(n.y)); ctx.lineTo(X(est.x), Y(est.y)); ctx.stroke();
-    }
-    ctx.setLineDash([]);
-
-    // nodes
-    for (const n of NODES) {
-      const on = hearing.includes(n);
-      if (on) {
-        const ph = (t * 0.9 + n.x * 0.001) % 1;
-        ctx.strokeStyle = `rgba(255,181,71,${0.55 * (1 - ph)})`;
-        ctx.beginPath(); ctx.arc(X(n.x), Y(n.y), (8 + ph * 46) * view.s, 0, Math.PI * 2); ctx.stroke();
+  // hero: expanding acoustic wavefronts around a source
+  FX.field = (() => {
+    const P = Array.from({ length: 4200 }, () => ({ a: rand() * Math.PI * 2, ring: Math.floor(rand() * 5), j: (rand() - 0.5) * 2 }));
+    const RINGS = 5;
+    return (c, w, h, t) => {
+      c.fillStyle = "#000"; c.fillRect(0, 0, w, h);
+      const cx = w > 900 ? w * 0.7 : w * 0.6, cy = h * 0.52, R = Math.max(w, h) * 0.6;
+      c.globalCompositeOperation = "lighter";
+      const wob = (a, f) => 1 + Math.sin(a * 5 + t * 0.5 + f * 4) * 0.04 + Math.sin(a * 9 - t * 0.35) * 0.02;
+      for (let k = 0; k < RINGS; k++) {
+        const f = ((k / RINGS) + t * 0.028) % 1, al = Math.sin(f * Math.PI);
+        const r = f * R;
+        c.lineWidth = 1 + 10 * (1 - f);
+        c.strokeStyle = `rgba(120,190,210,${al * 0.06})`;
+        c.beginPath();
+        for (let i = 0; i <= 160; i++) { const a = i / 160 * Math.PI * 2, rr = r * wob(a, f); i ? c.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr * 0.82) : c.moveTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr * 0.82); }
+        c.stroke();
+        c.lineWidth = 1; c.strokeStyle = `rgba(200,230,240,${al * 0.28})`; c.stroke();
       }
-      ctx.fillStyle = on ? "#ffb547" : "#56616c";
-      ctx.beginPath(); ctx.arc(X(n.x), Y(n.y), 3.6 * view.s, 0, Math.PI * 2); ctx.fill();
+      for (const p of P) {
+        const f = ((p.ring / RINGS) + t * 0.028) % 1;
+        const r = f * R * wob(p.a, f) + p.j * (6 + 30 * f);
+        const al = Math.sin(f * Math.PI) * (0.35 + 0.5 * Math.abs(Math.sin(p.a * 3 + t * 0.25))) * (1 - Math.abs(p.j) * 0.6);
+        c.fillStyle = p.ring === 0 ? `rgba(255,181,71,${al})` : `rgba(170,215,228,${al})`;
+        c.fillRect(cx + Math.cos(p.a) * r, cy + Math.sin(p.a) * r * 0.82, 1.6, 1.6);
+      }
+      const g = c.createRadialGradient(cx, cy, 0, cx, cy, R * 0.25);
+      g.addColorStop(0, "rgba(255,190,90,0.3)"); g.addColorStop(1, "rgba(0,0,0,0)");
+      c.fillStyle = g; c.fillRect(cx - R, cy - R, 2 * R, 2 * R);
+      c.fillStyle = "#ffcf85"; c.beginPath(); c.arc(cx, cy, 3, 0, Math.PI * 2); c.fill();
+      c.globalCompositeOperation = "source-over";
+    };
+  })();
+
+  // streaks: iridescent arcs revealed column by column with scroll
+  const streakSec = document.getElementById("streaks");
+  const colOrder = [4, 1, 7, 2, 6, 0, 8, 3, 5];
+  FX.streaks = (c, w, h, t) => {
+    c.fillStyle = "#000"; c.fillRect(0, 0, w, h);
+    const r = streakSec.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, -r.top / Math.max(1, r.height - h)));
+    const top = 74, cw = w / 9;
+    c.save();
+    c.beginPath();
+    colOrder.forEach((col, i) => {
+      const v = Math.min(1, Math.max(0, p * 11 - i));
+      if (v <= 0) return;
+      const ch = (h - top) * (p > 0.95 ? 1 : v);
+      c.rect(col * cw, top, cw, ch);
+    });
+    c.clip();
+    c.globalCompositeOperation = "lighter";
+    const cx = w * 1.05, cy = h * 1.55, rot = Math.sin(t * 0.05) * 0.06;
+    for (let b = 0; b < 4; b++) {
+      const r0 = h * (1.0 + b * 0.2) + Math.sin(t * 0.3 + b) * 14;
+      const a0 = Math.PI * 1.02 + rot + b * 0.05, a1 = Math.PI * 1.5 + rot * 0.5;
+      c.strokeStyle = `hsla(${(230 + b * 60 + t * 10) % 360},80%,55%,0.08)`; c.lineWidth = 80;
+      c.beginPath(); c.arc(cx, cy, r0 + 40, a0, a1); c.stroke();
+      for (let i = 0; i < 48; i++) {
+        const bell = Math.exp(-((i - 24) ** 2) / 120);
+        const hue = (190 + i * 7 + b * 70 + t * 12) % 360;
+        c.strokeStyle = `hsla(${hue},85%,${50 + bell * 30}%,${0.025 + bell * 0.26})`;
+        c.lineWidth = 2.6;
+        c.beginPath(); c.arc(cx, cy, r0 + i * 1.8, a0, a1); c.stroke();
+      }
+      c.strokeStyle = "rgba(255,255,255,0.85)"; c.lineWidth = 1.6;
+      c.beginPath(); c.arc(cx, cy, r0 + 44, a0 + 0.02, a1 - 0.02); c.stroke();
     }
+    c.restore();
+    c.globalCompositeOperation = "source-over";
+  };
 
-    // radar head
-    ctx.fillStyle = "#7fb2ff"; ctx.fillRect(X(RADAR.x) - 4, Y(RADAR.y) - 4, 8, 8);
-    ctx.font = `500 ${Math.max(9, Math.round(10 * view.s))}px 'IBM Plex Mono', monospace`; ctx.fillStyle = "rgba(127,178,255,0.8)"; ctx.fillText("RADAR", X(RADAR.x) - 2, Y(RADAR.y) + 20);
-    ctx.fillStyle = "rgba(139,150,161,0.8)"; NODES.forEach((n, k) => ctx.fillText(`N${k + 1}`, X(n.x) + 8, Y(n.y) + 14));
+  // fusion: rotating particle torus
+  FX.torus = (() => {
+    const P = Array.from({ length: 6500 }, () => ({ u: rand() * Math.PI * 2, v: rand() * Math.PI * 2, n: rand() }));
+    return (c, w, h, t) => {
+      c.fillStyle = "#000"; c.fillRect(0, 0, w, h);
+      const cx = w > 900 ? w * 0.68 : w * 0.55, cy = h * 0.52, S = Math.min(w, h) * 0.34;
+      const ay = t * 0.18, ax = 1.15 + Math.sin(t * 0.13) * 0.15;
+      const ca = Math.cos(ay), sa = Math.sin(ay), cb = Math.cos(ax), sb = Math.sin(ax);
+      c.globalCompositeOperation = "lighter";
+      for (const p of P) {
+        const rr = 0.32 + 0.06 * Math.sin(p.u * 4 + t * 0.8) + p.n * 0.03;
+        let x = (1 + rr * Math.cos(p.v)) * Math.cos(p.u), y = (1 + rr * Math.cos(p.v)) * Math.sin(p.u), z = rr * Math.sin(p.v);
+        let x1 = x * ca - y * sa, y1 = x * sa + y * ca;
+        let y2 = y1 * cb - z * sb, z2 = y1 * sb + z * cb;
+        const depth = 1 / (2.6 - z2 * 0.6);
+        const sx = cx + x1 * S * depth * 2.2, sy = cy + y2 * S * depth * 2.2;
+        const al = 0.4 + 0.6 * (z2 + 1.3) / 2.6;
+        c.fillStyle = `rgba(90,170,255,${al})`;
+        c.fillRect(sx, sy, 1.8, 1.8);
+      }
+      const g = c.createRadialGradient(cx, cy, 0, cx, cy, S * 1.4);
+      g.addColorStop(0, "rgba(40,120,255,0.22)"); g.addColorStop(1, "rgba(0,0,0,0)");
+      c.fillStyle = g; c.fillRect(0, 0, w, h);
+      c.globalCompositeOperation = "source-over";
+    };
+  })();
 
-    // trail
-    for (let i = 1; i < trail.length; i++) {
-      const a = trail[i - 1], b = trail[i], age = (t - b.t) / 7;
-      ctx.strokeStyle = b.src === "radar" ? `rgba(127,178,255,${0.9 * (1 - age)})` : `rgba(255,181,71,${0.9 * (1 - age)})`;
-      ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(X(a.x), Y(a.y)); ctx.lineTo(X(b.x), Y(b.y)); ctx.stroke();
+  // sensors: perspective dot field with an acoustic wave
+  FX.dots = (c, w, h, t) => {
+    c.fillStyle = "#000"; c.fillRect(0, 0, w, h);
+    const f = h * 0.9, hz = h * 0.3, cam = 3.2, sx0 = w * 0.62;
+    for (let z = 2; z < 46; z += 0.9) {
+      for (let x = -40; x <= 40; x += 1.1) {
+        const d = Math.hypot(x - 6, z - 16);
+        const y = Math.sin(d * 0.7 - t * 2.2) * 0.9 / (1 + d * 0.12);
+        const sx = sx0 + (x / z) * f, sy = hz + ((cam - y) / z) * f;
+        if (sx < -4 || sx > w + 4 || sy > h + 4) continue;
+        const s = Math.max(0.6, 2.6 * f / (z * 260));
+        const al = Math.min(0.75, 0.15 + 3.5 / z) * (0.55 + y * 0.5);
+        c.fillStyle = `rgba(230,232,235,${al})`;
+        c.fillRect(sx, sy, s, s);
+      }
     }
-    ctx.lineWidth = 1;
+    const g = c.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, "#000"); g.addColorStop(0.38, "rgba(0,0,0,0.3)"); g.addColorStop(1, "rgba(0,0,0,0.15)");
+    c.fillStyle = g; c.fillRect(0, 0, w, h);
+    const g2 = c.createLinearGradient(0, 0, w, 0);
+    g2.addColorStop(0, "rgba(0,0,0,0.75)"); g2.addColorStop(0.5, "rgba(0,0,0,0.2)"); g2.addColorStop(1, "rgba(0,0,0,0)");
+    c.fillStyle = g2; c.fillRect(0, 0, w, h);
+  };
 
-    // uncertainty + track symbol
-    const color = src === "radar" ? "#7fb2ff" : "#ffb547";
-    ctx.strokeStyle = color; ctx.globalAlpha = 0.35;
-    ctx.beginPath(); ctx.arc(X(est.x), Y(est.y), (sigma * 1.6 + 4) * view.s, 0, Math.PI * 2); ctx.stroke();
-    ctx.globalAlpha = 1;
-    const s = 7;
-    ctx.strokeStyle = color; ctx.lineWidth = 1.6;
-    ctx.beginPath(); ctx.moveTo(X(est.x), Y(est.y) - s); ctx.lineTo(X(est.x) + s, Y(est.y)); ctx.lineTo(X(est.x), Y(est.y) + s); ctx.lineTo(X(est.x) - s, Y(est.y)); ctx.closePath(); ctx.stroke();
-    ctx.lineWidth = 1;
-    ctx.font = `500 ${Math.max(10, Math.round(12 * view.s))}px 'IBM Plex Mono', monospace`; ctx.fillStyle = color;
-    ctx.fillText(`TRK-01 · ${src === "radar" ? "RADAR" : "ACOUSTIC"}`, X(est.x) + 12, Y(est.y) - 10);
+  // team: starfield over a horizon glow
+  FX.stars = (() => {
+    const S = Array.from({ length: 900 }, () => ({ x: rand(), y: rand(), m: rand() ** 3, p: rand() * 6 }));
+    return (c, w, h, t) => {
+      const g = c.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, "#000"); g.addColorStop(0.7, "#04070d"); g.addColorStop(0.92, "#1a1410"); g.addColorStop(1, "#2a1a0c");
+      c.fillStyle = g; c.fillRect(0, 0, w, h);
+      for (const s of S) {
+        const tw = 0.55 + 0.45 * Math.sin(t * (0.6 + s.m) + s.p);
+        c.fillStyle = `rgba(255,255,255,${(0.2 + s.m * 0.8) * tw})`;
+        const r = 0.6 + s.m * 1.4;
+        c.fillRect(((s.x + t * 0.002) % 1) * w, s.y * h * 0.92, r, r);
+      }
+      c.fillStyle = "#000";
+      c.beginPath(); c.moveTo(0, h);
+      for (let x = 0; x <= w; x += 8) c.lineTo(x, h * 0.9 - Math.abs(Math.sin(x * 0.004) * 50 + Math.sin(x * 0.011 + 1) * 26 + Math.sin(x * 0.031) * 8));
+      c.lineTo(w, h); c.closePath(); c.fill();
+    };
+  })();
 
-    if (seen) { ctx.fillStyle = "rgba(127,178,255,0.9)"; ctx.beginPath(); ctx.arc(X(d.x), Y(d.y), 2.2, 0, Math.PI * 2); ctx.fill(); }
+  // acoustic capability: live fused-track simulation
+  FX.sim = (() => {
+    const BLD = { x0: -20, x1: 20, y0: -15, y1: 15 };
+    const NODES = [[-20, -15], [20, -15], [20, 15], [-20, 15]].map(([x, y], i) => ({ x, y, n: `N${i + 1}` }));
+    const RADAR = { x: 44, y: 0, yaw: 0, half: Math.PI / 3, range: 46 };
+    const HEAR = 34, SPEED = 9;
+    const PATH = [[88, 8], [62, -24], [24, -32], [-14, -31], [-40, -18], [-42, 8], [-22, 30], [10, 32], [40, 26], [70, 22], [88, 8]];
+    const segLen = []; let total = 0;
+    for (let i = 0; i < PATH.length - 1; i++) { const l = Math.hypot(PATH[i + 1][0] - PATH[i][0], PATH[i + 1][1] - PATH[i][1]); segLen.push(l); total += l; }
+    const posAt = d => {
+      d = ((d % total) + total) % total;
+      for (let i = 0; i < segLen.length; i++) {
+        if (d <= segLen[i]) { const f = d / segLen[i]; return { x: PATH[i][0] + (PATH[i + 1][0] - PATH[i][0]) * f, y: PATH[i][1] + (PATH[i + 1][1] - PATH[i][1]) * f }; }
+        d -= segLen[i];
+      }
+      return { x: PATH[0][0], y: PATH[0][1] };
+    };
+    const blocked = (ax, ay, bx, by) => {
+      let t0 = 0, t1 = 1; const dx = bx - ax, dy = by - ay;
+      for (const [p, q] of [[-dx, ax - BLD.x0], [dx, BLD.x1 - ax], [-dy, ay - BLD.y0], [dy, BLD.y1 - ay]]) {
+        if (p === 0) { if (q < 0) return false; continue; }
+        const r = q / p;
+        if (p < 0) { if (r > t1) return false; if (r > t0) t0 = r; } else { if (r < t0) return false; if (r < t1) t1 = r; }
+      }
+      return t0 < t1;
+    };
+    const radarSees = p => {
+      const dx = p.x - RADAR.x, dy = p.y - RADAR.y;
+      if (Math.hypot(dx, dy) > RADAR.range) return false;
+      const a = Math.atan2(dy, dx) - RADAR.yaw;
+      return Math.abs(Math.atan2(Math.sin(a), Math.cos(a))) <= RADAR.half && !blocked(RADAR.x, RADAR.y, p.x, p.y);
+    };
+    const ro = { src: document.getElementById("ro-src"), nodes: document.getElementById("ro-nodes"), radar: document.getElementById("ro-radar") };
+    const ACC = "255,181,71", RAD = "127,178,255";
+    let est = null, trail = [], lastRO = -1, lastSrc = "";
 
-    if (tms - lastRO > 200 || src !== lastSrc) {
-      lastRO = tms; lastSrc = src;
-      ro.src.textContent = src === "radar" ? "Radar" : "Acoustic";
-      ro.src.className = src === "radar" ? "src-radar" : "src-acoustic";
-      ro.nodes.textContent = `${hearing.length} / ${NODES.length}`;
-      ro.radar.textContent = seen ? "Contact" : "No line of sight";
-    }
-    if (!reduce) requestAnimationFrame(frame);
+    return (c, w, h, t) => {
+      const wide = w > 900;
+      const s = Math.min((wide ? w * 0.4 : w * 0.95) / 150, (h - 200) / 80);
+      const cx = wide ? w * 0.68 : w * 0.5, cy = wide ? h * 0.5 : h * 0.3;
+      const X = x => cx + x * s, Y = y => cy + y * s;
+      const d = posAt(t * SPEED);
+      const seen = radarSees(d);
+      const hearing = NODES.filter(n => Math.hypot(n.x - d.x, n.y - d.y) < HEAR);
+      let meas = null, sigma = 0;
+      if (hearing.length >= 2) {
+        let wx = 0, wy = 0, ws = 0;
+        for (const n of hearing) { const q = 1 / Math.max(4, Math.hypot(n.x - d.x, n.y - d.y)) ** 2; wx += n.x * q; wy += n.y * q; ws += q; }
+        meas = { x: (wx / ws) * 0.35 + d.x * 0.65, y: (wy / ws) * 0.35 + d.y * 0.65 }; sigma = 4.5;
+      }
+      if (seen) { meas = { x: d.x + Math.sin(t * 7) * 0.4, y: d.y + Math.cos(t * 5) * 0.4 }; sigma = 1.2; }
+      if (!est) est = { x: d.x, y: d.y };
+      if (meas) { est.x += (meas.x - est.x) * 0.12; est.y += (meas.y - est.y) * 0.12; }
+      const src = [seen && "Radar", hearing.length >= 2 && "Acoustic"].filter(Boolean).join(" + ") || "Predicted";
+      const col = seen ? RAD : ACC;
+      if (!trail.length || t - trail[trail.length - 1].t > 0.08) trail.push({ x: est.x, y: est.y, t, c: col });
+      while (trail.length && (t - trail[0].t > 9 || t < trail[0].t)) trail.shift();
+
+      c.fillStyle = "#000"; c.fillRect(0, 0, w, h);
+      c.strokeStyle = "rgba(255,255,255,0.04)"; c.lineWidth = 1;
+      const gs = 10 * s;
+      for (let x = cx % gs; x < w; x += gs) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, h); c.stroke(); }
+      for (let y = cy % gs; y < h; y += gs) { c.beginPath(); c.moveTo(0, y); c.lineTo(w, y); c.stroke(); }
+
+      c.fillStyle = `rgba(${RAD},${seen ? 0.12 : 0.05})`; c.strokeStyle = `rgba(${RAD},0.45)`;
+      c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y)); c.arc(X(RADAR.x), Y(RADAR.y), RADAR.range * s, -RADAR.half, RADAR.half); c.closePath(); c.fill(); c.stroke();
+      if (!reduce) {
+        const sw = -RADAR.half + ((t * 0.9) % 1) * 2 * RADAR.half;
+        c.strokeStyle = `rgba(${RAD},0.35)`; c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y));
+        c.lineTo(X(RADAR.x + Math.cos(sw) * RADAR.range), Y(RADAR.y + Math.sin(sw) * RADAR.range)); c.stroke();
+      }
+
+      c.fillStyle = "#07080a"; c.strokeStyle = "rgba(255,255,255,0.85)"; c.lineWidth = 1.5;
+      c.fillRect(X(BLD.x0), Y(BLD.y0), 40 * s, 30 * s); c.strokeRect(X(BLD.x0), Y(BLD.y0), 40 * s, 30 * s); c.lineWidth = 1;
+      const fs = Math.max(10, Math.round(1.2 * s));
+      c.font = `500 ${fs}px 'IBM Plex Mono', monospace`; c.textAlign = "center";
+      c.fillStyle = "rgba(255,255,255,0.5)"; c.fillText("BUILDING", X(0), Y(0) + fs / 3);
+
+      c.setLineDash([3, 5]);
+      for (const n of hearing) { c.strokeStyle = `rgba(${ACC},0.3)`; c.beginPath(); c.moveTo(X(n.x), Y(n.y)); c.lineTo(X(est.x), Y(est.y)); c.stroke(); }
+      if (seen) { c.strokeStyle = `rgba(${RAD},0.4)`; c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y)); c.lineTo(X(est.x), Y(est.y)); c.stroke(); }
+      c.setLineDash([]);
+
+      for (const n of NODES) {
+        const on = hearing.includes(n);
+        if (on && !reduce) for (let k = 0; k < 2; k++) {
+          const ph = (t * 0.8 + k * 0.5) % 1;
+          c.strokeStyle = `rgba(${ACC},${0.5 * (1 - ph)})`; c.beginPath(); c.arc(X(n.x), Y(n.y), (1 + ph * 9) * s, 0, Math.PI * 2); c.stroke();
+        }
+        c.fillStyle = "#000"; c.strokeStyle = on ? `rgb(${ACC})` : "#5a6068"; c.lineWidth = 2;
+        c.beginPath(); c.arc(X(n.x), Y(n.y), Math.max(5, 0.75 * s), 0, Math.PI * 2); c.fill(); c.stroke(); c.lineWidth = 1;
+        c.fillStyle = on ? `rgb(${ACC})` : "#8a9098";
+        c.fillText(n.n, X(n.x + (n.x < 0 ? -2.8 : 2.8)), Y(n.y + (n.y < 0 ? -2.2 : 3.6)));
+      }
+      c.fillStyle = `rgb(${RAD})`; c.fillRect(X(RADAR.x) - 5, Y(RADAR.y) - 5, 10, 10);
+      c.fillStyle = `rgba(${RAD},0.85)`; c.fillText("RADAR", X(RADAR.x), Y(RADAR.y) + 3.6 * s);
+
+      c.lineWidth = 2;
+      for (let i = 1; i < trail.length; i++) {
+        const a = trail[i - 1], b = trail[i];
+        c.strokeStyle = `rgba(${b.c},${0.85 * (1 - (t - b.t) / 9)})`;
+        c.beginPath(); c.moveTo(X(a.x), Y(a.y)); c.lineTo(X(b.x), Y(b.y)); c.stroke();
+      }
+      c.lineWidth = 1;
+      c.strokeStyle = `rgba(${col},0.45)`; c.setLineDash(meas ? [] : [4, 4]);
+      c.beginPath(); c.arc(X(est.x), Y(est.y), (meas ? sigma : 7) * s, 0, Math.PI * 2); c.stroke(); c.setLineDash([]);
+      c.strokeStyle = `rgb(${col})`; c.lineWidth = 1.8;
+      c.beginPath(); c.moveTo(X(est.x), Y(est.y) - 8); c.lineTo(X(est.x) + 8, Y(est.y)); c.lineTo(X(est.x), Y(est.y) + 8); c.lineTo(X(est.x) - 8, Y(est.y)); c.closePath(); c.stroke();
+      c.lineWidth = 1; c.textAlign = "left"; c.font = `500 ${fs + 1}px 'IBM Plex Mono', monospace`; c.fillStyle = `rgb(${col})`;
+      c.fillText(`TRK-01 · ${src.toUpperCase()}`, X(est.x) + 14, Y(est.y) - 12);
+
+      if (Math.abs(t - lastRO) > 0.2 || src !== lastSrc) {
+        lastRO = t; lastSrc = src;
+        ro.src.textContent = src; ro.nodes.textContent = `${hearing.length} / ${NODES.length}`; ro.radar.textContent = seen ? "Contact" : "No contact";
+      }
+    };
+  })();
+
+  // engine: draw only visible canvases
+  const items = [...document.querySelectorAll("canvas[data-fx]")].map(el => ({ el, ctx: el.getContext("2d"), fx: FX[el.dataset.fx], w: 0, h: 0, vis: false }));
+  const size = it => {
+    const dpr = Math.min(devicePixelRatio || 1, 2), r = it.el.getBoundingClientRect();
+    it.w = r.width; it.h = r.height; it.el.width = Math.round(r.width * dpr); it.el.height = Math.round(r.height * dpr);
+    it.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+  const ro2 = new ResizeObserver(es => es.forEach(e => { const it = items.find(i => i.el === e.target); size(it); if (reduce || !running) it.fx(it.ctx, it.w, it.h, 6); }));
+  const visIO = new IntersectionObserver(es => es.forEach(e => { const it = items.find(i => i.el === e.target); it.vis = e.isIntersecting; }));
+  items.forEach(it => { size(it); ro2.observe(it.el); visIO.observe(it.el); });
+  const T0 = performance.now();
+  let running = !reduce;
+  const loop = now => {
+    const t = (now - T0) / 1000;
+    for (const it of items) if (it.vis && it.w) it.fx(it.ctx, it.w, it.h, t);
+    requestAnimationFrame(loop);
+  };
+  if (running) requestAnimationFrame(loop);
+  else {
+    items.forEach(it => it.fx(it.ctx, it.w, it.h, 6));
+    addEventListener("scroll", () => { const s = items.find(i => i.el.dataset.fx === "streaks"); if (s && s.vis) s.fx(s.ctx, s.w, s.h, 6); }, { passive: true });
   }
-
-  resize();
-  new ResizeObserver(resize).observe(canvas);
-  if (reduce) frame((segLen[0] + 60) / SPEED * 1000); else requestAnimationFrame(frame);
 
   // ---------- Data ----------
   const $ = id => document.getElementById(id);

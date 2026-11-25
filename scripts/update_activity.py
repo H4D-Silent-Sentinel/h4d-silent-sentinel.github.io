@@ -38,12 +38,11 @@ def main():
             if msg.startswith("Merge pull request"):
                 continue
             events.append({"type": "commit", "repo": name, "title": msg[:140],
-                           "author": (c.get("author") or {}).get("login") or c["commit"]["author"]["name"],
                            "date": c["commit"]["author"]["date"], "url": c["html_url"]})
         for p in get(f"/repos/{ORG}/{name}/pulls?state=closed&per_page=50"):
             if p.get("merged_at"):
                 events.append({"type": "merge", "repo": name, "title": p["title"][:140],
-                               "author": p["user"]["login"], "date": p["merged_at"], "url": p["html_url"]})
+                               "date": p["merged_at"], "url": p["html_url"]})
         recent = sum(1 for c in commits
                      if dt.datetime.fromisoformat(c["commit"]["author"]["date"].replace("Z", "+00:00")) >= week)
         repos.append({"name": name, "description": r.get("description") or "", "url": r["html_url"],
