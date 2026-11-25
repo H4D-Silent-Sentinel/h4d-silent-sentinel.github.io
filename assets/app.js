@@ -236,7 +236,7 @@
     li.addEventListener("click", () => {
       const lo = i === 0 ? 0 : (pn.bounds ? pn.bounds[i - 1] : i / pn.n), hi = pn.bounds ? (pn.bounds[i] ?? 1) : (i + 1) / pn.n;
       const top = pn.sec.offsetTop + ((lo + hi) / 2) * (pn.sec.offsetHeight - innerHeight);
-      (window.__pagerGo || (y => scrollTo(0, y)))(top);
+      scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
     });
   }));
 
@@ -420,88 +420,6 @@
   placeSnaps();
   addEventListener("resize", placeSnaps);
 
-  // ---------- paging: one wheel gesture, swipe or key = one page or one step ----------
-  const pager = (() => {
-    document.documentElement.classList.add("paged");
-    const vh = () => innerHeight;
-    const points = () => {
-      const ys = [0];
-      document.querySelectorAll(".slide").forEach(s => {
-        const top = s.getBoundingClientRect().top + scrollY, h = s.offsetHeight;
-        ys.push(top);
-        for (let y = top + vh() * 0.85; y < top + h - vh(); y += vh() * 0.85) ys.push(y);
-        if (h > vh() + 40) ys.push(top + h - vh());
-      });
-      document.querySelectorAll(".snap").forEach(m => ys.push(m.getBoundingClientRect().top + scrollY));
-      const max = document.documentElement.scrollHeight - vh();
-      ys.push(max);
-      const out = [];
-      ys.map(y => Math.round(Math.min(max, Math.max(0, y)))).sort((a, b) => a - b).forEach(y => { if (!out.length || y - out[out.length - 1] > 40) out.push(y); });
-      return out;
-    };
-    let busy = false, quietAt = 0, accum = 0, raf = 0;
-    const ease = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
-    const go = y => {
-      cancelAnimationFrame(raf);
-      const y0 = scrollY, dy = y - y0;
-      if (Math.abs(dy) < 2) return;
-      if (reduce) { scrollTo(0, y); return; }
-      busy = true;
-      const dur = Math.min(1100, 650 + Math.abs(dy) * 0.15), t0 = performance.now();
-      const step = now => {
-        const f = Math.min(1, (now - t0) / dur);
-        scrollTo(0, y0 + dy * ease(f));
-        if (f < 1) raf = requestAnimationFrame(step); else { busy = false; quietAt = performance.now(); }
-      };
-      raf = requestAnimationFrame(step);
-    };
-    const move = dir => {
-      const ps = points(), y = scrollY;
-      const target = dir > 0 ? ps.find(p => p > y + 4) : [...ps].reverse().find(p => p < y - 4);
-      if (target !== undefined) go(target);
-    };
-    let lastWheel = 0;
-    addEventListener("wheel", e => {
-      if (e.ctrlKey) return;                        // pinch zoom
-      const inner = e.target.closest(".feed, .diagram, iframe");
-      if (inner && inner.scrollHeight > inner.clientHeight && e.target.closest(".feed")) return;
-      e.preventDefault();
-      const now = performance.now();
-      const gap = now - lastWheel; lastWheel = now;
-      if (busy) return;
-      if (gap < 180 && now - quietAt < 600) return;  // trackpad inertia from the last gesture
-      accum = gap > 180 ? e.deltaY : accum + e.deltaY;
-      if (Math.abs(accum) >= 18) { move(Math.sign(accum)); accum = 0; }
-    }, { passive: false });
-    addEventListener("keydown", e => {
-      if (e.target.closest("input, textarea, select, [contenteditable]")) return;
-      const k = e.key;
-      if (["ArrowDown", "PageDown", " "].includes(k) && !e.shiftKey) { e.preventDefault(); if (!busy) move(1); }
-      else if (["ArrowUp", "PageUp"].includes(k) || (k === " " && e.shiftKey)) { e.preventDefault(); if (!busy) move(-1); }
-      else if (k === "Home") { e.preventDefault(); go(0); }
-      else if (k === "End") { e.preventDefault(); go(document.documentElement.scrollHeight - innerHeight); }
-    });
-    let ty = null;
-    addEventListener("touchstart", e => { ty = e.touches[0].clientY; }, { passive: true });
-    addEventListener("touchmove", e => { if (ty !== null && !e.target.closest(".feed, .diagram")) e.preventDefault(); }, { passive: false });
-    addEventListener("touchend", e => {
-      if (ty === null) return;
-      const d = ty - e.changedTouches[0].clientY; ty = null;
-      if (Math.abs(d) > 40 && !busy) move(Math.sign(d));
-    }, { passive: true });
-    // in-page links animate with the same easing
-    document.addEventListener("click", e => {
-      const a = e.target.closest('a[href^="#"]');
-      if (!a) return;
-      const el = document.querySelector(a.getAttribute("href"));
-      if (!el) return;
-      e.preventDefault();
-      go(el.getBoundingClientRect().top + scrollY);
-      history.replaceState(null, "", a.getAttribute("href"));
-    });
-    window.__pagerGo = go;
-    return { go };
-  })();
 
   // engine: draw only visible canvases
   const items = [...document.querySelectorAll("canvas[data-fx]")].map(el => ({ el, ctx: el.getContext("2d"), fx: FX[el.dataset.fx], w: 0, h: 0, vis: false }));

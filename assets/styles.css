@@ -285,6 +285,9 @@ footer { position: relative; z-index: 2; background: #000; border-top: 1px solid
   .pin .readout { grid-template-columns: 1fr 1fr; }
 }
 
-/* ---------- paging: snap points read by app.js ---------- */
-html.paged { scroll-behavior: auto; }
-.snap { position: absolute; left: 0; width: 1px; height: 1px; pointer-events: none; }
+/* ---------- scroll snap: native, follows the gesture and settles on the nearest page or step ---------- */
+html { scroll-snap-type: y mandatory; }
+.slide { scroll-snap-align: start; scroll-snap-stop: always; }
+footer { scroll-snap-align: end; }
+.snap { position: absolute; left: 0; width: 1px; height: 1px; pointer-events: none; scroll-snap-align: start; scroll-snap-stop: always; }
+@media (prefers-reduced-motion: reduce) { html { scroll-snap-type: y proximity; } }
