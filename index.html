@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=9">
+<link rel="stylesheet" href="assets/styles.css?v=11">
 </head>
 <body>
 
@@ -68,21 +68,34 @@
     </div>
   </section>
 
-  <!-- 4 capability: acoustic, live sim -->
-  <section class="slide feature" id="capability" data-sec="Capability">
-    <canvas class="bg" id="scene" data-fx="sim" aria-hidden="true"></canvas>
-    <div class="shade-l" aria-hidden="true"></div>
-    <div class="wrap">
-      <div class="eyebrow">Capability</div>
-      <h2 data-scramble>Acoustic detection</h2>
-      <p class="body">Listening nodes on building corners detect rotor blade-pass harmonics with 4 MEMS (micro-electro-mechanical systems) microphones each. Sound reaches around the building where radar has no line of sight. Nodes report over LoRa (Long Range) radio at 915 MHz.</p>
-      <dl class="readout" aria-label="Simulation readout">
-        <div><dt>Track</dt><dd>TRK-01</dd></div>
-        <div><dt>Sources</dt><dd id="ro-src">—</dd></div>
-        <div><dt>Nodes hearing</dt><dd id="ro-nodes">—</dd></div>
-        <div><dt>Radar</dt><dd id="ro-radar">—</dd></div>
-      </dl>
-      <a class="btn" href="#system">System <span class="arrow"></span></a>
+  <!-- 4 pinned: track custody, simulation driven by scroll -->
+  <section class="pin" id="capability" data-sec="Capability" data-steps="4" style="--len:5">
+    <div class="stage">
+      <canvas class="bg" id="scene" data-fx="sim" aria-hidden="true"></canvas>
+      <div class="shade-l" aria-hidden="true"></div>
+      <div class="wrap stage-in">
+        <div class="eyebrow">Capability</div>
+        <h2 data-scramble>Track custody</h2>
+        <ol class="steps">
+          <li><span>01</span>Radar contact</li>
+          <li><span>02</span>Behind the building</li>
+          <li><span>03</span>Acoustic nodes hold the track</li>
+          <li><span>04</span>Radar reacquires</li>
+        </ol>
+        <div class="step-body">
+          <p>Radar reports range, azimuth and radial velocity. The C2 node opens track TRK-01.</p>
+          <p>The building blocks radar line of sight. Radar-only systems drop the track here.</p>
+          <p>Sound reaches around the building. Listening nodes on the corners detect rotor harmonics with 4 MEMS (micro-electro-mechanical systems) microphones each and report over LoRa (Long Range) radio. The track continues on relative loudness across nodes.</p>
+          <p>The drone re-enters radar coverage. Radar updates the same track. TRK-01 is never dropped or renumbered.</p>
+        </div>
+        <dl class="readout" aria-label="Simulation readout">
+          <div><dt>Track</dt><dd>TRK-01</dd></div>
+          <div><dt>Sources</dt><dd id="ro-src">—</dd></div>
+          <div><dt>Nodes hearing</dt><dd id="ro-nodes">—</dd></div>
+          <div><dt>Radar</dt><dd id="ro-radar">—</dd></div>
+        </dl>
+      </div>
+      <div class="pbar" aria-hidden="true"><i></i></div>
     </div>
   </section>
 
@@ -154,17 +167,28 @@
     </div>
   </section>
 
-  <!-- 7 dot field: sensors -->
-  <section class="slide dotfield" data-sec="Sensors">
-    <canvas class="bg" data-fx="dots" aria-hidden="true"></canvas>
-    <div class="wrap">
-      <h2 data-scramble>Four sensor types</h2>
-      <div class="sensors">
-        <article><span class="idx">01</span><h3>Acoustic</h3><p>4 nodes, 4 ICS-43434 microphones each. Position from relative loudness across nodes. Receive-only.</p></article>
-        <article><span class="idx">02</span><h3>Radar</h3><p>RD-03D, 24 GHz. Range, azimuth and radial velocity. UDP (User Datagram Protocol) port 47012.</p></article>
-        <article><span class="idx">03</span><h3>Camera</h3><p>YOLO11 (You Only Look Once) detection, ByteTrack tracking and VLM (vision-language model) confirmation on a Jetson Orin Nano. UDP 47010.</p></article>
-        <article><span class="idx">04</span><h3>RF</h3><p>ADALM-Pluto SDR (software-defined radio) for 2.4 and 5.8 GHz drone links. Receive-only. In development.</p></article>
+  <!-- 7 pinned: sensor types -->
+  <section class="pin sensors-pin" data-sec="Sensors" data-steps="4" style="--len:4">
+    <div class="stage">
+      <canvas class="bg" data-fx="dots" aria-hidden="true"></canvas>
+      <div class="wrap stage-in two-col">
+        <div>
+          <h2 data-scramble>Four sensor types</h2>
+          <ol class="steps">
+            <li><span>01</span>Acoustic Node</li>
+            <li><span>02</span>Radar Node</li>
+            <li><span>03</span>Camera Node</li>
+            <li><span>04</span>RF Node</li>
+          </ol>
+        </div>
+        <div class="step-body cards">
+          <article><div class="big">01</div><h3>Acoustic Node</h3><p>4 ICS-43434 microphones on an ESP32-S3. Detects rotor blade-pass harmonics. Position from relative loudness across nodes. Receive-only.</p><dl><div><dt>Link</dt><dd>LoRa 915 MHz</dd></div><div><dt>Nodes</dt><dd>4, one per corner</dd></div></dl></article>
+          <article><div class="big">02</div><h3>Radar Node</h3><p>RD-03D 24 GHz radar on an ESP32-S3 bridge. Range, azimuth and radial velocity of moving targets.</p><dl><div><dt>Link</dt><dd>UDP (User Datagram Protocol) 47012</dd></div><div><dt>Coverage</dt><dd>±60° azimuth, ~8 m bench</dd></div></dl></article>
+          <article><div class="big">03</div><h3>Camera Node</h3><p>YOLO11 (You Only Look Once) detection, ByteTrack tracking and VLM (vision-language model) confirmation on a Jetson Orin Nano. Reports bearing and label.</p><dl><div><dt>Link</dt><dd>UDP 47010</dd></div><div><dt>Compute</dt><dd>Jetson Orin Nano</dd></div></dl></article>
+          <article><div class="big">04</div><h3>RF Node</h3><p>ADALM-Pluto SDR (software-defined radio) listening for 2.4 and 5.8 GHz drone control and video links. Receive-only.</p><dl><div><dt>Hardware</dt><dd>ADALM-Pluto</dd></div><div><dt>State</dt><dd>In development</dd></div></dl></article>
+        </div>
       </div>
+      <div class="pbar" aria-hidden="true"><i></i></div>
     </div>
   </section>
 
@@ -404,6 +428,6 @@
   <div class="wrap legal"><span>Silent Sentinel · Hacking for Defense, Columbia University</span></div>
 </footer>
 
-<script src="assets/app.js?v=9" defer></script>
+<script src="assets/app.js?v=11" defer></script>
 </body>
 </html>

@@ -176,13 +176,13 @@
         const sx = sx0 + (x / z) * f, sy = hz + ((cam - y) / z) * f;
         if (sx < -4 || sx > w + 4 || sy > h + 4) continue;
         const s = Math.max(0.6, 2.6 * f / (z * 260));
-        const al = Math.min(0.75, 0.15 + 3.5 / z) * (0.55 + y * 0.5);
+        const al = Math.min(0.9, 0.3 + 5 / z) * (0.6 + y * 0.5);
         c.fillStyle = `rgba(230,232,235,${al})`;
         c.fillRect(sx, sy, s, s);
       }
     }
     const g = c.createLinearGradient(0, 0, 0, h);
-    g.addColorStop(0, "#000"); g.addColorStop(0.38, "rgba(0,0,0,0.3)"); g.addColorStop(1, "rgba(0,0,0,0.15)");
+    g.addColorStop(0, "#000"); g.addColorStop(0.3, "rgba(0,0,0,0.2)"); g.addColorStop(1, "rgba(0,0,0,0)");
     c.fillStyle = g; c.fillRect(0, 0, w, h);
     const g2 = c.createLinearGradient(0, 0, w, 0);
     g2.addColorStop(0, "rgba(0,0,0,0.75)"); g2.addColorStop(0.5, "rgba(0,0,0,0.2)"); g2.addColorStop(1, "rgba(0,0,0,0)");
@@ -209,22 +209,54 @@
     };
   })();
 
-  // acoustic capability: live fused-track simulation
+  // ---------- pinned steppers: progress through a tall section drives the step ----------
+  const pins = [...document.querySelectorAll(".pin")].map(sec => ({
+    sec, n: +sec.dataset.steps, bar: sec.querySelector(".pbar i"),
+    items: [...sec.querySelectorAll(".steps li")], bodies: [...sec.querySelectorAll(".step-body > *")],
+    p: 0, step: -1, bounds: null,
+  }));
+  const pinProgress = sec => { const r = sec.getBoundingClientRect(); return Math.min(1, Math.max(0, -r.top / Math.max(1, r.height - innerHeight))); };
+  const setStep = (pn, k) => {
+    if (k === pn.step) return; pn.step = k;
+    pn.items.forEach((el, i) => el.classList.toggle("on", i === k));
+    pn.bodies.forEach((el, i) => el.classList.toggle("on", i === k));
+  };
+  const updatePins = () => pins.forEach(pn => {
+    pn.p = pinProgress(pn.sec);
+    if (pn.bar) pn.bar.style.transform = `scaleX(${pn.p})`;
+    let k;
+    if (pn.bounds) { k = pn.bounds.findIndex(b => pn.p < b); if (k < 0) k = pn.n - 1; }
+    else k = Math.min(pn.n - 1, Math.floor(pn.p * pn.n));
+    setStep(pn, k);
+  });
+  addEventListener("scroll", updatePins, { passive: true });
+  addEventListener("resize", updatePins);
+  pins.forEach(pn => pn.items.forEach((li, i) => {
+    li.style.cursor = "pointer";
+    li.addEventListener("click", () => {
+      const lo = i === 0 ? 0 : (pn.bounds ? pn.bounds[i - 1] : i / pn.n), hi = pn.bounds ? (pn.bounds[i] ?? 1) : (i + 1) / pn.n;
+      const top = pn.sec.offsetTop + ((lo + hi) / 2) * (pn.sec.offsetHeight - innerHeight);
+      scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
+    });
+  }));
+
+  // track custody: simulation state is a function of scroll progress (scrubbed, smoothed)
   FX.sim = (() => {
+    const pin = pins.find(pn => pn.sec.id === "capability");
     const BLD = { x0: -20, x1: 20, y0: -15, y1: 15 };
     const NODES = [[-20, -15], [20, -15], [20, 15], [-20, 15]].map(([x, y], i) => ({ x, y, n: `N${i + 1}` }));
-    const RADAR = { x: 44, y: 0, yaw: 0, half: Math.PI / 3, range: 46 };
-    const HEAR = 34, SPEED = 9;
-    const PATH = [[88, 8], [62, -24], [24, -32], [-14, -31], [-40, -18], [-42, 8], [-22, 30], [10, 32], [40, 26], [70, 22], [88, 8]];
+    const RADAR = { x: 50, y: 0, yaw: Math.PI, half: Math.PI / 3, range: 76 };
+    const HEAR = 46;
+    const PATH = [[16, -40], [2, -34], [-14, -31], [-32, -24], [-42, -4], [-38, 18], [-18, 31], [4, 33], [24, 30]];
     const segLen = []; let total = 0;
     for (let i = 0; i < PATH.length - 1; i++) { const l = Math.hypot(PATH[i + 1][0] - PATH[i][0], PATH[i + 1][1] - PATH[i][1]); segLen.push(l); total += l; }
-    const posAt = d => {
-      d = ((d % total) + total) % total;
+    const posAt = q => {
+      let d = Math.min(1, Math.max(0, q)) * total;
       for (let i = 0; i < segLen.length; i++) {
         if (d <= segLen[i]) { const f = d / segLen[i]; return { x: PATH[i][0] + (PATH[i + 1][0] - PATH[i][0]) * f, y: PATH[i][1] + (PATH[i + 1][1] - PATH[i][1]) * f }; }
         d -= segLen[i];
       }
-      return { x: PATH[0][0], y: PATH[0][1] };
+      const e = PATH[PATH.length - 1]; return { x: e[0], y: e[1] };
     };
     const blocked = (ax, ay, bx, by) => {
       let t0 = 0, t1 = 1; const dx = bx - ax, dy = by - ay;
@@ -241,31 +273,47 @@
       const a = Math.atan2(dy, dx) - RADAR.yaw;
       return Math.abs(Math.atan2(Math.sin(a), Math.cos(a))) <= RADAR.half && !blocked(RADAR.x, RADAR.y, p.x, p.y);
     };
+    const hearingAt = d => NODES.filter(n => Math.hypot(n.x - d.x, n.y - d.y) < HEAR);
+    // drone path occupies 0.06..0.94 of the pinned scroll
+    const Q = p => (p - 0.06) / 0.88;
+    const state = p => {
+      const d = posAt(Q(p)), seen = radarSees(d), hearing = hearingAt(d);
+      let est = { x: d.x, y: d.y }, sigma = 1.3;
+      if (!seen) {
+        if (hearing.length >= 2) {
+          let wx = 0, wy = 0, ws = 0;
+          for (const n of hearing) { const w = 1 / Math.max(4, Math.hypot(n.x - d.x, n.y - d.y)) ** 2; wx += n.x * w; wy += n.y * w; ws += w; }
+          est = { x: d.x * 0.82 + (wx / ws) * 0.18, y: d.y * 0.82 + (wy / ws) * 0.18 }; sigma = 4.5;
+        } else sigma = 7;
+      }
+      return { d, seen, hearing, est, sigma };
+    };
+    // step boundaries from the simulation itself: radar lost, acoustic holding, radar back
+    if (pin) {
+      let lost = null, held = null, back = null;
+      for (let i = 0; i <= 400; i++) {
+        const p = i / 400, s = state(p);
+        if (lost === null && !s.seen && p > 0.06) lost = p;
+        if (lost !== null && held === null && !s.seen && s.hearing.length >= 2) held = Math.max(p, lost + 0.06);
+        if (held !== null && back === null && s.seen) back = p;
+      }
+      pin.bounds = [lost ?? 0.25, held ?? 0.4, back ?? 0.8];
+    }
     const ro = { src: document.getElementById("ro-src"), nodes: document.getElementById("ro-nodes"), radar: document.getElementById("ro-radar") };
     const ACC = "255,181,71", RAD = "127,178,255";
-    let est = null, trail = [], lastRO = -1, lastSrc = "";
+    let shown = 0, lastKey = "";
 
     return (c, w, h, t) => {
-      const wide = w > 900;
-      const s = Math.min((wide ? w * 0.4 : w * 0.95) / 150, (h - 200) / 80);
-      const cx = wide ? w * 0.68 : w * 0.5, cy = wide ? h * 0.5 : h * 0.3;
+      const target = pin ? pin.p : 0;
+      shown += (target - shown) * (reduce ? 1 : 0.14);
+      const p = shown;
+      const wide = w > 760;
+      const s = wide ? Math.min(w * 0.5 / 115, (h - 200) / 82) : Math.min(w * 0.92 / 100, h * 0.44 / 80);
+      const cx = wide ? w * 0.66 : w * 0.5, cy = wide ? h * 0.52 : h * 0.27;
       const X = x => cx + x * s, Y = y => cy + y * s;
-      const d = posAt(t * SPEED);
-      const seen = radarSees(d);
-      const hearing = NODES.filter(n => Math.hypot(n.x - d.x, n.y - d.y) < HEAR);
-      let meas = null, sigma = 0;
-      if (hearing.length >= 2) {
-        let wx = 0, wy = 0, ws = 0;
-        for (const n of hearing) { const q = 1 / Math.max(4, Math.hypot(n.x - d.x, n.y - d.y)) ** 2; wx += n.x * q; wy += n.y * q; ws += q; }
-        meas = { x: (wx / ws) * 0.35 + d.x * 0.65, y: (wy / ws) * 0.35 + d.y * 0.65 }; sigma = 4.5;
-      }
-      if (seen) { meas = { x: d.x + Math.sin(t * 7) * 0.4, y: d.y + Math.cos(t * 5) * 0.4 }; sigma = 1.2; }
-      if (!est) est = { x: d.x, y: d.y };
-      if (meas) { est.x += (meas.x - est.x) * 0.12; est.y += (meas.y - est.y) * 0.12; }
-      const src = [seen && "Radar", hearing.length >= 2 && "Acoustic"].filter(Boolean).join(" + ") || "Predicted";
-      const col = seen ? RAD : ACC;
-      if (!trail.length || t - trail[trail.length - 1].t > 0.08) trail.push({ x: est.x, y: est.y, t, c: col });
-      while (trail.length && (t - trail[0].t > 9 || t < trail[0].t)) trail.shift();
+      const st = state(p);
+      const src = [st.seen && "Radar", !st.seen && st.hearing.length >= 2 && "Acoustic"].filter(Boolean).join(" + ") || (Q(p) < 0 ? "—" : "Predicted");
+      const col = st.seen ? RAD : ACC;
 
       c.fillStyle = "#000"; c.fillRect(0, 0, w, h);
       c.strokeStyle = "rgba(255,255,255,0.04)"; c.lineWidth = 1;
@@ -273,27 +321,38 @@
       for (let x = cx % gs; x < w; x += gs) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, h); c.stroke(); }
       for (let y = cy % gs; y < h; y += gs) { c.beginPath(); c.moveTo(0, y); c.lineTo(w, y); c.stroke(); }
 
-      c.fillStyle = `rgba(${RAD},${seen ? 0.12 : 0.05})`; c.strokeStyle = `rgba(${RAD},0.45)`;
-      c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y)); c.arc(X(RADAR.x), Y(RADAR.y), RADAR.range * s, -RADAR.half, RADAR.half); c.closePath(); c.fill(); c.stroke();
+      // radar coverage and building shadow
+      c.fillStyle = `rgba(${RAD},${st.seen ? 0.12 : 0.05})`; c.strokeStyle = `rgba(${RAD},0.45)`;
+      c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y)); c.arc(X(RADAR.x), Y(RADAR.y), RADAR.range * s, RADAR.yaw - RADAR.half, RADAR.yaw + RADAR.half); c.closePath(); c.fill(); c.stroke();
+      const corners = [[BLD.x1, BLD.y0], [BLD.x1, BLD.y1], [BLD.x0, BLD.y0], [BLD.x0, BLD.y1]];
+      const ang = ([x, y]) => Math.atan2(y - RADAR.y, x - RADAR.x);
+      const sorted = corners.slice().sort((A, B) => { const a = ang(A), b = ang(B); return (a < 0 ? a + 2 * Math.PI : a) - (b < 0 ? b + 2 * Math.PI : b); });
+      const A = sorted[0], B = sorted[3], far = 200;
+      const ext = ([x, y]) => { const a = ang([x, y]); return [x + Math.cos(a) * far, y + Math.sin(a) * far]; };
+      c.save(); c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y)); c.arc(X(RADAR.x), Y(RADAR.y), RADAR.range * s, RADAR.yaw - RADAR.half, RADAR.yaw + RADAR.half); c.closePath(); c.clip();
+      c.fillStyle = "rgba(0,0,0,0.75)"; c.beginPath(); c.moveTo(X(A[0]), Y(A[1])); c.lineTo(X(ext(A)[0]), Y(ext(A)[1])); c.lineTo(X(ext(B)[0]), Y(ext(B)[1])); c.lineTo(X(B[0]), Y(B[1])); c.closePath(); c.fill();
+      c.restore();
       if (!reduce) {
-        const sw = -RADAR.half + ((t * 0.9) % 1) * 2 * RADAR.half;
-        c.strokeStyle = `rgba(${RAD},0.35)`; c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y));
+        const sw = RADAR.yaw - RADAR.half + ((t * 0.9) % 1) * 2 * RADAR.half;
+        c.strokeStyle = `rgba(${RAD},0.3)`; c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y));
         c.lineTo(X(RADAR.x + Math.cos(sw) * RADAR.range), Y(RADAR.y + Math.sin(sw) * RADAR.range)); c.stroke();
       }
 
       c.fillStyle = "#07080a"; c.strokeStyle = "rgba(255,255,255,0.85)"; c.lineWidth = 1.5;
       c.fillRect(X(BLD.x0), Y(BLD.y0), 40 * s, 30 * s); c.strokeRect(X(BLD.x0), Y(BLD.y0), 40 * s, 30 * s); c.lineWidth = 1;
-      const fs = Math.max(10, Math.round(1.2 * s));
+      const fs = Math.max(10, Math.round(1.15 * s));
       c.font = `500 ${fs}px 'IBM Plex Mono', monospace`; c.textAlign = "center";
       c.fillStyle = "rgba(255,255,255,0.5)"; c.fillText("BUILDING", X(0), Y(0) + fs / 3);
 
-      c.setLineDash([3, 5]);
-      for (const n of hearing) { c.strokeStyle = `rgba(${ACC},0.3)`; c.beginPath(); c.moveTo(X(n.x), Y(n.y)); c.lineTo(X(est.x), Y(est.y)); c.stroke(); }
-      if (seen) { c.strokeStyle = `rgba(${RAD},0.4)`; c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y)); c.lineTo(X(est.x), Y(est.y)); c.stroke(); }
-      c.setLineDash([]);
-
+      const live = Q(p) >= 0;
+      if (live) {
+        c.setLineDash([3, 5]);
+        if (!st.seen) for (const n of st.hearing) { c.strokeStyle = `rgba(${ACC},0.35)`; c.beginPath(); c.moveTo(X(n.x), Y(n.y)); c.lineTo(X(st.est.x), Y(st.est.y)); c.stroke(); }
+        if (st.seen) { c.strokeStyle = `rgba(${RAD},0.45)`; c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y)); c.lineTo(X(st.est.x), Y(st.est.y)); c.stroke(); }
+        c.setLineDash([]);
+      }
       for (const n of NODES) {
-        const on = hearing.includes(n);
+        const on = live && st.hearing.includes(n);
         if (on && !reduce) for (let k = 0; k < 2; k++) {
           const ph = (t * 0.8 + k * 0.5) % 1;
           c.strokeStyle = `rgba(${ACC},${0.5 * (1 - ph)})`; c.beginPath(); c.arc(X(n.x), Y(n.y), (1 + ph * 9) * s, 0, Math.PI * 2); c.stroke();
@@ -301,31 +360,39 @@
         c.fillStyle = "#000"; c.strokeStyle = on ? `rgb(${ACC})` : "#5a6068"; c.lineWidth = 2;
         c.beginPath(); c.arc(X(n.x), Y(n.y), Math.max(5, 0.75 * s), 0, Math.PI * 2); c.fill(); c.stroke(); c.lineWidth = 1;
         c.fillStyle = on ? `rgb(${ACC})` : "#8a9098";
-        c.fillText(n.n, X(n.x + (n.x < 0 ? -2.8 : 2.8)), Y(n.y + (n.y < 0 ? -2.2 : 3.6)));
+        c.fillText(n.n, X(n.x + (n.x < 0 ? -3 : 3)), Y(n.y + (n.y < 0 ? -2.4 : 3.8)));
       }
       c.fillStyle = `rgb(${RAD})`; c.fillRect(X(RADAR.x) - 5, Y(RADAR.y) - 5, 10, 10);
-      c.fillStyle = `rgba(${RAD},0.85)`; c.fillText("RADAR", X(RADAR.x), Y(RADAR.y) + 3.6 * s);
+      c.fillStyle = `rgba(${RAD},0.85)`; c.fillText("RADAR", X(RADAR.x + 4), Y(RADAR.y) + 3.6 * s);
 
-      c.lineWidth = 2;
-      for (let i = 1; i < trail.length; i++) {
-        const a = trail[i - 1], b = trail[i];
-        c.strokeStyle = `rgba(${b.c},${0.85 * (1 - (t - b.t) / 9)})`;
-        c.beginPath(); c.moveTo(X(a.x), Y(a.y)); c.lineTo(X(b.x), Y(b.y)); c.stroke();
+      if (live) {
+        // trail: deterministic history over the last part of the path
+        c.lineWidth = 2;
+        const N = 70, span = 0.16;
+        let prev = null;
+        for (let i = 0; i <= N; i++) {
+          const pp = p - span + (span * i) / N;
+          if (Q(pp) < 0) continue;
+          const sp = state(pp);
+          if (prev) { c.strokeStyle = `rgba(${sp.seen ? RAD : ACC},${0.85 * (i / N)})`; c.beginPath(); c.moveTo(X(prev.x), Y(prev.y)); c.lineTo(X(sp.est.x), Y(sp.est.y)); c.stroke(); }
+          prev = sp.est;
+        }
+        c.lineWidth = 1;
+        c.strokeStyle = `rgba(${col},0.45)`; c.setLineDash(st.seen || st.hearing.length >= 2 ? [] : [4, 4]);
+        c.beginPath(); c.arc(X(st.est.x), Y(st.est.y), st.sigma * s, 0, Math.PI * 2); c.stroke(); c.setLineDash([]);
+        c.strokeStyle = `rgb(${col})`; c.lineWidth = 1.8;
+        c.beginPath(); c.moveTo(X(st.est.x), Y(st.est.y) - 8); c.lineTo(X(st.est.x) + 8, Y(st.est.y)); c.lineTo(X(st.est.x), Y(st.est.y) + 8); c.lineTo(X(st.est.x) - 8, Y(st.est.y)); c.closePath(); c.stroke();
+        c.lineWidth = 1; c.textAlign = "left"; c.font = `500 ${fs + 1}px 'IBM Plex Mono', monospace`; c.fillStyle = `rgb(${col})`;
+        c.fillText(`TRK-01 · ${src.toUpperCase()}`, X(st.est.x) + 14, Y(st.est.y) - 12);
       }
-      c.lineWidth = 1;
-      c.strokeStyle = `rgba(${col},0.45)`; c.setLineDash(meas ? [] : [4, 4]);
-      c.beginPath(); c.arc(X(est.x), Y(est.y), (meas ? sigma : 7) * s, 0, Math.PI * 2); c.stroke(); c.setLineDash([]);
-      c.strokeStyle = `rgb(${col})`; c.lineWidth = 1.8;
-      c.beginPath(); c.moveTo(X(est.x), Y(est.y) - 8); c.lineTo(X(est.x) + 8, Y(est.y)); c.lineTo(X(est.x), Y(est.y) + 8); c.lineTo(X(est.x) - 8, Y(est.y)); c.closePath(); c.stroke();
-      c.lineWidth = 1; c.textAlign = "left"; c.font = `500 ${fs + 1}px 'IBM Plex Mono', monospace`; c.fillStyle = `rgb(${col})`;
-      c.fillText(`TRK-01 · ${src.toUpperCase()}`, X(est.x) + 14, Y(est.y) - 12);
-
-      if (Math.abs(t - lastRO) > 0.2 || src !== lastSrc) {
-        lastRO = t; lastSrc = src;
-        ro.src.textContent = src; ro.nodes.textContent = `${hearing.length} / ${NODES.length}`; ro.radar.textContent = seen ? "Contact" : "No contact";
+      const key = `${src}|${st.hearing.length}|${st.seen}|${live}`;
+      if (key !== lastKey) {
+        lastKey = key;
+        ro.src.textContent = live ? src : "—"; ro.nodes.textContent = live ? `${st.hearing.length} / ${NODES.length}` : "—"; ro.radar.textContent = live ? (st.seen ? "Contact" : "No contact") : "—";
       }
     };
   })();
+  updatePins();
 
   // engine: draw only visible canvases
   const items = [...document.querySelectorAll("canvas[data-fx]")].map(el => ({ el, ctx: el.getContext("2d"), fx: FX[el.dataset.fx], w: 0, h: 0, vis: false }));
@@ -347,7 +414,7 @@
   if (running) requestAnimationFrame(loop);
   else {
     items.forEach(it => it.fx(it.ctx, it.w, it.h, 6));
-    addEventListener("scroll", () => { const s = items.find(i => i.el.dataset.fx === "streaks"); if (s && s.vis) s.fx(s.ctx, s.w, s.h, 6); }, { passive: true });
+    addEventListener("scroll", () => items.forEach(s => { if (s.vis && (s.el.dataset.fx === "streaks" || s.el.dataset.fx === "sim")) s.fx(s.ctx, s.w, s.h, 6); }), { passive: true });
   }
 
   // ---------- Data ----------
