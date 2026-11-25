@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  // ---------- Hero: radar-to-acoustic handoff simulation ----------
+  // ---------- Hero: fused-track simulation ----------
   const W = 1000, H = 600;
   const COL = [[40, 150], [190, 320], [360, 490], [530, 660], [700, 830], [870, 980]];
   const ROW = [[30, 150], [190, 300], [340, 450], [490, 590]];

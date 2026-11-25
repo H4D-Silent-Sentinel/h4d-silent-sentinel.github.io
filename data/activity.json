@@ -11,7 +11,7 @@
   },
   {
    "name": "radar",
-   "description": "Bench radar (RD-03D) for the Silent Sentinel handoff demo",
+   "description": "Bench radar (RD-03D) for Silent Sentinel, one input to the fused track",
    "url": "https://github.com/H4D-Silent-Sentinel/radar",
    "pushed_at": "2026-11-23T05:14:21Z",
    "commits_7d": 3,

@@ -44,7 +44,7 @@
         </div>
       </div>
       <figure class="console">
-        <div class="console-bar"><span>Simulation · radar-to-acoustic handoff</span><span class="live">Running</span></div>
+        <div class="console-bar"><span>Simulation · fused track across sensor gaps</span><span class="live">Running</span></div>
         <canvas id="scene" aria-label="Simulated drone track passing from radar coverage to acoustic node coverage"></canvas>
         <dl class="readout">
           <div><dt>Track</dt><dd>TRK-01</dd></div>
@@ -65,7 +65,7 @@
       <div class="caps">
         <div class="cap"><span class="k">Detect</span><h3>Passive acoustic detection</h3><p>Four MEMS (micro-electro-mechanical systems) microphones per node detect rotor blade-pass harmonics. Receive-only.</p></div>
         <div class="cap"><span class="k">Locate</span><h3>Loudness localization</h3><p>Position from relative sound level across nodes. Reports over LoRa (Long Range) radio, 915 MHz.</p></div>
-        <div class="cap"><span class="k">Hold</span><h3>Multi-sensor fusion</h3><p>Acoustic, radar and camera reports fuse into one Kalman track. The track number persists across sensor handoff.</p></div>
+        <div class="cap"><span class="k">Hold</span><h3>Multi-sensor fusion</h3><p>Acoustic, radar and camera reports fuse into one Kalman track. The track number persists when any one sensor loses the drone.</p></div>
         <div class="cap"><span class="k">Cue</span><h3>Sensor re-cueing</h3><p>Predicted position cues cameras, the chaser drone and nodes. Tracks export to TAK (Team Awareness Kit) as CoT (Cursor on Target).</p></div>
       </div>
     </div>
