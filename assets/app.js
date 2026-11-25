@@ -312,7 +312,7 @@
       const cx = wide ? w * 0.66 : w * 0.5, cy = wide ? h * 0.52 : h * 0.27;
       const X = x => cx + x * s, Y = y => cy + y * s;
       const st = state(p);
-      const src = [st.seen && "Radar", !st.seen && st.hearing.length >= 2 && "Acoustic"].filter(Boolean).join(" + ") || (Q(p) < 0 ? "—" : "Predicted");
+      const src = [st.seen && "Radar", !st.seen && st.hearing.length >= 2 && "Acoustic"].filter(Boolean).join(" + ") || (Q(p) < 0 ? "—" : "Coast");
       const col = st.seen ? RAD : ACC;
 
       c.fillStyle = "#000"; c.fillRect(0, 0, w, h);
@@ -342,7 +342,7 @@
       c.fillRect(X(BLD.x0), Y(BLD.y0), 40 * s, 30 * s); c.strokeRect(X(BLD.x0), Y(BLD.y0), 40 * s, 30 * s); c.lineWidth = 1;
       const fs = Math.max(10, Math.round(1.15 * s));
       c.font = `500 ${fs}px 'IBM Plex Mono', monospace`; c.textAlign = "center";
-      c.fillStyle = "rgba(255,255,255,0.5)"; c.fillText("BUILDING", X(0), Y(0) + fs / 3);
+      c.fillStyle = "rgba(255,255,255,0.5)"; c.fillText("STRUCTURE", X(0), Y(0) + fs / 3);
 
       const live = Q(p) >= 0;
       if (live) {

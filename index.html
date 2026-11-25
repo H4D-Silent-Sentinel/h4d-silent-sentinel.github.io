@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Silent Sentinel</title>
-<meta name="description" content="Counter-drone sensor fusion: acoustic, radar, camera and RF sensors on one track.">
+<meta name="description" content="Counter-UAS sensor fusion: acoustic, radar, EO/IR and RF detections in one track picture.">
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=11">
+<link rel="stylesheet" href="assets/styles.css?v=12">
 </head>
 <body>
 
@@ -46,8 +46,8 @@
     <canvas class="bg" data-fx="field" aria-hidden="true"></canvas>
     <div class="shade-l" aria-hidden="true"></div>
     <div class="wrap">
-      <h1 data-scramble>Counter-drone<br>sensor fusion</h1>
-      <p class="lede">Acoustic, radar, camera and RF (radio frequency) sensors on one track.</p>
+      <h1 data-scramble>Counter-UAS<br>sensor fusion</h1>
+      <p class="lede">Acoustic, radar, EO/IR (electro-optical/infrared) and RF (radio frequency) detections fused into one track picture.</p>
     </div>
     <a class="next" href="#fusion" aria-label="Next section"><svg viewBox="0 0 40 20"><path d="M2 2 L20 18 L38 2"/></svg></a>
   </section>
@@ -55,8 +55,8 @@
   <!-- 2 statement -->
   <section class="slide statement" id="fusion" data-sec="Fusion">
     <div class="wrap cols">
-      <h2 class="xl" data-scramble>One track<br>across every<br>sensor gap</h2>
-      <p class="body">Small drones drop out of radar and camera coverage behind buildings and at low altitude. Every sensor that still detects the drone updates the same Kalman track, so the track number persists through each gap.</p>
+      <h2 class="xl" data-scramble>Continuous<br>track custody</h2>
+      <p class="body">Group 1 UAS (unmanned aircraft systems) at low altitude in urban terrain are masked from radar and EO/IR by structures. Detections from every sensor update one Kalman filter track. Track identity is maintained through coverage gaps.</p>
     </div>
   </section>
 
@@ -77,16 +77,16 @@
         <div class="eyebrow">Capability</div>
         <h2 data-scramble>Track custody</h2>
         <ol class="steps">
-          <li><span>01</span>Radar contact</li>
-          <li><span>02</span>Behind the building</li>
-          <li><span>03</span>Acoustic nodes hold the track</li>
-          <li><span>04</span>Radar reacquires</li>
+          <li><span>01</span>Track initiation</li>
+          <li><span>02</span>Radar masking</li>
+          <li><span>03</span>Acoustic track maintenance</li>
+          <li><span>04</span>Radar reacquisition</li>
         </ol>
         <div class="step-body">
-          <p>Radar reports range, azimuth and radial velocity. The C2 node opens track TRK-01.</p>
-          <p>The building blocks radar line of sight. Radar-only systems drop the track here.</p>
-          <p>Sound reaches around the building. Listening nodes on the corners detect rotor harmonics with 4 MEMS (micro-electro-mechanical systems) microphones each and report over LoRa (Long Range) radio. The track continues on relative loudness across nodes.</p>
-          <p>The drone re-enters radar coverage. Radar updates the same track. TRK-01 is never dropped or renumbered.</p>
+          <p>Radar detects the target and initiates TRK-01 from range, azimuth and radial velocity.</p>
+          <p>The structure masks the target from radar. A radar-only system loses the track. The C2 (command and control) node coasts TRK-01 on its last state estimate.</p>
+          <p>Acoustic nodes at the structure corners detect rotor blade-pass harmonics and report over LoRa (Long Range) radio at 915 MHz. Acoustic propagation does not require line of sight. Position from relative received level across nodes updates TRK-01.</p>
+          <p>The target re-enters radar coverage. Radar updates TRK-01 without re-initiation. Track number and history are retained.</p>
         </div>
         <dl class="readout" aria-label="Simulation readout">
           <div><dt>Track</dt><dd>TRK-01</dd></div>
@@ -105,8 +105,8 @@
     <div class="shade-l" aria-hidden="true"></div>
     <div class="wrap">
       <div class="eyebrow">Command and control</div>
-      <h2 data-scramble>Fusion at the edge</h2>
-      <p class="body">The C2 (command and control) node runs on one laptop. It localizes acoustic detections, fuses them with radar and camera reports, cues sensors back toward the predicted position and exports tracks to TAK (Team Awareness Kit) as CoT (Cursor on Target).</p>
+      <h2 data-scramble>Edge fusion</h2>
+      <p class="body">The C2 (command and control) node runs on one laptop at the operator position. It localizes acoustic detections, fuses all sensor reports into tracks, cues sensors to the predicted position and publishes tracks to TAK (Team Awareness Kit) as CoT (Cursor on Target).</p>
       <a class="btn" href="https://github.com/H4D-Silent-Sentinel/sentinel-c2" target="_blank" rel="noopener">Source <span class="arrow"></span></a>
     </div>
   </section>
@@ -114,7 +114,7 @@
   <!-- 6 collage: demo build -->
   <section class="slide collage" id="build" data-sec="Build">
     <div class="wrap">
-      <h2 class="xl" data-scramble>One building<br>four corners</h2>
+      <h2 class="xl" data-scramble>Demonstration<br>configuration</h2>
       <figure class="tile t1 diagram">
 <svg viewBox="0 0 1000 520" role="img" aria-label="Building with a node on each corner, C2 table east of the building, radar beam facing east.">
       <!-- compass -->
@@ -173,7 +173,7 @@
       <canvas class="bg" data-fx="dots" aria-hidden="true"></canvas>
       <div class="wrap stage-in two-col">
         <div>
-          <h2 data-scramble>Four sensor types</h2>
+          <h2 data-scramble>Sensor modalities</h2>
           <ol class="steps">
             <li><span>01</span>Acoustic Node</li>
             <li><span>02</span>Radar Node</li>
@@ -182,10 +182,10 @@
           </ol>
         </div>
         <div class="step-body cards">
-          <article><div class="big">01</div><h3>Acoustic Node</h3><p>4 ICS-43434 microphones on an ESP32-S3. Detects rotor blade-pass harmonics. Position from relative loudness across nodes. Receive-only.</p><dl><div><dt>Link</dt><dd>LoRa 915 MHz</dd></div><div><dt>Nodes</dt><dd>4, one per corner</dd></div></dl></article>
+          <article><div class="big">01</div><h3>Acoustic Node</h3><p>4 ICS-43434 MEMS (micro-electro-mechanical systems) microphones on an ESP32-S3. Detects rotor blade-pass harmonics. Position from relative received level across nodes. Passive.</p><dl><div><dt>Link</dt><dd>LoRa 915 MHz</dd></div><div><dt>Nodes</dt><dd>4, one per corner</dd></div></dl></article>
           <article><div class="big">02</div><h3>Radar Node</h3><p>RD-03D 24 GHz radar on an ESP32-S3 bridge. Range, azimuth and radial velocity of moving targets.</p><dl><div><dt>Link</dt><dd>UDP (User Datagram Protocol) 47012</dd></div><div><dt>Coverage</dt><dd>±60° azimuth, ~8 m bench</dd></div></dl></article>
           <article><div class="big">03</div><h3>Camera Node</h3><p>YOLO11 (You Only Look Once) detection, ByteTrack tracking and VLM (vision-language model) confirmation on a Jetson Orin Nano. Reports bearing and label.</p><dl><div><dt>Link</dt><dd>UDP 47010</dd></div><div><dt>Compute</dt><dd>Jetson Orin Nano</dd></div></dl></article>
-          <article><div class="big">04</div><h3>RF Node</h3><p>ADALM-Pluto SDR (software-defined radio) listening for 2.4 and 5.8 GHz drone control and video links. Receive-only.</p><dl><div><dt>Hardware</dt><dd>ADALM-Pluto</dd></div><div><dt>State</dt><dd>In development</dd></div></dl></article>
+          <article><div class="big">04</div><h3>RF Node</h3><p>ADALM-Pluto SDR (software-defined radio). Detects 2.4 and 5.8 GHz control and video links. Passive.</p><dl><div><dt>Hardware</dt><dd>ADALM-Pluto</dd></div><div><dt>State</dt><dd>In development</dd></div></dl></article>
         </div>
       </div>
       <div class="pbar" aria-hidden="true"><i></i></div>
@@ -428,6 +428,6 @@
   <div class="wrap legal"><span>Silent Sentinel · Hacking for Defense, Columbia University</span></div>
 </footer>
 
-<script src="assets/app.js?v=11" defer></script>
+<script src="assets/app.js?v=12" defer></script>
 </body>
 </html>
