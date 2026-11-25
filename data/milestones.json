@@ -5,10 +5,10 @@
     {"date": "2026-11-17", "status": "done", "title": "Base software", "detail": "Packet ingest, loudness localization, Kalman tracker, live map, CoT output to TAK."},
     {"date": "2026-11-17", "status": "done", "title": "Network simulator", "detail": "Synthetic drone, wind and generator audio driving the real base code."},
     {"date": "2026-11-22", "status": "done", "title": "Visual-Tracker", "detail": "YOLO11 detection, ByteTrack tracking, on-device VLM verification."},
-    {"date": "2026-11-24", "status": "done", "title": "sentinel-c2", "detail": "Command and control app linking nodes, cameras and radar into one track picture."},
+    {"date": "2026-11-24", "status": "done", "title": "C2 node", "detail": "Command and control app linking nodes, cameras and radar into one track picture."},
     {"date": "2026-11-24", "status": "done", "title": "Radar hardware ordered", "detail": "Ai-Thinker RD-03D 24 GHz radar and ESP32-S3 bridge."},
     {"date": "2026-11-24", "status": "active", "title": "Listening node bring-up", "detail": "First node assembled on breadboard. Microphone input under repair."},
-    {"date": "2026-12-01", "status": "planned", "title": "Radar integration", "detail": "RD-03D targets into sentinel-c2 over UDP 47012."},
+    {"date": "2026-12-01", "status": "planned", "title": "Radar integration", "detail": "RD-03D targets into the C2 node over UDP 47012."},
     {"date": "2026-12-05", "status": "planned", "title": "Fused-track bench demo", "detail": "Radar, acoustic node and camera report into one track. Drone leaves radar coverage; the track continues."},
     {"date": "2026-12-08", "status": "planned", "title": "System complete", "detail": "Target date."},
     {"date": "2026-12-15", "status": "planned", "title": "Final deadline", "detail": "Project closeout."}
