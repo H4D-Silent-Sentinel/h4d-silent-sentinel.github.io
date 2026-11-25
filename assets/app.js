@@ -280,11 +280,13 @@
     const RES = 800, seenTab = new Uint8Array(RES + 1), lastSeen = new Float32Array(RES + 1);
     for (let i = 0, ls = -1; i <= RES; i++) { const pp = i / RES; seenTab[i] = radarSees(posAt(Q(pp))) ? 1 : 0; if (seenTab[i]) ls = pp; lastSeen[i] = ls; }
     const ACQ = 0.07;
+    let firstLost = 1; for (let i = 0; i <= RES; i++) if (!seenTab[i] && i / RES > 0.06) { firstLost = i / RES; break; }
     const state = p => {
       const d = posAt(Q(p)), seen = radarSees(d), hearing = hearingAt(d);
       const i = Math.max(0, Math.min(RES, Math.round(p * RES)));
-      const acoustic = !seen && hearing.length >= 2 && lastSeen[i] >= 0 && p - lastSeen[i] > ACQ;
-      let est = { x: d.x, y: d.y }, sigma = 1.3;
+      // once the acoustic track is established, nodes in range keep reporting after radar reacquires
+      const acoustic = hearing.length >= 2 && (seen ? p > firstLost + ACQ : lastSeen[i] >= 0 && p - lastSeen[i] > ACQ);
+      let est = { x: d.x, y: d.y }, sigma = seen && acoustic ? 0.9 : 1.3;
       if (!seen) {
         if (acoustic) {
           let wx = 0, wy = 0, ws = 0;
