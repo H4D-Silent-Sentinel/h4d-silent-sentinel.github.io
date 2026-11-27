@@ -449,13 +449,6 @@
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const day = 864e5;
   const fmtDate = iso => new Date(iso + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  function ago(iso) {
-    const s = (Date.now() - new Date(iso)) / 1000;
-    if (s < 3600) return `${Math.max(1, Math.round(s / 60))}m ago`;
-    if (s < 86400) return `${Math.round(s / 3600)}h ago`;
-    if (s < 86400 * 30) return `${Math.round(s / 86400)}d ago`;
-    return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  }
   const getJSON = p => fetch(p, { cache: "no-cache" }).then(r => { if (!r.ok) throw new Error(p); return r.json(); });
 
   getJSON("data/milestones.json").then(m => {
@@ -470,21 +463,6 @@
         <h4>${esc(i.title)}</h4><p>${esc(i.detail)}</p>
       </li>`).join("");
   }).catch(() => { $("timeline").innerHTML = "<li><p>Milestones unavailable.</p></li>"; });
-
-  getJSON("data/activity.json").then(a => {
-    $("st-7").textContent = a.totals.commits_7d;
-    $("st-60").textContent = a.totals.commits_60d;
-    $("st-pr").textContent = a.totals.merges_60d;
-    $("updated").textContent = a.generated_at ? `Updated ${ago(a.generated_at)}` : "Updated hourly";
-    $("feed").innerHTML = a.events.slice(0, 40).map(e => `
-      <li><a href="${esc(e.url)}" target="_blank" rel="noopener">
-        <span class="repo">${esc(e.repo)}</span>
-        <span class="t">${e.type === "merge" ? "<em>Merged</em>" : ""}${esc(e.title)}</span>
-        <span class="when">${ago(e.date)}</span>
-      </a></li>`).join("");
-    $("repos").innerHTML = a.repos.map(r => `
-      <a href="${esc(r.url)}" target="_blank" rel="noopener"><b>${esc(r.name)}</b><span>${r.commits_7d} commits this week · pushed ${ago(r.pushed_at)}</span></a>`).join("");
-  }).catch(() => { $("updated").textContent = "Activity unavailable"; });
 
   getJSON("data/briefings.json").then(b => {
     const items = b.items.slice().sort((x, y) => y.date.localeCompare(x.date));

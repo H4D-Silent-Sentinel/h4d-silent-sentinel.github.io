@@ -166,12 +166,10 @@ canvas.bg { position: absolute; inset: 0; width: 100%; height: 100%; display: bl
 
 /* progress (list layout) */
 .progress .two { display: grid; grid-template-columns: 1fr 1fr; gap: 6vw; align-items: start; }
-.countdown, .stats { margin: 10px 0 28px; display: grid; grid-template-columns: repeat(2, 1fr); }
-.stats { grid-template-columns: repeat(3, 1fr); }
-.countdown div, .stats div { padding: 14px 0; border-top: 1px solid var(--line2); }
-.countdown dt, .stats dt { font: 700 12px/1 var(--display); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
-.countdown dd, .stats dd { margin: 10px 0 0; font: 800 84px/.86 var(--display); color: #fff; font-variant-numeric: tabular-nums; }
-.stats dd { font-size: 52px; }
+.countdown { margin: 10px 0 28px; display: grid; grid-template-columns: repeat(2, 1fr); }
+.countdown div { padding: 14px 0; border-top: 1px solid var(--line2); }
+.countdown dt { font: 700 12px/1 var(--display); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.countdown dd { margin: 10px 0 0; font: 800 84px/.86 var(--display); color: #fff; font-variant-numeric: tabular-nums; }
 .countdown dd span { font-size: 22px; color: #b8bcc1; margin-left: 8px; letter-spacing: .1em; text-transform: uppercase; }
 .timeline { list-style: none; margin: 0; padding: 0; }
 .timeline li { padding: 0 0 22px; display: flex; flex-direction: column; }
@@ -182,23 +180,8 @@ canvas.bg { position: absolute; inset: 0; width: 100%; height: 100%; display: bl
 .timeline li.done .st { color: var(--net); }
 .timeline li.active .st { color: var(--accent); }
 .timeline li.planned h4 { color: #b8bcc1; }
-.activity { margin-top: 50px; }
-.feed-head { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line2); padding-bottom: 10px; }
-.feed-head h3 { margin: 0; font-size: 24px; }
-.live { font: 400 12px/1 var(--mono); color: var(--muted); }
-.act-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 40px; }
-.feed { list-style: none; margin: 0; padding: 0; max-height: 300px; overflow-y: auto; }
-.feed a { display: grid; grid-template-columns: 120px 1fr auto; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--line); text-decoration: none; font-size: 14px; }
-.feed .repo { font: 500 12px/1.5 var(--mono); color: var(--accent); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.feed .t { color: var(--text); min-width: 0; }
-.feed a:hover .t { color: #fff; }
-.feed .t em { font-style: normal; color: var(--net); margin-right: 8px; }
-.feed .when { font: 400 12px/1.5 var(--mono); color: var(--muted); white-space: nowrap; }
-.repos a { display: block; padding: 12px 0; border-bottom: 1px solid var(--line); text-decoration: none; }
-.repos b { display: block; font: 800 20px/1 var(--display); text-transform: uppercase; color: #fff; }
-.repos span { font: 400 12px/1.5 var(--mono); color: var(--muted); }
-@media (max-width: 1000px) { .progress .two, .act-grid { grid-template-columns: 1fr; } }
-@media (max-width: 600px) { .feed a { grid-template-columns: 1fr auto; } .feed .repo { grid-column: 1 / -1; } .countdown dd { font-size: 62px; } .stats dd { font-size: 40px; } }
+@media (max-width: 1000px) { .progress .two { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .countdown dd { font-size: 62px; } }
 
 /* briefings */
 .briefing { display: grid; grid-template-columns: 1fr 280px; border: 1px solid var(--line); }
