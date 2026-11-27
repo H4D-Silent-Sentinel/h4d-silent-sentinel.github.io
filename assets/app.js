@@ -19,7 +19,7 @@
     if (!e.isIntersecting) return;
     const i = secs.indexOf(e.target);
     dots.forEach((d, k) => d.classList.toggle("on", k === i));
-    menuLinks.forEach(l => l.classList.toggle("on", l.getAttribute("href") === "#" + e.target.id));
+    menuLinks.forEach(l => l.classList.toggle("on", l.getAttribute("href") === "#" + (e.target.dataset.nav || e.target.id)));
   }), { rootMargin: "-48% 0px -48% 0px" });
   secs.forEach(s => secIO.observe(s));
 

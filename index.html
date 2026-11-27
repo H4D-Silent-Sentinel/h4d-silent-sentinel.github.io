@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=28">
+<link rel="stylesheet" href="assets/styles.css?v=29">
 </head>
 <body>
 
@@ -127,10 +127,10 @@
       <line class="w" x1="380" y1="330" x2="380" y2="290"/>
       <rect class="flag" x="380" y="290" width="26" height="16"/>
       <!-- LoRa -->
-      <line class="lora" x1="200" y1="110" x2="680" y2="250"/>
-      <line class="lora" x1="560" y1="110" x2="680" y2="250"/>
-      <line class="lora" x1="560" y1="410" x2="680" y2="270"/>
-      <line class="lora" x1="200" y1="410" x2="680" y2="270"/>
+      <line class="lora" data-link="LoRa 915 MHz · one report every 0.5 s per node" data-hz="2" x1="200" y1="110" x2="680" y2="250"/>
+      <line class="lora" data-link="LoRa 915 MHz · one report every 0.5 s per node" data-hz="2" x1="560" y1="110" x2="680" y2="250"/>
+      <line class="lora" data-link="LoRa 915 MHz · one report every 0.5 s per node" data-hz="2" x1="560" y1="410" x2="680" y2="270"/>
+      <line class="lora" data-link="LoRa 915 MHz · one report every 0.5 s per node" data-hz="2" x1="200" y1="410" x2="680" y2="270"/>
       <!-- nodes -->
       <circle class="dot-n" cx="200" cy="110" r="15"/><text class="tb" x="200" y="115" text-anchor="middle">N1</text>
       <circle class="dot-n" cx="560" cy="110" r="15"/><text class="tb" x="560" y="115" text-anchor="middle">N2</text>
@@ -167,11 +167,11 @@
     </div>
   </section>
 
-  <!-- breadboard builds: 2D top view + 3D -->
-  <section class="slide boards-sec" id="hardware" data-sec="Hardware">
+  <!-- build, part 2: breadboard layout, 2D top view + 3D -->
+  <section class="slide boards-sec" id="layout" data-sec="Layout" data-nav="build">
     <div class="wrap" id="boards">
       <div class="bd-head">
-        <h2 data-scramble>Breadboard builds</h2>
+        <div><div class="eyebrow">Build</div><h2 data-scramble>Layout</h2></div>
         <div class="bd-tabs" role="tablist">
           <button type="button" role="tab" data-b="node" aria-selected="true">Listening node</button>
           <button type="button" role="tab" data-b="base" aria-selected="false">Base receiver</button>
@@ -263,10 +263,10 @@
         <path class="w" d="M290,535 H298 V518 M290,510 L298,518 L306,510"/>
       </g>
       <!-- LoRa links -->
-      <line class="lora" x1="310" y1="95"  x2="448" y2="282" marker-start="url(#al)" marker-end="url(#al)"/>
-      <line class="lora" x1="310" y1="235" x2="448" y2="292" marker-start="url(#al)" marker-end="url(#al)"/>
-      <line class="lora" x1="310" y1="375" x2="448" y2="302" marker-start="url(#al)" marker-end="url(#al)"/>
-      <line class="lora" x1="310" y1="515" x2="448" y2="312" marker-start="url(#al)" marker-end="url(#al)"/>
+      <line class="lora" data-link="LoRa 915 MHz · one report every 0.5 s per node" data-hz="2" x1="310" y1="95"  x2="448" y2="282" marker-start="url(#al)" marker-end="url(#al)"/>
+      <line class="lora" data-link="LoRa 915 MHz · one report every 0.5 s per node" data-hz="2" x1="310" y1="235" x2="448" y2="292" marker-start="url(#al)" marker-end="url(#al)"/>
+      <line class="lora" data-link="LoRa 915 MHz · one report every 0.5 s per node" data-hz="2" x1="310" y1="375" x2="448" y2="302" marker-start="url(#al)" marker-end="url(#al)"/>
+      <line class="lora" data-link="LoRa 915 MHz · one report every 0.5 s per node" data-hz="2" x1="310" y1="515" x2="448" y2="312" marker-start="url(#al)" marker-end="url(#al)"/>
       <text class="tl" x="455" y="206">LoRa 915 MHz</text>
       <text class="tl" x="455" y="222">SF7 · 500 kHz · 17 dBm</text>
       <text class="tl" x="455" y="372">→ detection / LOST / heartbeat</text>
@@ -280,7 +280,7 @@
       <text class="tp" x="465" y="338">5 V from laptop USB</text>
 
       <!-- base to laptop -->
-      <line class="w" x1="650" y1="295" x2="788" y2="295" marker-start="url(#af)" marker-end="url(#af)"/>
+      <line class="w" data-link="USB serial · base receiver forwards every node report (8 per second with 4 nodes)" data-hz="8" x1="650" y1="295" x2="788" y2="295" marker-start="url(#af)" marker-end="url(#af)"/>
       <text class="t" x="664" y="284">USB serial</text>
       <text class="s" x="664" y="314">PKT → · ← TX</text>
 
@@ -291,7 +291,7 @@
       <text class="s" x="465" y="494">UART 256000 → ESP32-S3</text>
       <text class="s" x="465" y="510">bridge (radar_bridge)</text>
       <text class="tp" x="465" y="538">5 V from laptop USB</text>
-      <line class="w" x1="650" y1="490" x2="788" y2="490" marker-end="url(#af)"/>
+      <line class="w" data-link="USB serial · RD-03D targets at 5 Hz" data-hz="5" x1="650" y1="490" x2="788" y2="490" marker-end="url(#af)"/>
       <text class="t" x="664" y="480">USB serial</text>
 
       <!-- Pluto -->
@@ -322,8 +322,8 @@
       <text class="t" x="805" y="356">cue to camera tracker</text>
 
       <!-- jetson link -->
-      <line class="net" x1="930" y1="148" x2="930" y2="248" marker-end="url(#an)"/>
-      <line class="net" x1="1060" y1="248" x2="1060" y2="148" marker-end="url(#an)"/>
+      <line class="net" data-link="Ethernet UDP · camera reports: bearing and label" x1="930" y1="148" x2="930" y2="248" marker-end="url(#an)"/>
+      <line class="net" data-link="Ethernet UDP · camera cues, 1 per second per confirmed track" data-hz="1" x1="1060" y1="248" x2="1060" y2="148" marker-end="url(#an)"/>
       <text class="tn" x="940" y="176">visual</text>
       <text class="tn" x="940" y="192">UDP :47010</text>
       <text class="tn" x="1070" y="176">cue, status</text>
@@ -434,8 +434,10 @@
   <div class="wrap legal"><span>Silent Sentinel · Hacking for Defense, Columbia University</span></div>
 </footer>
 
-<script src="assets/app.js?v=28" defer></script>
+<script src="assets/app.js?v=29" defer></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"}}</script>
-<script type="module" src="assets/boards.js?v=28"></script>
+<script type="module" src="assets/boards.js?v=29"></script>
+<script type="module" src="assets/hero3d.js?v=29"></script>
+<script src="assets/diagrams.js?v=29" defer></script>
 </body>
 </html>
