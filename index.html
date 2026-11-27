@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=31">
+<link rel="stylesheet" href="assets/styles.css?v=32">
 </head>
 <body>
 
@@ -151,7 +151,6 @@
       <text class="s" x="694" y="260">base receiver</text>
       <text class="s" x="694" y="276">radar station</text>
       <text class="s" x="694" y="292">Pluto SDR</text>
-      <text class="s" x="694" y="308">Jetson</text>
       <text class="tl" x="590" y="190">LoRa</text>
     </svg>
       </figure>
@@ -202,7 +201,7 @@
         <div class="step-body cards">
           <article><div class="big">01</div><h3>Acoustic Node</h3><p>4 ICS-43434 MEMS (micro-electro-mechanical systems) microphones on an ESP32-S3. Detects rotor blade-pass harmonics. Position from relative received level across nodes. Passive.</p><dl><div><dt>Link</dt><dd>LoRa 915 MHz</dd></div><div><dt>Nodes</dt><dd>4, one per corner</dd></div></dl></article>
           <article><div class="big">02</div><h3>Radar Node</h3><p>RD-03D 24 GHz radar on an ESP32-S3 bridge. Range, azimuth and radial velocity of moving targets.</p><dl><div><dt>Link</dt><dd>UDP (User Datagram Protocol) 47012</dd></div><div><dt>Coverage</dt><dd>±60° azimuth, ~8 m bench</dd></div></dl></article>
-          <article><div class="big">03</div><h3>Camera Node</h3><p>YOLO11 (You Only Look Once) detection, ByteTrack association and VLM (vision-language model) confirmation on a Jetson Orin Nano. Reports bearing and label.</p><dl><div><dt>Link</dt><dd>UDP 47010</dd></div><div><dt>Compute</dt><dd>Jetson Orin Nano</dd></div></dl></article>
+          <article><div class="big">03</div><h3>Camera Node</h3><p>YOLO11 (You Only Look Once) detection, ByteTrack association and VLM (vision-language model) confirmation on the chaser drone's onboard Jetson Orin Nano. Reports bearing and label.</p><dl><div><dt>Link</dt><dd>UDP 47010</dd></div><div><dt>Compute</dt><dd>Jetson Orin Nano, onboard</dd></div></dl></article>
           <article><div class="big">04</div><h3>RF Node</h3><p>ADALM-Pluto SDR (software-defined radio). Detects 2.4 and 5.8 GHz control and video links. Passive.</p><dl><div><dt>Hardware</dt><dd>ADALM-Pluto</dd></div><div><dt>State</dt><dd>In development</dd></div></dl></article>
         </div>
       </div>
@@ -218,12 +217,12 @@
       <div class="legend">
         <span><i class="lg-lora"></i>LoRa radio</span>
         <span><i class="lg-usb"></i>USB / wired</span>
-        <span><i class="lg-net"></i>Ethernet UDP</span>
+        <span><i class="lg-net"></i>UDP network</span>
         <span><i class="lg-pwr"></i>Power</span>
         <span><i class="lg-plan"></i>In development</span>
       </div>
       <figure class="diagram">
-<svg viewBox="0 0 1200 710" role="img" aria-label="Four listening nodes send LoRa detections to the base receiver, which feeds the C2 laptop over USB. Radar station and Pluto SDR connect to the laptop by USB; Jetson connects by Ethernet UDP.">
+<svg viewBox="0 0 1200 710" role="img" aria-label="Four listening nodes send LoRa detections to the base receiver, which feeds the C2 laptop over USB. Radar station and Pluto SDR connect to the laptop by USB; Chaser drone Jetson connects over UDP.">
       <!-- nodes -->
       <text class="tb" x="30" y="40">Listening nodes ×4 (building corners)</text>
       <g>
@@ -305,10 +304,9 @@
 
       <!-- Jetson -->
       <rect class="box" x="770" y="30" width="400" height="118" rx="4"/>
-      <text class="tb" x="790" y="54">Jetson Orin Nano (at C2)</text>
+      <text class="tb" x="790" y="54">Chaser drone · Jetson Orin Nano (onboard)</text>
       <text class="t" x="790" y="76">Visual-Tracker: YOLO11 + ByteTrack + VLM</text>
       <text class="tpl" x="790" y="96">camera input: none on order</text>
-      <text class="tp" x="790" y="134">19 V DC adapter ← wall outlet</text>
 
       <!-- laptop -->
       <rect class="box" x="770" y="190" width="400" height="505" rx="6"/>
@@ -322,13 +320,13 @@
       <text class="t" x="805" y="356">cue to camera tracker</text>
 
       <!-- jetson link -->
-      <line class="net" data-link="Ethernet UDP · camera reports: bearing and label" x1="930" y1="148" x2="930" y2="248" marker-end="url(#an)"/>
-      <line class="net" data-link="Ethernet UDP · camera cues, 1 per second per confirmed track" data-hz="1" x1="1060" y1="248" x2="1060" y2="148" marker-end="url(#an)"/>
+      <line class="net" data-link="UDP · chaser camera reports: bearing and label" x1="930" y1="148" x2="930" y2="248" marker-end="url(#an)"/>
+      <line class="net" data-link="UDP · cues to the chaser, 1 per second per confirmed track" data-hz="1" x1="1060" y1="248" x2="1060" y2="148" marker-end="url(#an)"/>
       <text class="tn" x="940" y="176">visual</text>
       <text class="tn" x="940" y="192">UDP :47010</text>
       <text class="tn" x="1070" y="176">cue, status</text>
       <text class="tn" x="1070" y="192">UDP :47011</text>
-      <text class="tn" x="830" y="176">Ethernet</text>
+      <text class="tn" x="830" y="176">datalink</text>
 
       <!-- radar sender -->
       <rect class="boxp" x="790" y="460" width="200" height="60" rx="4"/>
@@ -434,11 +432,11 @@
   <div class="wrap legal"><span>Silent Sentinel · Hacking for Defense, Columbia University</span></div>
 </footer>
 
-<script src="assets/app.js?v=31" defer></script>
+<script src="assets/app.js?v=32" defer></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"}}</script>
-<script type="module" src="assets/boards.js?v=31"></script>
-<script type="module" src="assets/hero3d.js?v=31"></script>
-<script type="module" src="assets/sensors3d.js?v=31"></script>
-<script src="assets/diagrams.js?v=31" defer></script>
+<script type="module" src="assets/boards.js?v=32"></script>
+<script type="module" src="assets/hero3d.js?v=32"></script>
+<script type="module" src="assets/sensors3d.js?v=32"></script>
+<script src="assets/diagrams.js?v=32" defer></script>
 </body>
 </html>

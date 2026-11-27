@@ -15,7 +15,7 @@ function start() {
   const WALL = { x0: -50, x1: 75, y0: -45, y1: 48, h: 2.6 };
   const NODES = [[-20, -15, "N1"], [20, -15, "N2"], [20, 15, "N3"], [-20, 15, "N4"]];
   const RADAR = { x: 50, y: 0, yaw: Math.PI, half: Math.PI / 3, range: 76 };
-  const TABLE = { x: 60, y: 8 }, CAM = { x: 57, y: 5.5 }, SDR = { x: 62, y: 10.5 };
+  const TABLE = { x: 60, y: 8 }, SDR = { x: 62, y: 10.5 };
   const OPER = { x: -28, y: 62 }; // drone operator on the street
   const HEAR = 46, ALT = 12;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -80,8 +80,6 @@ function start() {
   const radarLab = label("RD-03D radar", "#a9ccff"); radarLab.position.copy(V(RADAR.x - 2, RADAR.y - 4, 5.5));
   wireBox(TABLE.x - 5, TABLE.y - 4, TABLE.x + 5, TABLE.y + 4, .9, .1, C.white, .6, .04);
   for (const [dx, dy] of [[-4.6, -3.6], [4.6, -3.6], [-4.6, 3.6], [4.6, 3.6]]) line([V(TABLE.x + dx, TABLE.y + dy, 0), V(TABLE.x + dx, TABLE.y + dy, .9)], C.white, .4);
-  wireBox(CAM.x - .5, CAM.y - .5, CAM.x + .5, CAM.y + .5, 1, .9, C.net, 1, .3);
-  const camLab = label("Camera · Jetson", "#9fe8c6", .8); camLab.position.copy(V(CAM.x - 1, CAM.y - 4, 3.4));
   wireBox(SDR.x - .9, SDR.y - .6, SDR.x + .9, SDR.y + .6, 1, .5, C.rf, 1, .3);
   const sdrLab = label("Pluto SDR", "#dcb9ff", .8); sdrLab.position.copy(V(SDR.x + 2, SDR.y + 2, 2.6));
   const c2Lab = label("C2 table", "#e8f6ff", .8); c2Lab.position.copy(V(TABLE.x + 6, TABLE.y - 1, 2.2));
@@ -114,8 +112,14 @@ function start() {
     const lb = label("radar blind zone", "#ff9c85", .8); lb.position.copy(V(-38, -8, 2)); G[1].add(lb);
   }
   const beam = line([V(0, 0), V(1, 1)], C.radar, .9, G[1]);
-  // 2 camera: fixed field of view from the table, detection box on the drone
+  // 2 camera: the chaser drone's camera and onboard Jetson follow the target
   const fov = add(new THREE.Group(), G[2]);
+  const chaser = add(new THREE.Group(), G[2]);
+  chaser.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints([V(-1.3, -1.3), V(1.3, 1.3), V(-1.3, 1.3), V(1.3, -1.3)]), lmat(C.net, 1)));
+  for (const [x, y] of [[-1.3, -1.3], [1.3, 1.3], [-1.3, 1.3], [1.3, -1.3]]) { const r = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(circle(.8, 16)), lmat(C.net, 1)); r.position.copy(V(x, y)); chaser.add(r); }
+  chaser.add(add(new THREE.Mesh(new THREE.BoxGeometry(1.2, .5, .8), fmat(C.net, .5)), chaser));
+  const chaserLab = label("Chaser · onboard Jetson", "#9fe8c6", .8); chaserLab.center.set(1, .5); G[2].add(chaserLab);
+  let cpos = { x: 54, y: -4 };
   const boxLines = line(Array(17).fill(V(0, 0)), C.net, 1, G[2]);
   const camTag = label("drone", "#9fe8c6", .8); G[2].add(camTag);
   // 3 RF: operator on the street, control link to the drone, Pluto SDR receives
@@ -160,7 +164,7 @@ function start() {
     to = k < 0 ? STREET : VIEWS[k]; tw = reduce ? 1 : 0;
     G.forEach((g, i) => g.visible = i === k);
     nodes.forEach(n => n.lab.material.opacity = k === 0 ? 1 : .45);
-    radarLab.material.opacity = k === 1 ? 1 : .45; camLab.material.opacity = k === 2 ? 1 : .45; sdrLab.material.opacity = k === 3 ? 1 : .45;
+    radarLab.material.opacity = k === 1 ? 1 : .45; sdrLab.material.opacity = k === 3 ? 1 : .45;
   }
   const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   function moveCamera(dt) {
@@ -197,10 +201,14 @@ function start() {
       if (now % .2 < dt) { packet(G[1], V(RADAR.x, RADAR.y, 2), D, C.radar, .25, 0); if (seen) ring(G[1], dpos.x, dpos.y, ALT, C.radar, .5, 4, .5); }
     }
     if (step === 2) {
-      // fixed webcam: points where the view's drone area is, not at the drone
-      const o = V(CAM.x, CAM.y, 1.45), aim = V(VIEWS[2].drone[0], VIEWS[2].drone[1], ALT);
+      // chaser holds a stand-off behind the target; its camera stays on the target
+      const sw = { x: dpos.x + 18, y: dpos.y + 10 }, cf = Math.min(1, dt * 1.2);
+      cpos = { x: cpos.x + (sw.x - cpos.x) * cf, y: cpos.y + (sw.y - cpos.y) * cf };
+      const o = V(cpos.x, cpos.y, ALT + 3), aim = D;
+      chaser.position.copy(o); chaser.rotation.y = Math.atan2(aim.x - o.x, aim.z - o.z);
+      chaserLab.position.copy(o.clone().add(new THREE.Vector3(-1.5, 3, 0)));
       const fwd = aim.clone().sub(o).normalize(), right = new THREE.Vector3().crossVectors(fwd, new THREE.Vector3(0, 1, 0)).normalize(), up = new THREE.Vector3().crossVectors(right, fwd);
-      const dist = 44, hw = Math.tan(.6) * dist, hh = hw * .5625, c0 = o.clone().addScaledVector(fwd, dist);
+      const dist = Math.max(8, o.distanceTo(aim) * 1.4), hw = Math.tan(.5) * dist, hh = hw * .5625, c0 = o.clone().addScaledVector(fwd, dist);
       const cs = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([sx, sy]) => c0.clone().addScaledVector(right, sx * hw).addScaledVector(up, sy * hh));
       fov.children.forEach(c => c.geometry.dispose()); fov.clear();
       add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(cs.flatMap(c => [o, c])), lmat(C.net, .45)), fov);
