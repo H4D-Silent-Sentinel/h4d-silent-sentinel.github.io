@@ -203,8 +203,7 @@ canvas.bg { position: absolute; inset: 0; width: 100%; height: 100%; display: bl
 
 /* team */
 .team { list-style: none; margin: 10px 0 30px; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 520px)); grid-template-rows: repeat(4, auto); grid-auto-flow: column; gap: 0 6vw; }
-.team li { padding: 14px 0 14px 52px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 3px; position: relative; }
-.team i { position: absolute; left: 0; top: 18px; font: 500 13px/1 var(--mono); font-style: normal; color: var(--accent); letter-spacing: .06em; }
+.team li { padding: 14px 0; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 3px; }
 .team b { font: 800 clamp(28px, 2.6vw, 40px)/1 var(--display); text-transform: uppercase; color: #fff; }
 .team span { font-size: 15px; color: #b8bcc1; letter-spacing: .04em; text-transform: uppercase; }
 .sponsor { font-size: 15px; color: #b8bcc1; margin: 0; max-width: 60em; }
