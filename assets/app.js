@@ -364,10 +364,6 @@
       }
       for (const n of NODES) {
         const on = live && st.acoustic && st.hearing.includes(n);
-        if (on && !reduce) for (let k = 0; k < 2; k++) {
-          const ph = (t * 0.8 + k * 0.5) % 1;
-          c.strokeStyle = `rgba(${ACC},${0.5 * (1 - ph)})`; c.beginPath(); c.arc(X(n.x), Y(n.y), (1 + ph * 9) * s, 0, Math.PI * 2); c.stroke();
-        }
         c.fillStyle = "#000"; c.strokeStyle = on ? `rgb(${ACC})` : "#5a6068"; c.lineWidth = 2;
         c.beginPath(); c.arc(X(n.x), Y(n.y), Math.max(5, 0.75 * s), 0, Math.PI * 2); c.fill(); c.stroke(); c.lineWidth = 1;
         c.fillStyle = on ? `rgb(${ACC})` : "#8a9098";
