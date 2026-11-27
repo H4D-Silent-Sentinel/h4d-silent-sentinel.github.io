@@ -100,72 +100,6 @@
     };
   })();
 
-  // streaks: iridescent arcs revealed column by column with scroll
-  const streakSec = document.getElementById("streaks");
-  const colOrder = [4, 1, 7, 2, 6, 0, 8, 3, 5];
-  FX.streaks = (c, w, h, t) => {
-    c.fillStyle = "#000"; c.fillRect(0, 0, w, h);
-    const r = streakSec.getBoundingClientRect();
-    const p = Math.min(1, Math.max(0, -r.top / Math.max(1, r.height - h)));
-    const top = 74, cw = w / 9;
-    c.save();
-    c.beginPath();
-    colOrder.forEach((col, i) => {
-      const v = Math.min(1, Math.max(0, p * 11 - i));
-      if (v <= 0) return;
-      const ch = (h - top) * (p > 0.95 ? 1 : v);
-      c.rect(col * cw, top, cw, ch);
-    });
-    c.clip();
-    c.globalCompositeOperation = "lighter";
-    const cx = w * 1.05, cy = h * 1.55, rot = Math.sin(t * 0.05) * 0.06;
-    for (let b = 0; b < 4; b++) {
-      const r0 = h * (1.0 + b * 0.2) + Math.sin(t * 0.3 + b) * 14;
-      const a0 = Math.PI * 1.02 + rot + b * 0.05, a1 = Math.PI * 1.5 + rot * 0.5;
-      c.strokeStyle = `hsla(${(230 + b * 60 + t * 10) % 360},80%,55%,0.08)`; c.lineWidth = 80;
-      c.beginPath(); c.arc(cx, cy, r0 + 40, a0, a1); c.stroke();
-      for (let i = 0; i < 48; i++) {
-        const bell = Math.exp(-((i - 24) ** 2) / 120);
-        const hue = (190 + i * 7 + b * 70 + t * 12) % 360;
-        c.strokeStyle = `hsla(${hue},85%,${50 + bell * 30}%,${0.025 + bell * 0.26})`;
-        c.lineWidth = 2.6;
-        c.beginPath(); c.arc(cx, cy, r0 + i * 1.8, a0, a1); c.stroke();
-      }
-      c.strokeStyle = "rgba(255,255,255,0.85)"; c.lineWidth = 1.6;
-      c.beginPath(); c.arc(cx, cy, r0 + 44, a0 + 0.02, a1 - 0.02); c.stroke();
-    }
-    c.restore();
-    c.globalCompositeOperation = "source-over";
-  };
-
-  // fusion: rotating particle torus
-  FX.torus = (() => {
-    const P = Array.from({ length: 6500 }, () => ({ u: rand() * Math.PI * 2, v: rand() * Math.PI * 2, n: rand() }));
-    return (c, w, h, t) => {
-      c.fillStyle = "#000"; c.fillRect(0, 0, w, h);
-      const cx = w > 900 ? w * 0.68 : w * 0.55, cy = h * 0.52, S = Math.min(w, h) * 0.34;
-      const ay = t * 0.18, ax = 1.15 + Math.sin(t * 0.13) * 0.15;
-      const ca = Math.cos(ay), sa = Math.sin(ay), cb = Math.cos(ax), sb = Math.sin(ax);
-      c.globalCompositeOperation = "lighter";
-      for (const p of P) {
-        const rr = 0.32 + 0.06 * Math.sin(p.u * 4 + t * 0.8) + p.n * 0.03;
-        let x = (1 + rr * Math.cos(p.v)) * Math.cos(p.u), y = (1 + rr * Math.cos(p.v)) * Math.sin(p.u), z = rr * Math.sin(p.v);
-        let x1 = x * ca - y * sa, y1 = x * sa + y * ca;
-        let y2 = y1 * cb - z * sb, z2 = y1 * sb + z * cb;
-        const depth = 1 / (2.6 - z2 * 0.6);
-        const sx = cx + x1 * S * depth * 2.2, sy = cy + y2 * S * depth * 2.2;
-        const al = 0.4 + 0.6 * (z2 + 1.3) / 2.6;
-        c.fillStyle = `rgba(90,170,255,${al})`;
-        c.fillRect(sx, sy, 1.8, 1.8);
-      }
-      const g = c.createRadialGradient(cx, cy, 0, cx, cy, S * 1.4);
-      g.addColorStop(0, "rgba(40,120,255,0.22)"); g.addColorStop(1, "rgba(0,0,0,0)");
-      c.fillStyle = g; c.fillRect(0, 0, w, h);
-      c.globalCompositeOperation = "source-over";
-    };
-  })();
-
-  // sensors: perspective dot field with an acoustic wave
   FX.dots = (c, w, h, t) => {
     c.fillStyle = "#000"; c.fillRect(0, 0, w, h);
     const f = h * 0.9, hz = h * 0.3, cam = 3.2, sx0 = w * 0.62;
@@ -401,7 +335,7 @@
   })();
   updatePins();
 
-  // snap points: one per step inside pinned sections, start and end of the streak section
+  // snap points: one per step inside pinned sections
   const placeSnaps = () => {
     document.querySelectorAll(".snap").forEach(el => el.remove());
     const mark = (sec, y) => { const m = document.createElement("i"); m.className = "snap"; m.style.top = `${Math.round(y)}px`; sec.appendChild(m); };
@@ -410,8 +344,6 @@
       const edges = [0, ...(pn.bounds || Array.from({ length: pn.n - 1 }, (_, i) => (i + 1) / pn.n)), 1];
       for (let k = 0; k < pn.n; k++) mark(pn.sec, ((edges[k] + edges[k + 1]) / 2) * run);
     });
-    const sk = document.getElementById("streaks");
-    if (sk) { mark(sk, 0); mark(sk, sk.offsetHeight - innerHeight); }
   };
   placeSnaps();
   addEventListener("resize", placeSnaps);
@@ -437,7 +369,7 @@
   if (running) requestAnimationFrame(loop);
   else {
     items.forEach(it => it.fx(it.ctx, it.w, it.h, 6));
-    addEventListener("scroll", () => items.forEach(s => { if (s.vis && (s.el.dataset.fx === "streaks" || s.el.dataset.fx === "sim")) s.fx(s.ctx, s.w, s.h, 6); }), { passive: true });
+    addEventListener("scroll", () => items.forEach(s => { if (s.vis && s.el.dataset.fx === "sim") s.fx(s.ctx, s.w, s.h, 6); }), { passive: true });
   }
 
   // ---------- Data ----------

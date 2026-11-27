@@ -123,6 +123,7 @@ function init() {
     draw2d(); view && view.load(BUILDS[b].parts); show(null);
   };
   tabs.forEach(t => t.addEventListener("click", () => select(t.dataset.b)));
+  document.addEventListener("click", e => { const a = e.target.closest("[data-board]"); if (a) select(a.dataset.board); });
   select("node");
 }
 

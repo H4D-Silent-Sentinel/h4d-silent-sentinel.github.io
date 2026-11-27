@@ -93,10 +93,6 @@ canvas.bg { position: absolute; inset: 0; width: 100%; height: 100%; display: bl
 .statement .cols { display: grid; gap: 34px; }
 .statement .body { max-width: 36em; }
 
-/* streaks: sticky, columns reveal with scroll */
-.streaks { position: relative; height: 230vh; }
-.streaks .sticky { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
-.streaks canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .cols9 { position: absolute; inset: 74px 0 0 0; display: grid; grid-template-columns: repeat(9, 1fr); pointer-events: none; }
 .cols9 i { border-right: 1px solid rgba(255,255,255,.14); }
 
@@ -390,3 +386,13 @@ h1, h2 { text-shadow: 0 0 22px rgba(127,212,255,.2); }
 .sensors-pin .stage::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: linear-gradient(90deg, rgba(0,0,0,.6) 0%, rgba(0,0,0,.12) 34%, transparent 55%, rgba(0,0,0,.35) 100%); }
 .sensors-pin .cards article { --bgc: rgba(4,8,12,.74); backdrop-filter: blur(6px); }
+
+/* cross-links */
+.diagram svg a .go { fill: transparent; stroke: transparent; cursor: pointer; transition: fill .2s, stroke .2s; }
+.diagram svg a:hover .go, .diagram svg a:focus .go { fill: rgba(127,212,255,.06); stroke: var(--holo, #7fd4ff); }
+.bd-links, .card-links { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; margin: 18px 0 0; font: 500 12px/1.4 'IBM Plex Mono', monospace; letter-spacing: .06em; text-transform: uppercase; }
+.bd-links a:not(.btn), .card-links a { color: #9fdcff; text-decoration: none; border-bottom: 1px solid rgba(127,212,255,.35); }
+.bd-links a:not(.btn):hover, .card-links a:hover { color: #fff; border-color: #fff; }
+.bd-links .btn { margin-left: auto; }
+.statement .body a, .hero .lede a { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(127,212,255,.45); }
+.statement .body a:hover, .hero .lede a:hover { color: #fff; border-color: #fff; }

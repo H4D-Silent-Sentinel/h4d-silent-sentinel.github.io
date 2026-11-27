@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=32">
+<link rel="stylesheet" href="assets/styles.css?v=34">
 </head>
 <body>
 
@@ -47,7 +47,7 @@
     <div class="shade-l" aria-hidden="true"></div>
     <div class="wrap">
       <h1 data-scramble>Counter-UAS<br>sensor fusion</h1>
-      <p class="lede">Acoustic, radar, EO/IR (electro-optical/infrared) and RF (radio frequency) sensors fused into a common operating picture.</p>
+      <p class="lede"><a href="#sensors">Acoustic, radar, EO/IR (electro-optical/infrared) and RF (radio frequency) sensors</a> fused into a common operating picture.</p>
     </div>
     <a class="next" href="#fusion" aria-label="Next section"><svg viewBox="0 0 40 20"><path d="M2 2 L20 18 L38 2"/></svg></a>
   </section>
@@ -56,15 +56,7 @@
   <section class="slide statement" id="fusion" data-sec="Fusion">
     <div class="wrap cols">
       <h2 class="xl" data-scramble>Beyond<br>line of sight</h2>
-      <p class="body">Group 1 UAS (unmanned aircraft systems) at low altitude in urban terrain are masked from radar and EO/IR by structures. Detections from all sensors feed one Kalman filter. Target identity is maintained through coverage gaps.</p>
-    </div>
-  </section>
-
-  <!-- 3 streak columns -->
-  <section class="streaks" id="streaks" aria-hidden="true">
-    <div class="sticky">
-      <canvas data-fx="streaks"></canvas>
-      <div class="cols9"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="body">Group 1 UAS (unmanned aircraft systems) at low altitude in urban terrain are masked from radar and EO/IR by structures. Detections from <a href="#sensors">all sensors</a> feed one <a href="https://github.com/H4D-Silent-Sentinel/sentinel/blob/main/cuas/tracker.py" target="_blank" rel="noopener">Kalman filter</a> in <a href="https://github.com/H4D-Silent-Sentinel/roaree" target="_blank" rel="noopener">ROAREE</a> (Remote Observation, Autonomous Recognition, and Event Evaluation), the C2 (command and control) software on the operator's laptop. Target identity is maintained through coverage gaps. ROAREE cues sensors to the predicted position and publishes tracks to TAK (Team Awareness Kit) as CoT (Cursor on Target). <a href="#system">Architecture</a></p>
     </div>
   </section>
 
@@ -99,75 +91,8 @@
     </div>
   </section>
 
-  <!-- 5 mission focus: fusion torus -->
-  <section class="slide feature" data-sec="Fusion core">
-    <canvas class="bg" data-fx="torus" aria-hidden="true"></canvas>
-    <div class="shade-l" aria-hidden="true"></div>
-    <div class="wrap">
-      <div class="eyebrow">Command and control</div>
-      <h2 data-scramble>Edge fusion</h2>
-      <p class="body">ROAREE (Remote Observation, Autonomous Recognition, and Event Evaluation) is the C2 (command and control) software. It runs on one laptop at the operator position. It localizes acoustic detections, fuses all sensor reports, cues sensors to the predicted position and publishes to TAK (Team Awareness Kit) as CoT (Cursor on Target).</p>
-      <a class="btn" href="https://github.com/H4D-Silent-Sentinel/roaree" target="_blank" rel="noopener">Source <span class="arrow"></span></a>
-    </div>
-  </section>
-
-  <!-- 6 collage: demo build -->
-  <section class="slide collage" id="build" data-sec="Build">
-    <div class="wrap">
-      <h2 class="xl" data-scramble>Demonstration<br>configuration</h2>
-      <figure class="tile t1 diagram">
-<svg viewBox="0 0 1000 520" role="img" aria-label="Building with a node on each corner, C2 table east of the building, radar beam facing east.">
-      <!-- compass -->
-      <line class="w" x1="60" y1="90" x2="60" y2="40" marker-end="url(#af)"/>
-      <text class="tb" x="54" y="110">N</text>
-      <!-- building -->
-      <rect class="bld" x="200" y="110" width="360" height="300"/>
-      <text class="tb" x="380" y="250" text-anchor="middle">Building</text>
-      <text class="s" x="380" y="270" text-anchor="middle">defended asset</text>
-      <line class="w" x1="380" y1="330" x2="380" y2="290"/>
-      <rect class="flag" x="380" y="290" width="26" height="16"/>
-      <!-- LoRa -->
-      <line class="lora" data-link="LoRa 915 MHz · one report every 0.5 s per node" data-hz="2" x1="200" y1="110" x2="680" y2="250"/>
-      <line class="lora" data-link="LoRa 915 MHz · one report every 0.5 s per node" data-hz="2" x1="560" y1="110" x2="680" y2="250"/>
-      <line class="lora" data-link="LoRa 915 MHz · one report every 0.5 s per node" data-hz="2" x1="560" y1="410" x2="680" y2="270"/>
-      <line class="lora" data-link="LoRa 915 MHz · one report every 0.5 s per node" data-hz="2" x1="200" y1="410" x2="680" y2="270"/>
-      <!-- nodes -->
-      <circle class="dot-n" cx="200" cy="110" r="15"/><text class="tb" x="200" y="115" text-anchor="middle">N1</text>
-      <circle class="dot-n" cx="560" cy="110" r="15"/><text class="tb" x="560" y="115" text-anchor="middle">N2</text>
-      <circle class="dot-n" cx="560" cy="410" r="15"/><text class="tb" x="560" y="415" text-anchor="middle">N3</text>
-      <circle class="dot-n" cx="200" cy="410" r="15"/><text class="tb" x="200" y="415" text-anchor="middle">N4</text>
-      <text class="s" x="200" y="80" text-anchor="middle">NW</text>
-      <text class="s" x="560" y="80" text-anchor="middle">NE</text>
-      <text class="s" x="560" y="448" text-anchor="middle">SE</text>
-      <text class="s" x="200" y="448" text-anchor="middle">SW</text>
-      <!-- radar wedge -->
-      <path class="wedge" d="M860,260 L915,165 A110,110 0 0 1 915,355 Z"/>
-      <text class="tpl" x="878" y="140">RD-03D beam</text>
-      <text class="tpl" x="878" y="384">±60° az · ~8 m</text>
-      <!-- C2 table -->
-      <rect class="box" x="680" y="200" width="180" height="120" rx="4"/>
-      <text class="tb" x="694" y="224">C2 table</text>
-      <text class="s" x="694" y="244">laptop</text>
-      <text class="s" x="694" y="260">base receiver</text>
-      <text class="s" x="694" y="276">radar station</text>
-      <text class="s" x="694" y="292">Pluto SDR</text>
-      <text class="tl" x="590" y="190">LoRa</text>
-    </svg>
-      </figure>
-      <figure class="tile t2 specs-tile">
-        <dl class="specs">
-          <div><dt>Listening nodes</dt><dd>4</dd></div>
-          <div><dt>Microphones</dt><dd>16</dd></div>
-          <div><dt>LoRa</dt><dd>915<em>MHz</em></dd></div>
-          <div><dt>Radar</dt><dd>24<em>GHz</em></dd></div>
-        </dl>
-        <a class="btn" href="demo-system.html">Build documentation <span class="arrow"></span></a>
-      </figure>
-    </div>
-  </section>
-
   <!-- build, part 2: breadboard layout, 2D top view + 3D -->
-  <section class="slide boards-sec" id="layout" data-sec="Layout" data-nav="build">
+  <section class="slide boards-sec" id="build" data-sec="Build">
     <div class="wrap" id="boards">
       <div class="bd-head">
         <div><div class="eyebrow">Build</div><h2 data-scramble>Layout</h2></div>
@@ -181,11 +106,12 @@
         <figure class="bd-3d"><span class="bd-c tl"></span><span class="bd-c tr"></span><span class="bd-c bl"></span><span class="bd-c br"></span><span class="bd-hud" aria-hidden="true"></span></figure>
       </div>
       <p class="bd-read" aria-live="polite"></p>
+      <p class="bd-links"><a href="demo-system.html#site">Site layout</a><a href="demo-system.html#node-wiring">Node wiring</a><a href="https://wokwi.com/projects/481871526837201921" target="_blank" rel="noopener">Wokwi simulation</a><a href="demo-system.html#mounting">Corner mounting</a><a href="demo-system.html#parts">Parts</a><a class="btn" href="demo-system.html">Build documentation <span class="arrow"></span></a></p>
     </div>
   </section>
 
   <!-- 7 pinned: sensor types -->
-  <section class="pin sensors-pin" data-sec="Sensors" data-steps="4" style="--len:4">
+  <section class="pin sensors-pin" id="sensors" data-sec="Sensors" data-steps="4" style="--len:4">
     <div class="stage">
       <canvas class="bg" data-fx="dots" aria-hidden="true"></canvas>
       <div class="wrap stage-in two-col">
@@ -199,9 +125,9 @@
           </ol>
         </div>
         <div class="step-body cards">
-          <article><div class="big">01</div><h3>Acoustic Node</h3><p>4 ICS-43434 MEMS (micro-electro-mechanical systems) microphones on an ESP32-S3. Detects rotor blade-pass harmonics. Position from relative received level across nodes. Passive.</p><dl><div><dt>Link</dt><dd>LoRa 915 MHz</dd></div><div><dt>Nodes</dt><dd>4, one per corner</dd></div></dl></article>
-          <article><div class="big">02</div><h3>Radar Node</h3><p>RD-03D 24 GHz radar on an ESP32-S3 bridge. Range, azimuth and radial velocity of moving targets.</p><dl><div><dt>Link</dt><dd>UDP (User Datagram Protocol) 47012</dd></div><div><dt>Coverage</dt><dd>±60° azimuth, ~8 m bench</dd></div></dl></article>
-          <article><div class="big">03</div><h3>Camera Node</h3><p>YOLO11 (You Only Look Once) detection, ByteTrack association and VLM (vision-language model) confirmation on the chaser drone's onboard Jetson Orin Nano. Reports bearing and label.</p><dl><div><dt>Link</dt><dd>UDP 47010</dd></div><div><dt>Compute</dt><dd>Jetson Orin Nano, onboard</dd></div></dl></article>
+          <article><div class="big">01</div><h3>Acoustic Node</h3><p>4 ICS-43434 MEMS (micro-electro-mechanical systems) microphones on an ESP32-S3. Detects rotor blade-pass harmonics. Position from relative received level across nodes. Passive.</p><dl><div><dt>Link</dt><dd>LoRa 915 MHz</dd></div><div><dt>Nodes</dt><dd>4, one per corner</dd></div></dl><p class="card-links"><a href="#build" data-board="node">Layout</a><a href="https://github.com/H4D-Silent-Sentinel/sentinel" target="_blank" rel="noopener">Source</a></p></article>
+          <article><div class="big">02</div><h3>Radar Node</h3><p>RD-03D 24 GHz radar on an ESP32-S3 bridge. Range, azimuth and radial velocity of moving targets.</p><dl><div><dt>Link</dt><dd>UDP (User Datagram Protocol) 47012</dd></div><div><dt>Coverage</dt><dd>±60° azimuth, ~8 m bench</dd></div></dl><p class="card-links"><a href="https://github.com/H4D-Silent-Sentinel/radar" target="_blank" rel="noopener">Source</a></p></article>
+          <article><div class="big">03</div><h3>Camera Node</h3><p>YOLO11 (You Only Look Once) detection, ByteTrack association and VLM (vision-language model) confirmation on the chaser drone's onboard Jetson Orin Nano. Reports bearing and label.</p><dl><div><dt>Link</dt><dd>UDP 47010</dd></div><div><dt>Compute</dt><dd>Jetson Orin Nano, onboard</dd></div></dl><p class="card-links"><a href="https://github.com/H4D-Silent-Sentinel/Visual-Tracker" target="_blank" rel="noopener">Source</a></p></article>
           <article><div class="big">04</div><h3>RF Node</h3><p>ADALM-Pluto SDR (software-defined radio). Detects 2.4 and 5.8 GHz control and video links. Passive.</p><dl><div><dt>Hardware</dt><dd>ADALM-Pluto</dd></div><div><dt>State</dt><dd>In development</dd></div></dl></article>
         </div>
       </div>
@@ -351,6 +277,11 @@
       <text class="t" x="1022" y="545">CoT → TAK (opt.)</text>
       <text class="s" x="1010" y="590">outputs (browser / TAK)</text>
       <text class="tp" x="1010" y="680">laptop charger ← wall</text>
+      <a href="#build" data-board="node"><rect class="go" x="30" y="60" width="260" height="532" rx="4"/></a>
+      <a href="#build" data-board="base"><rect class="go" x="450" y="240" width="200" height="110" rx="4"/></a>
+      <a href="https://github.com/H4D-Silent-Sentinel/radar" target="_blank" rel="noopener"><rect class="go" x="450" y="430" width="200" height="120" rx="4"/></a>
+      <a href="https://github.com/H4D-Silent-Sentinel/Visual-Tracker" target="_blank" rel="noopener"><rect class="go" x="770" y="30" width="400" height="118" rx="4"/></a>
+      <a href="https://github.com/H4D-Silent-Sentinel/roaree" target="_blank" rel="noopener"><rect class="go" x="770" y="190" width="400" height="505" rx="4"/></a>
     </svg>
       </figure>
     </div>
@@ -418,25 +349,18 @@
 <footer>
   <div class="wrap foot">
     <div class="fcols">
-      <div><h4>Capability</h4><a href="#capability">Acoustic</a><a href="#fusion">Fusion</a><a href="#system">System</a></div>
-      <div><h4>Build</h4><a href="#build">Demo site</a><a href="demo-system.html">Documentation</a></div>
-      <div><h4>Progress</h4><a href="#progress">Status</a><a href="#briefings">Briefings</a></div>
-      <div><h4>Code</h4><a href="https://github.com/H4D-Silent-Sentinel/sentinel">sentinel</a><a href="https://github.com/H4D-Silent-Sentinel/roaree">roaree</a><a href="https://github.com/H4D-Silent-Sentinel/radar">radar</a><a href="https://github.com/H4D-Silent-Sentinel/Visual-Tracker">Visual-Tracker</a></div>
-    </div>
-    <div class="fcta">
-      <h3>Repositories</h3>
-      <p>Source, firmware and documentation.</p>
-      <a class="btn" href="https://github.com/H4D-Silent-Sentinel">GitHub <span class="arrow"></span></a>
+      <div><h4>Documentation</h4><a href="demo-system.html">Build documentation</a><a href="https://wokwi.com/projects/481871526837201921" target="_blank" rel="noopener">Wokwi simulation</a></div>
+      <div><h4>Code</h4><a href="https://github.com/H4D-Silent-Sentinel/" target="_blank" rel="noopener">All repositories</a><a href="https://github.com/H4D-Silent-Sentinel/sentinel">sentinel</a><a href="https://github.com/H4D-Silent-Sentinel/roaree">roaree</a><a href="https://github.com/H4D-Silent-Sentinel/radar">radar</a><a href="https://github.com/H4D-Silent-Sentinel/Visual-Tracker">Visual-Tracker</a></div>
     </div>
   </div>
   <div class="wrap legal"><span>Silent Sentinel · Hacking for Defense, Columbia University</span></div>
 </footer>
 
-<script src="assets/app.js?v=33" defer></script>
+<script src="assets/app.js?v=34" defer></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"}}</script>
-<script type="module" src="assets/boards.js?v=32"></script>
-<script type="module" src="assets/hero3d.js?v=32"></script>
-<script type="module" src="assets/sensors3d.js?v=32"></script>
-<script src="assets/diagrams.js?v=32" defer></script>
+<script type="module" src="assets/boards.js?v=34"></script>
+<script type="module" src="assets/hero3d.js?v=34"></script>
+<script type="module" src="assets/sensors3d.js?v=34"></script>
+<script src="assets/diagrams.js?v=34" defer></script>
 </body>
 </html>
