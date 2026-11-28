@@ -7,7 +7,7 @@
 <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="../assets/styles.css?v=52">
-<link rel="stylesheet" href="deck.css?v=61">
+<link rel="stylesheet" href="deck.css?v=62">
 </head>
 <body class="deck-page">
 
@@ -208,42 +208,13 @@
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">MVP &amp; testing</span><span>Dec 1</span></div>
-  <h2>Radar station</h2>
-  <div class="cols" style="--n:2">
-    <div class="card blue"><h3>Hardware</h3><ul>
-      <li>RD-03D 24 GHz radar: up to 3 moving targets, ~8 m</li>
-      <li>ESP32-S3 reads it on UART (GPIO17 / 18)</li>
-      <li>RFM95W LoRa radio, same channel as the nodes</li>
-      <li>USB power bank; on the roof, facing out</li></ul></div>
-    <div class="card amber"><h3>Software</h3><ul>
-      <li>Firmware: 24-byte packet, 5 per second with targets, 1 per second idle</li>
-      <li>Base receiver forwards it unchanged</li>
-      <li>ROAREE gives each target a persistent ID and fuses it with the acoustic track</li></ul></div>
-  </div>
-  <p class="foot">Firmware compiles; parts arrive ~Nov 30. <a href="../index.html#build" style="color:#9fdcff">Build › Radar station</a></p>
-</div></section>
-
-<section class="sl"><div class="in">
-  <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">MVP &amp; testing</span><span>Dec 1</span></div>
-  <h2>Testing</h2>
-  <div class="cols" style="--n:2">
+  <h2 style="margin-bottom:22px">Testing</h2>
+  <div class="tt">
     <div class="card blue"><h3>Versions</h3><ul>
-      <li><b>v1</b> · 5,200 labeled drone photos</li>
-      <li><b>v2</b> · + 2,100 bird and kite photos marked "no drone"</li>
-      <li><b>v3</b> · + 2,393 frames of drones in front of trees and buildings</li>
-      <li><b>hold</b> · tracker setting: keeps a locked drone through weak detections</li></ul></div>
-    <div class="card amber"><h3>Tests</h3><ul>
-      <li><b>False alarms</b> · 8 bird and kite videos; share of frames with any box</li>
-      <li><b>Tracking</b> · drone videos with true position; share of frames on the drone</li>
-      <li><b>Photo test</b> · 2,200 unseen labeled photos; precision and recall</li></ul></div>
-  </div>
-  <p class="foot">v3 trained on 10 of the 20 tracking videos, so every version is scored on the other 10 (15,245 frames).</p>
-</div></section>
-
-<section class="sl"><div class="in">
-  <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">MVP &amp; testing</span><span>Dec 1</span></div>
-  <h2 style="margin-bottom:20px">Results</h2>
-  <table>
+      <li><b>v1</b> 5,200 drone photos</li>
+      <li><b>v2</b> + 2,100 bird and kite photos</li>
+      <li><b>v3</b> + 2,393 frames over trees and buildings</li></ul></div>
+    <table>
     <thead><tr><th>Test</th><th>v1</th><th>v2</th><th>v3</th></tr></thead>
     <tbody>
       <tr><td>False box on bird / kite videos</td><td>30.7%</td><td>7.1%</td><td>1.8%</td></tr>
@@ -253,7 +224,8 @@
       <tr><td>Photo test precision / recall</td><td>96.2 / 90.7%</td><td>96.2 / 91.2%</td><td>95.6 / 91.3%</td></tr>
     </tbody>
   </table>
-  <p class="foot">False boxes on birds and kites: 31% → 2%. On target: ~94% in all versions. Trees: weakest case. Next: rooftop footage over trees, retrain.</p>
+  </div>
+  <p class="foot">Scored on 10 held-out videos (15,245 frames); photo test on 2,200 unseen photos. Next: rooftop footage over trees, retrain.</p>
 </div></section>
 
 <section class="sl"><div class="in">

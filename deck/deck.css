@@ -150,3 +150,9 @@ body.deck-page { background: #000; }
 .sl .ivw li i { display: block; font: 400 15px/1.3 var(--mono); color: #9fdcff; font-style: normal; margin: 3px 0 4px; }
 .sl .ivw li span { display: block; font-size: 19px; line-height: 1.3; color: #c9d3db; }
 .sl.blank .num { display: none; }
+/* visual tracker testing: versions + results */
+.sl .tt { flex: 1; display: grid; grid-template-columns: 380px 1fr; gap: 30px; min-height: 0; }
+.sl .tt .card { justify-content: flex-start; }
+.sl .tt .card ul li { font-size: 26px; }
+.sl .tt .card ul li b { color: var(--accent); margin-right: 8px; }
+.sl .tt table { font-size: 25px; height: 100%; }
