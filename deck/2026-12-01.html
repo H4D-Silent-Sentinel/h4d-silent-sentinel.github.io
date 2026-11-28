@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Briefing Dec 1 · Silent Sentinel</title>
+<link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../assets/styles.css?v=41">
+<link rel="stylesheet" href="deck.css?v=41">
+</head>
+<body class="deck-page">
+
+<div class="dk-bar">
+  <a class="home" href="../index.html#briefings">Silent Sentinel</a>
+  <span class="ttl">Briefing · Dec 1</span>
+  <span class="sp"></span>
+  <button type="button" id="present" title="Present full screen (P). Arrows to move, Esc to exit.">Present</button>
+</div>
+
+<main class="deck">
+
+<section class="sl title"><div class="in">
+  <div class="hd"><span>COMS 4995 F26 · CENTCOM H4D (Hacking for Defense)</span><span>Dec 1</span></div>
+  <div class="x" style="font-size:22px;margin-bottom:16px">Drone Hide &amp; Seek</div>
+  <h1>Silent Sentinel</h1>
+  <p class="sub">Continuous tracking of non-line-of-sight Group 1 UAS (unmanned aircraft systems) in urban terrain.</p>
+  <p style="margin-top:40px"><b>Sponsor</b> · COL Nate Huston, U.S. Central Command</p>
+  <p><b>Team</b> · Tai Zaidi · Noah Cho · Alex Nazarova · Anissa Basu · Vihaan Shah · Tommy Li · Domenico Pica</p>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Team</span><span>Dec 1</span></div>
+  <h2>Our team</h2>
+  <div class="cols" style="--n:2;align-content:start">
+    <ul>
+      <li><b>Tai Zaidi</b> · Computer Science</li>
+      <li><b>Noah Cho</b> · Computer Science</li>
+      <li><b>Alex Nazarova</b> · Information Science</li>
+      <li><b>Anissa Basu</b> · Computer Science &amp; Economics</li>
+    </ul>
+    <ul>
+      <li><b>Vihaan Shah</b> · Mechanical Engineering, CS &amp; Aerospace</li>
+      <li><b>Tommy Li</b> · Computer Science</li>
+      <li><b>Domenico Pica</b> · Computer Science &amp; EALAC</li>
+    </ul>
+  </div>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Problem</span><span>Dec 1</span></div>
+  <h2 style="margin-bottom:18px">NLOS problem <span class="x">non-line-of-sight</span></h2>
+  <div class="media"><iframe src="https://drive.google.com/file/d/1X8QwuuydcR1QBhkJPMwQ73AcUuxrHDG5/preview" allow="autoplay; fullscreen" allowfullscreen title="Urban canyon problem"></iframe></div>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>H4D · Mission Model Canvas</span><span>Dec 1</span></div>
+  <h2 style="font-size:54px;margin-bottom:14px">Mission Model Canvas</h2>
+  <div class="imp" data-import="#mission .mmc" data-wrap="mission"></div>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Discovery matrix · stakeholder map</span><span>Dec 1</span></div>
+  <h2>Beneficiaries</h2>
+  <table>
+    <thead><tr><th>Beneficiary</th><th>Type</th><th>Job</th><th>Discovery focus</th></tr></thead>
+    <tbody>
+      <tr><td>C-UAS operator <span class="x">counter-UAS</span></td><td>Primary user</td><td>SIGINT / EW / ISR / C-UAS <span class="x">signals intelligence, electronic warfare, intelligence-surveillance-reconnaissance</span></td><td>Track-loss behavior, sensor handoffs, reacquisition</td></tr>
+      <tr><td>Force protection</td><td>Mission owner</td><td>Assess UAS activity, set posture</td><td>Decision thresholds, intent, QRF <span class="x">quick reaction force</span> timelines</td></tr>
+      <tr><td>SECFOR <span class="x">security forces</span></td><td>Response user</td><td>Perimeter overwatch</td><td>Location accuracy, warnings, QRF coordination</td></tr>
+      <tr><td>Deployed personnel</td><td>Protected beneficiary</td><td>Exposed to surveillance and threats</td><td>Warning usefulness, disruption, false alarms</td></tr>
+      <tr><td>Host / local government</td><td>External coordination</td><td>Jurisdiction, external operations</td><td>Information sharing, response authority, attribution</td></tr>
+    </tbody>
+  </table>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>User archetypes · value propositions</span><span>Dec 1</span></div>
+  <h2 style="margin-bottom:18px">Who we are building for</h2>
+  <table style="font-size:19px">
+    <thead><tr><th></th><th>Host-nation relationship owner</th><th>Base security chief</th><th>Base commander</th><th>Personnel on base</th></tr></thead>
+    <tbody>
+      <tr><td>Role</td><td>Approves what the U.S. can install on host-nation soil</td><td>Runs the response: posture, QRF, reacquiring the track, local liaison</td><td>Shelter-in-place, FPCON <span class="x">force protection condition</span>, when to lift</td><td>Lives with the outcome of every alert</td></tr>
+      <tr><td>Need</td><td>Protection with no new visible footprint</td><td>Continuous track: respond to where the drone is now</td><td>Protect people without needlessly halting the mission</td><td>Warnings that are timely, credible and rare</td></tr>
+      <tr><td>Pain</td><td>Every visible sensor is a political negotiation</td><td>Drone drops behind buildings; manual reacquisition under time pressure</td><td>Lost track forces longer lockdowns</td><td>Frequent lockdowns stop work; false alarms breed alert fatigue</td></tr>
+      <tr><td>Our fit</td><td>Passive acoustic nodes on existing structures</td><td>Holds the track through occlusion; faster reacquisition</td><td>Better track picture, shorter and better-targeted alerts</td><td>Fewer, shorter, more trustworthy shelter-in-place events</td></tr>
+    </tbody>
+  </table>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Integration up and down the chain</span><span>Dec 1</span></div>
+  <h2 style="font-size:54px;margin-bottom:14px">Stakeholders</h2>
+  <div class="imp" data-import="#mission figure.diagram" data-wrap="mission"></div>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Sponsor feedback</span><span>Dec 1</span></div>
+  <h2>COL Huston's feedback</h2>
+  <div class="cols" style="--n:3">
+    <div class="card blue"><h3>Open architecture</h3><p>Don't depend on specific sensors or models. Swap or add parts without a redesign.</p></div>
+    <div class="card blue"><h3>Track custody</h3><p>When a drone leaves camera or radar view, acoustic sensors keep the track.</p></div>
+    <div class="card blue"><h3>Seamless handoff</h3><p>The operator doesn't care which sensor supplies the data, only that it is still the same drone.</p></div>
+    <div class="card"><h3>Prototype, not perfect</h3><p>Exact accuracy is not the goal; parts can be simulated.</p></div>
+    <div class="card"><h3>Explain the choices</h3><p>Why each part was chosen and how it would be improved.</p></div>
+    <div class="card amber"><h3>Key point</h3><p>The handoff between sensors. Solve it and the other limits get easier.</p></div>
+  </div>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Sponsor feedback</span><span>Dec 1</span></div>
+  <h2>What to demonstrate</h2>
+  <div class="cols" style="--n:3">
+    <div class="card amber"><div class="big">1</div><h3>Track custody</h3><p>One continuous track as the drone moves between sensors. Two tracks of the same drone are merged.</p></div>
+    <div class="card amber"><div class="big">2</div><h3>Acoustic sensors</h3><p>Detect and locate the drone when it is not visible; confirm it is the same drone when it reappears.</p></div>
+    <div class="card amber"><div class="big">3</div><h3>Open architecture</h3><p>Different sensors and models, including better ones later. An overhead drone could be added.</p></div>
+  </div>
+  <p class="note">Design around existing equipment? No: too many combinations, and they keep changing. Use representative equipment; any part can be swapped.</p>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>This week</span><span>Dec 1</span></div>
+  <h2>What changed</h2>
+  <div class="cols" style="--n:2">
+    <ul>
+      <li><b>Camera tracker linked to ROAREE</b>: Visual-Tracker sends tracks and receives cues; merged to main with moving-camera compensation.</li>
+      <li><b>Radar station over LoRa</b>: RD-03D, ESP32-S3 and RFM95W on the roof; up to 3 targets per packet, 5 per second, to the base receiver.</li>
+      <li><b>Full building layout</b>: 8 listening nodes (street and roof at every corner), roof receiver, 4 roof radars facing out.</li>
+    </ul>
+    <ul>
+      <li><b>Proximity alert</b>: ROAREE shows distance to the nearest node and beeps faster as the drone closes.</li>
+      <li><b>Hand controller</b>: TBS Tango 2 mutes sensor groups, ignores a node, toggles TAK output, selects a track.</li>
+      <li><b>Mission and stakeholders</b> on the <a href="../index.html#mission" style="color:#9fdcff">project site</a>.</li>
+    </ul>
+  </div>
+  <p class="note">Firmware compiles and software tests pass; none of this week's hardware has run yet. Radar parts arrive ~Nov 30.</p>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>ROAREE · C2 (command and control)</span><span>Dec 1</span></div>
+  <h2 style="margin-bottom:20px">Sensors to operator</h2>
+  <div class="steps" style="--n:4;margin-bottom:26px">
+    <div><i>1</i><b>Listen</b><span>Nodes hear rotors; radar station sees motion; both report over LoRa</span></div>
+    <div><i>2</i><b>Relay</b><span>Base receiver: LoRa to USB serial</span></div>
+    <div><i>3</i><b>Fuse</b><span>ROAREE: Kalman track, dashboard, alert, TAK</span></div>
+    <div><i>4</i><b>Cue</b><span>Camera tracker told where to look</span></div>
+  </div>
+  <table style="font-size:20px">
+    <thead><tr><th>Link</th><th>Direction</th><th>Carries</th><th>Rate</th></tr></thead>
+    <tbody>
+      <tr><td>LoRa 915 MHz</td><td>nodes, radar → base</td><td>detections, radar plots, heartbeats</td><td>2 per s per node; radar 5 per s</td></tr>
+      <tr><td>LoRa HINT</td><td>C2 → nodes</td><td>rotor pitch to listen for after a drone goes quiet</td><td>every 4 s while needed</td></tr>
+      <tr><td>UDP 47010 / 47011</td><td>camera ⇄ C2</td><td>visual tracks / cues and status</td><td>5 Hz / 1 Hz</td></tr>
+      <tr><td>UDP 47013</td><td>Tango 2 → C2</td><td>operator controls</td><td>on change, 1 Hz heartbeat</td></tr>
+    </tbody>
+  </table>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>System</span><span>Dec 1</span></div>
+  <h2 style="font-size:54px;margin-bottom:14px">Architecture</h2>
+  <div class="imp" data-import="#system figure.diagram" data-wrap="system"></div>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Visual tracker</span><span>Dec 1</span></div>
+  <h2>How we tested it</h2>
+  <div class="cols" style="--n:2">
+    <div class="card blue"><h3>Three versions</h3><ul>
+      <li><b>v1</b> · 5,200 labeled drone photos</li>
+      <li><b>v2</b> · + 2,100 bird and kite photos marked "no drone"</li>
+      <li><b>v3</b> · + 2,393 frames of drones in front of trees and buildings</li>
+      <li><b>hold</b> · tracker setting: keeps a locked drone through weak detections</li></ul></div>
+    <div class="card amber"><h3>Three tests, same settings</h3><ul>
+      <li><b>False alarms</b> · 8 bird and kite videos; share of frames with any box</li>
+      <li><b>Tracking</b> · drone videos with true position; share of frames on the drone</li>
+      <li><b>Photo test</b> · 2,200 unseen labeled photos; precision and recall</li></ul></div>
+  </div>
+  <p class="note">v3 trained on 10 of the 20 tracking videos, so every version is scored on the other 10 (15,245 frames).</p>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Visual tracker</span><span>Dec 1</span></div>
+  <h2 style="margin-bottom:20px">Results</h2>
+  <table>
+    <thead><tr><th>Test</th><th>v1</th><th>v2</th><th>v3</th></tr></thead>
+    <tbody>
+      <tr><td>False box on bird / kite videos</td><td>30.7%</td><td>7.1%</td><td>1.8%</td></tr>
+      <tr><td>On target, 10 held-out videos</td><td>93.9%</td><td>94.7%</td><td>93.3%</td></tr>
+      <tr><td>Box on the wrong object</td><td>0.8%</td><td>4.9%</td><td>1.0%</td></tr>
+      <tr><td>On target, trees clip</td><td>75.8%</td><td>84.7%</td><td>80.4%</td></tr>
+      <tr><td>Photo test precision / recall</td><td>96.2 / 90.7%</td><td>96.2 / 91.2%</td><td>95.6 / 91.3%</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Birds and kites mostly solved (31% → 2%). Tracking steady at ~94%. Trees remain the gap; next: film our own drone over trees from a rooftop and retrain.</p>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Acoustic network</span><span>Dec 1</span></div>
+  <h2>Finding the drone by loudness</h2>
+  <div class="cols" style="--n:3">
+    <div class="card blue"><h3>No precise timing</h3><p>LoRa cannot sync nodes closely enough to time sound arrival, so position comes from how loud each node hears it.</p></div>
+    <div class="card blue"><h3>How it works</h3><p>Each node reports loudness. Node positions are known. Louder node = drone closer to it.</p></div>
+    <div class="card amber"><h3>Node count</h3><p>8 per building: street level and roof at every corner. Demo: 4 nodes on 2 corners.</p></div>
+  </div>
+  <p class="note">Every report carries loudness, confidence and rotor pitch.</p>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Acoustic node</span><span>Dec 1</span></div>
+  <h2>What each node does</h2>
+  <div class="steps" style="--n:6">
+    <div><i>1</i><b>Listen</b><span>4 mics combined for a stronger signal</span></div>
+    <div><i>2</i><b>Clean</b><span>Filter wind rumble and hum</span></div>
+    <div><i>3</i><b>FFT</b><span>Fast Fourier transform: sound into frequencies, 15 per second</span></div>
+    <div><i>4</i><b>Comb</b><span>Evenly spaced peaks: the rotor signature</span></div>
+    <div><i>5</i><b>Confirm</b><span>Pattern holds over several frames</span></div>
+    <div><i>6</i><b>Alert</b><span>Pitch, loudness, confidence over LoRa</span></div>
+  </div>
+  <p class="note">A generator's comb never moves. Traffic and wind have no comb. A drone's comb slides as it speeds up and turns. <a href="../index.html#build" style="color:#9fdcff">Breadboard layouts</a></p>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Radar station</span><span>Dec 1</span></div>
+  <h2>Radar over LoRa</h2>
+  <div class="cols" style="--n:2">
+    <div class="card blue"><h3>Hardware</h3><ul>
+      <li>RD-03D 24 GHz radar: up to 3 moving targets, ~8 m</li>
+      <li>ESP32-S3 reads it on UART (GPIO17 / 18)</li>
+      <li>RFM95W LoRa radio, same channel as the nodes</li>
+      <li>USB power bank; on the roof, facing out</li></ul></div>
+    <div class="card amber"><h3>Software</h3><ul>
+      <li>Firmware: 24-byte packet, 5 per second with targets, 1 per second idle</li>
+      <li>Base receiver forwards it unchanged</li>
+      <li>ROAREE gives each target a persistent ID and fuses it with the acoustic track</li></ul></div>
+  </div>
+  <p class="note">Firmware compiles; parts arrive ~Nov 30. <a href="../index.html#build" style="color:#9fdcff">Build › Radar station</a></p>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Simulation</span><span>Dec 1</span></div>
+  <h2 style="margin-bottom:18px">Lock rate vs. search radius</h2>
+  <div class="media"><iframe src="https://drive.google.com/file/d/1db3yYHW1_1Oi_uqIF4G_R75088BExgUO/preview" allow="autoplay; fullscreen" allowfullscreen title="Lock rate simulation"></iframe></div>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Plan</span><span>Dec 1</span></div>
+  <h2>Next steps</h2>
+  <ul>
+    <li><b>Node N1</b>: solder mic headers; confirm it tells a drone from street noise</li>
+    <li><b>Radar station</b>: build when parts arrive; flash firmware; test with ROAREE</li>
+    <li><b>Demo network</b>: 4 nodes on 2 corners, street and roof; measure position error against the drone's GPS</li>
+    <li><b>TAK server</b>: put the track on the map for commander, force protection and SECFOR</li>
+    <li><b>Hand controller</b>: confirm Tango 2 axis mapping with the radio</li>
+    <li><b>Visual tracker</b>: rooftop footage over trees; label and retrain</li>
+  </ul>
+</div></section>
+
+<section class="sl divider"><div class="in">
+  <div class="hd"><span>Backup</span><span>Dec 1</span></div>
+  <h2>Backup slides</h2>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Backup · concept</span><span>Nov 17</span></div>
+  <h2 style="margin-bottom:18px">Two-drone visual tracker</h2>
+  <div class="media"><iframe src="https://drive.google.com/file/d/1jzKkfJ_3OI9RR5ygxpQrfnun3bjlcF6o/preview" allow="autoplay; fullscreen" allowfullscreen title="Two-drone tracker concept"></iframe></div>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Backup · chaser</span><span>Nov 17</span></div>
+  <h2 style="margin-bottom:18px">The science behind the overwatch and chaser</h2>
+  <div class="media"><iframe src="https://drive.google.com/file/d/1Vu0gg1iEtoqQXM2AIfnnCSErE6E8CQiV/preview" allow="autoplay; fullscreen" allowfullscreen title="Overwatch and chaser science"></iframe></div>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span>Backup · comparison</span><span>Nov 17</span></div>
+  <h2>Anduril Anvil</h2>
+  <table>
+    <thead><tr><th></th><th>Anvil</th><th>Ours</th></tr></thead>
+    <tbody>
+      <tr><td>Cue</td><td>Lattice (Anduril command software)</td><td>Base sensor network</td></tr>
+      <tr><td>Fly-out</td><td>Autonomous</td><td>Autonomous</td></tr>
+      <tr><td>Lock</td><td>Visual and electronic signature</td><td>Visual</td></tr>
+      <tr><td>End</td><td>Kinetic terminal guidance</td><td>Track and follow only</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Anvil proves the cue, fly-out and onboard-lock chain in a fielded U.S. product. Ours keeps the track to the operator and can hand it to a defeat system.</p>
+</div></section>
+
+</main>
+<div class="dk-hint">← → slides · Esc exit · F full screen</div>
+
+<section class="dk-archive">
+  <h3>All briefings</h3>
+  <ul id="archive"></ul>
+</section>
+
+<script src="deck.js?v=41"></script>
+</body>
+</html>

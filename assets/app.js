@@ -385,19 +385,20 @@
     const base = id => `https://docs.google.com/presentation/d/${id}`;
     $("latest-date").textContent = new Date(latest.date + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
     $("latest-label").textContent = "Latest briefing";
-    $("present").href = `${base(latest.id)}/present`;
+    $("present").href = latest.page || `${base(latest.id)}/present`;
+    if (latest.page) { $("present").removeAttribute("target"); $("load-deck").textContent = "Scroll"; }
     const embed = latest.published || `${base(latest.id)}/embed?start=false&loop=false&delayms=5000`;
     const load = () => {
       const f = document.createElement("iframe");
       f.src = embed; f.allowFullscreen = true; f.title = latest.title; f.loading = "lazy";
       $("screen").replaceChildren(f);
     };
-    $("load-deck").addEventListener("click", load);
+    $("load-deck").addEventListener("click", () => latest.page ? (location.href = latest.page) : load());
     if (latest.published) load();
     $("archive").innerHTML = items.map((i, k) => `
       <li class="${k === 0 ? "current" : ""}">
         <div><b>${esc(fmtDate(i.date))}</b></div>
-        <div class="links"><a href="${base(i.id)}/present" target="_blank" rel="noopener">Present</a><a href="${base(i.id)}/edit" target="_blank" rel="noopener">Open</a></div>
+        <div class="links">${i.page ? `<a href="${i.page}">Web</a>` : ""}<a href="${base(i.id)}/present" target="_blank" rel="noopener">Present</a><a href="${base(i.id)}/edit" target="_blank" rel="noopener">Open</a></div>
       </li>`).join("");
   }).catch(() => { $("archive").innerHTML = "<li>Briefings unavailable.</li>"; });
 })();
