@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=34">
+<link rel="stylesheet" href="assets/styles.css?v=35">
 </head>
 <body>
 
@@ -99,6 +99,7 @@
         <div class="bd-tabs" role="tablist">
           <button type="button" role="tab" data-b="node" aria-selected="true">Listening node</button>
           <button type="button" role="tab" data-b="base" aria-selected="false">Base receiver</button>
+          <button type="button" role="tab" data-b="radar" aria-selected="false">Radar station</button>
         </div>
       </div>
       <div class="bd-grid">
@@ -126,7 +127,7 @@
         </div>
         <div class="step-body cards">
           <article><div class="big">01</div><h3>Acoustic Node</h3><p>4 ICS-43434 MEMS (micro-electro-mechanical systems) microphones on an ESP32-S3. Detects rotor blade-pass harmonics. Position from relative received level across nodes. Passive.</p><dl><div><dt>Link</dt><dd>LoRa 915 MHz</dd></div><div><dt>Nodes</dt><dd>4, one per corner</dd></div></dl><p class="card-links"><a href="#build" data-board="node">Layout</a><a href="https://github.com/H4D-Silent-Sentinel/sentinel" target="_blank" rel="noopener">Source</a></p></article>
-          <article><div class="big">02</div><h3>Radar Node</h3><p>RD-03D 24 GHz radar on an ESP32-S3 bridge. Range, azimuth and radial velocity of moving targets.</p><dl><div><dt>Link</dt><dd>UDP (User Datagram Protocol) 47012</dd></div><div><dt>Coverage</dt><dd>±60° azimuth, ~8 m bench</dd></div></dl><p class="card-links"><a href="https://github.com/H4D-Silent-Sentinel/radar" target="_blank" rel="noopener">Source</a></p></article>
+          <article><div class="big">02</div><h3>Radar Node</h3><p>RD-03D 24 GHz radar on an ESP32-S3 with an RFM95W radio, on site. Range, azimuth and radial velocity of moving targets.</p><dl><div><dt>Link</dt><dd>LoRa 915 MHz via base receiver</dd></div><div><dt>Coverage</dt><dd>±60° azimuth, ~8 m bench</dd></div></dl><p class="card-links"><a href="#build" data-board="radar">Layout</a><a href="https://github.com/H4D-Silent-Sentinel/radar" target="_blank" rel="noopener">Source</a></p></article>
           <article><div class="big">03</div><h3>Camera Node</h3><p>YOLO11 (You Only Look Once) detection, ByteTrack association and VLM (vision-language model) confirmation on the chaser drone's onboard Jetson Orin Nano. Reports bearing and label.</p><dl><div><dt>Link</dt><dd>UDP 47010</dd></div><div><dt>Compute</dt><dd>Jetson Orin Nano, onboard</dd></div></dl><p class="card-links"><a href="https://github.com/H4D-Silent-Sentinel/Visual-Tracker" target="_blank" rel="noopener">Source</a></p></article>
           <article><div class="big">04</div><h3>RF Node</h3><p>ADALM-Pluto SDR (software-defined radio). Detects 2.4 and 5.8 GHz control and video links. Passive.</p><dl><div><dt>Hardware</dt><dd>ADALM-Pluto</dd></div><div><dt>State</dt><dd>In development</dd></div></dl></article>
         </div>
@@ -148,7 +149,7 @@
         <span><i class="lg-plan"></i>In development</span>
       </div>
       <figure class="diagram">
-<svg viewBox="0 0 1200 710" role="img" aria-label="Four listening nodes send LoRa detections to the base receiver, which feeds the C2 laptop over USB. Radar station and Pluto SDR connect to the laptop by USB; Chaser drone Jetson connects over UDP.">
+<svg viewBox="0 0 1200 710" role="img" aria-label="Four listening nodes and the radar station send LoRa reports to the base receiver, which feeds the C2 laptop over USB. Pluto SDR connects to the laptop by USB; Chaser drone Jetson connects over UDP.">
       <!-- nodes -->
       <text class="tb" x="30" y="40">Listening nodes ×4 (building corners)</text>
       <g>
@@ -205,19 +206,19 @@
       <text class="tp" x="465" y="338">5 V from laptop USB</text>
 
       <!-- base to laptop -->
-      <line class="w" data-link="USB serial · base receiver forwards every node report (8 per second with 4 nodes)" data-hz="8" x1="650" y1="295" x2="788" y2="295" marker-start="url(#af)" marker-end="url(#af)"/>
+      <line class="w" data-link="USB serial · base receiver forwards node reports (8 per second with 4 nodes) and radar plots (5 per second)" data-hz="13" x1="650" y1="295" x2="788" y2="295" marker-start="url(#af)" marker-end="url(#af)"/>
       <text class="t" x="664" y="284">USB serial</text>
       <text class="s" x="664" y="314">PKT → · ← TX</text>
 
       <!-- radar station -->
       <rect class="box" x="450" y="430" width="200" height="120" rx="4"/>
-      <text class="tb" x="465" y="454">Radar station</text>
+      <text class="tb" x="465" y="454">Radar station (on site)</text>
       <text class="t" x="465" y="476">RD-03D 24 GHz</text>
-      <text class="s" x="465" y="494">UART 256000 → ESP32-S3</text>
-      <text class="s" x="465" y="510">bridge (radar_bridge)</text>
-      <text class="tp" x="465" y="538">5 V from laptop USB</text>
-      <line class="w" data-link="USB serial · RD-03D targets at 5 Hz" data-hz="5" x1="650" y1="490" x2="788" y2="490" marker-end="url(#af)"/>
-      <text class="t" x="664" y="480">USB serial</text>
+      <text class="s" x="465" y="494">UART → ESP32-S3 + RFM95W</text>
+      <text class="s" x="465" y="510">firmware: radar_node</text>
+      <text class="tp" x="465" y="538">5 V USB power bank</text>
+      <line class="lora" data-link="LoRa 915 MHz · radar plots, 5 per second with targets" data-hz="5" x1="550" y1="430" x2="550" y2="352" marker-end="url(#al)"/>
+      <text class="tl" x="560" y="396">LoRa</text>
 
       <!-- Pluto -->
       <rect class="box" x="450" y="580" width="200" height="100" rx="4"/>
@@ -254,14 +255,6 @@
       <text class="tn" x="1070" y="192">UDP :47011</text>
       <text class="tn" x="830" y="176">datalink</text>
 
-      <!-- radar sender -->
-      <rect class="boxp" x="790" y="460" width="200" height="60" rx="4"/>
-      <text class="tpl" x="805" y="484">radar sender (to write)</text>
-      <text class="s" x="805" y="504">rd03d.py → radar msg</text>
-      <line class="plan" x1="890" y1="460" x2="890" y2="372" marker-end="url(#ao)"/>
-      <text class="tpl" x="898" y="420">UDP :47012</text>
-      <text class="tpl" x="898" y="436">localhost</text>
-
       <!-- sdr software -->
       <rect class="boxp" x="790" y="595" width="200" height="60" rx="4"/>
       <text class="tpl" x="805" y="619">SDR software</text>
@@ -279,7 +272,7 @@
       <text class="tp" x="1010" y="680">laptop charger ← wall</text>
       <a href="#build" data-board="node"><rect class="go" x="30" y="60" width="260" height="532" rx="4"/></a>
       <a href="#build" data-board="base"><rect class="go" x="450" y="240" width="200" height="110" rx="4"/></a>
-      <a href="https://github.com/H4D-Silent-Sentinel/radar" target="_blank" rel="noopener"><rect class="go" x="450" y="430" width="200" height="120" rx="4"/></a>
+      <a href="#build" data-board="radar"><rect class="go" x="450" y="430" width="200" height="120" rx="4"/></a>
       <a href="https://github.com/H4D-Silent-Sentinel/Visual-Tracker" target="_blank" rel="noopener"><rect class="go" x="770" y="30" width="400" height="118" rx="4"/></a>
       <a href="https://github.com/H4D-Silent-Sentinel/roaree" target="_blank" rel="noopener"><rect class="go" x="770" y="190" width="400" height="505" rx="4"/></a>
     </svg>
@@ -356,11 +349,11 @@
   <div class="wrap legal"><span>Silent Sentinel · Hacking for Defense, Columbia University</span></div>
 </footer>
 
-<script src="assets/app.js?v=34" defer></script>
+<script src="assets/app.js?v=35" defer></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"}}</script>
-<script type="module" src="assets/boards.js?v=34"></script>
-<script type="module" src="assets/hero3d.js?v=34"></script>
-<script type="module" src="assets/sensors3d.js?v=34"></script>
-<script src="assets/diagrams.js?v=34" defer></script>
+<script type="module" src="assets/boards.js?v=35"></script>
+<script type="module" src="assets/hero3d.js?v=35"></script>
+<script type="module" src="assets/sensors3d.js?v=35"></script>
+<script src="assets/diagrams.js?v=35" defer></script>
 </body>
 </html>

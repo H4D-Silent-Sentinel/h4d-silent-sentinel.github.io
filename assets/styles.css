@@ -292,6 +292,9 @@ footer { scroll-snap-align: end; }
 .bd-2d .port { fill: #05070a; stroke: #7fd4ff; stroke-width: 1.4; }
 .bd-2d .antw { stroke: #7fd4ff; stroke-width: 1.6; stroke-dasharray: 6 4; fill: none; }
 .bd-2d .pins { fill: #7fd4ff; }
+.bd-2d .wire { fill: none; stroke-width: 2.2; stroke-linejoin: round; }
+.bd-2d .wire.w5 { stroke: #ff8a7a; } .bd-2d .wire.wg { stroke: #9aa3ad; } .bd-2d .wire.ws { stroke: #6fb6ff; }
+.bd-2d .face { stroke: #6fb6ff; stroke-width: 3; stroke-dasharray: 4 3; }
 .bd-2d text { font: 500 15px/1 var(--mono); fill: #dff4ff; pointer-events: none; }
 .bd-2d [data-id] { cursor: default; transition: opacity .2s; }
 .bd-2d .pt.hot .pcb, .bd-2d .pt.hot .mod, .bd-2d .pt.hot .port { stroke: var(--accent); }

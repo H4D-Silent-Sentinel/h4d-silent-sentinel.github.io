@@ -21,11 +21,11 @@ function mic(id, c, r0, label, slot) {
   };
 }
 
-function esp() {
+function esp(info = "62.7 × 25.4 mm · detector, I2S capture, LoRa reports") {
   const x0 = rowx(21) - 1.40, x1 = rowx(42) + 8.0, ya = COL.c - 1.27, yb = COL.j + 1.27;
   const uy = [ya + 6.2, ya + 19.3];
   return {
-    id: "esp", kind: "esp", name: "ESP32-S3-DevKitC-1", info: "62.7 × 25.4 mm · detector, I2S capture, LoRa reports",
+    id: "esp", kind: "esp", name: "ESP32-S3-DevKitC-1", info,
     box: [x0, ya, x1, yb],
     module: [x0 + 6.5, COL.c + 1.0, x0 + 24.5, COL.j - 1.0],
     antenna: [x0, COL.c + 1.0, x0 + 6.5, COL.j - 1.0],
@@ -46,6 +46,25 @@ function rfm() {
   };
 }
 
+// RD-03D: 44.0 × 15.0 mm PCB (datasheet), stood on edge past row 63, antenna face toward +x.
+// Its 4-pin cable ends in Dupont sockets; each takes an M-M jumper into column a beside ESP32 J1.
+const RD_X = L + 14, RD_Y0 = W / 2 - 22;
+function rd03d() {
+  const pins = [0, 1, 2, 3].map(k => [RD_X - 3, RD_Y0 + 17 + k * 2.54]);
+  return {
+    id: "rd", kind: "radar", name: "RD-03D", info: "44.0 × 15.0 mm · 24 GHz radar, faces outward · 4-pin cable: 5V, GND, TX → GPIO17, RX ← GPIO18",
+    box: [RD_X, RD_Y0, RD_X + PCB, RD_Y0 + 44], stand: 15, face: +1, pins,
+  };
+}
+// J1 runs from row 21 (pin 1, 3V3, antenna end) to row 42 (pin 22, GND, USB end)
+const J1 = n => [rowx(20 + n), COL.a];
+const RADAR_WIRES = [
+  { from: J1(21), to: 0, name: "5V", cls: "w5" },   // J1-21 5V
+  { from: J1(22), to: 1, name: "GND", cls: "wg" },  // J1-22 GND
+  { from: J1(10), to: 2, name: "GPIO17 ← radar TX", cls: "ws" },
+  { from: J1(11), to: 3, name: "GPIO18 → radar RX", cls: "ws" },
+];
+
 const BUILDS = {
   node: {
     name: "Listening node", count: "×4",
@@ -53,7 +72,8 @@ const BUILDS = {
       mic("m0", "a", 1, "Mic 0", "I2S bus 0 · left"), mic("m1", "j", 1, "Mic 1", "I2S bus 0 · right"),
       mic("m2", "a", 58, "Mic 2", "I2S bus 1 · left"), mic("m3", "j", 58, "Mic 3", "I2S bus 1 · right")],
   },
-  base: { name: "Base receiver", count: "×1", parts: [esp(), rfm()] },
+  base: { name: "Base receiver", count: "×1", parts: [esp("62.7 × 25.4 mm · LoRa receive, USB to the C2 laptop"), rfm()] },
+  radar: { name: "Radar station", count: "×1", parts: [esp("62.7 × 25.4 mm · reads the radar, sends plots over LoRa"), rfm(), rd03d()], wires: RADAR_WIRES },
 };
 const BOARD = { id: "bb", name: "Breadboard", info: "830-point · 165.1 × 54.6 mm · 63 rows" };
 
@@ -82,6 +102,7 @@ function init() {
     const parts = BUILDS[build].parts;
     let x0 = 0, y0 = 0, x1 = L, y1 = W;
     for (const p of parts) { x0 = Math.min(x0, p.box[0]); y0 = Math.min(y0, p.box[1]); x1 = Math.max(x1, p.box[2]); y1 = Math.max(y1, p.box[3]); }
+    y0 = Math.min(y0, -11);
     x0 -= 12; y0 -= 10; x1 += 8; y1 += 10;
     const X = v => (v - x0) * K, Y = v => (v - y0) * K;
     const r = (b, cls, rx = 2) => `<rect class="${cls}" x="${X(b[0])}" y="${Y(b[1])}" width="${(b[2] - b[0]) * K}" height="${(b[3] - b[1]) * K}" rx="${rx}"/>`;
@@ -92,8 +113,14 @@ function init() {
     let h = "";
     for (let k = 1; k <= 63; k++) for (const c in COL) h += `M${X(rowx(k)).toFixed(1)} ${Y(COL[c]).toFixed(1)}h.01`;
     o.push(`<path class="holes" d="${h}"/></g>`);
+    const rd = parts.find(p => p.kind === "radar");
+    for (const w of BUILDS[build].wires || []) {
+      const [tx, ty] = rd.pins[w.to], lane = 4 + 1.6 * w.to;
+      o.push(`<path class="wire ${w.cls}" d="M${X(w.from[0])} ${Y(w.from[1])}V${Y(-lane)}H${X(L + 4 + w.to * 1.5)}V${Y(ty)}H${X(tx)}"/>`);
+    }
     for (const p of parts) {
       o.push(`<g data-id="${p.id}" class="pt ${p.kind}">${r(p.box, "pcb")}`);
+      if (p.stand) o.push(`<path class="face" d="M${X(p.box[2]) + 3} ${Y(p.box[1]) + 4}v${(p.box[3] - p.box[1]) * K - 8}"/>`);
       if (p.module) o.push(r(p.module, "mod", 1));
       if (p.antenna) o.push(r(p.antenna, "mod dim", 1));
       if (p.usb) p.usb.forEach(u => o.push(r(u, "mod", 1)));
@@ -103,7 +130,7 @@ function init() {
       o.push(`<path class="pins" d="${pp}"/>`);
       const cx = (p.box[0] + p.box[2]) / 2, cy = (p.box[1] + p.box[3]) / 2;
       // mic labels sit outside the board edge so they clear the sound port
-      const ty = p.kind === "mic" ? (cy < W / 2 ? Y(p.box[1]) - 9 : Y(p.box[3]) + 20) : Y(cy) + 5;
+      const ty = p.kind === "mic" ? (cy < W / 2 ? Y(p.box[1]) - 9 : Y(p.box[3]) + 20) : p.stand ? Y(p.box[3]) + 18 : Y(cy) + 5;
       o.push(`<text x="${X(cx)}" y="${ty}" text-anchor="middle">${p.kind === "esp" ? "ESP32-S3" : p.name}</text></g>`);
     }
     svgHost.innerHTML = `<svg viewBox="0 0 ${(x1 - x0) * K} ${(y1 - y0) * K}" role="img" aria-label="${BUILDS[build].name}, top view to scale">${o.join("")}</svg>`;
@@ -120,7 +147,7 @@ function init() {
   const select = b => {
     build = b;
     tabs.forEach(t => t.setAttribute("aria-selected", t.dataset.b === b));
-    draw2d(); view && view.load(BUILDS[b].parts); show(null);
+    draw2d(); view && view.load(Object.assign([...BUILDS[b].parts], { wires: BUILDS[b].wires })); show(null);
   };
   tabs.forEach(t => t.addEventListener("click", () => select(t.dataset.b)));
   document.addEventListener("click", e => { const a = e.target.closest("[data-board]"); if (a) select(a.dataset.board); });
@@ -179,7 +206,20 @@ function make3d(host, reduce, onHover) {
     const holes = []; for (let k = 1; k <= 63; k++) for (const c in COL) holes.push([rowx(k), COL[c]]);
     for (const y of RAIL) for (let g = 0; g < 10; g++) for (let j = 0; j < 5; j++) holes.push([rowx(2) + (g * 6 + j) * P, y]);
     points("bb", holes, 0.05, 0.9, .45);
+    for (const w of (parts.wires || [])) {
+      const rd = parts.find(p => p.kind === "radar"), [tx, ty] = rd.pins[w.to], lane = 4 + 1.6 * w.to, z = 1.2 + w.to * .6;
+      const pts = [[w.from[0], 0, w.from[1]], [w.from[0], z, w.from[1]], [w.from[0], z, -lane], [L + 4 + w.to * 1.5, z, -lane],
+                   [L + 4 + w.to * 1.5, z, ty], [tx, 6, ty]].map(([x, y, zz]) => new THREE.Vector3(x, y, zz));
+      const l = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat(w.cls === "w5" ? 0xff8a7a : w.cls === "wg" ? 0x9aa3ad : 0x6fb6ff));
+      model.add(l);
+    }
     for (const p of parts) {
+      if (p.stand) {  // PCB on edge, antenna face outward
+        box(p.id, p.box, 0, p.stand, { face: .12 });
+        box(p.id, [p.box[2], p.box[1] + 2, p.box[2] + .6, p.box[3] - 2], 3, p.stand - 6, { face: .2 });
+        points(p.id, p.pins, 6, 1.3);
+        continue;
+      }
       const zp = HDR; // PCB sits on the header plastic
       box(p.id, p.box, zp, PCB, { face: .09 });
       if (p.module) box(p.id, p.module, zp + PCB, p.kind === "esp" ? 3.1 : 2.0, { face: .12 });
@@ -202,7 +242,7 @@ function make3d(host, reduce, onHover) {
       x1 = Math.max(x1, p.box[2]); y1 = Math.max(y1, p.box[3]);
     }
     model.position.set(-(x0 + x1) / 2, 0, -(y0 + y1) / 2);
-    const s = { x: x1 - x0, z: y1 - y0 }; dist = Math.hypot(s.x, s.z) * 1.25; floor.scale.setScalar(Math.max(s.x, s.z) / 230);
+    const s = { x: x1 - x0, z: y1 - y0 }; dist = Math.hypot(s.x, s.z) * 1.4; floor.scale.setScalar(Math.max(s.x, s.z) / 230);
     highlight(null);
   }
 
