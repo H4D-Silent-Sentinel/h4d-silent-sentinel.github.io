@@ -6,8 +6,8 @@
 <title>Briefing Dec 1 · Silent Sentinel</title>
 <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="../assets/styles.css?v=43">
-<link rel="stylesheet" href="deck.css?v=43">
+<link rel="stylesheet" href="../assets/styles.css?v=44">
+<link rel="stylesheet" href="deck.css?v=47">
 </head>
 <body class="deck-page">
 
@@ -21,11 +21,11 @@
 <main class="deck">
 
 <section class="sl title"><div class="in">
-  <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">COMS 4995 F26 · CENTCOM H4D (Hacking for Defense)</span><span>Dec 1</span></div>
+  <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">COMS 4995 F26 · CENTCOM H4D</span><span>Dec 1</span></div>
   <img class="h4d-big" src="../assets/h4d.png" alt="Hacking for Defense">
   <div class="x" style="font-size:22px;margin-bottom:16px">Drone Hide &amp; Seek</div>
   <h1>Silent Sentinel</h1>
-  <p class="sub">Continuous tracking of non-line-of-sight Group 1 UAS (unmanned aircraft systems) in urban terrain.</p>
+  <p class="sub">Continuous tracking of non-line-of-sight Group 1 UAS in urban terrain.</p>
   <p style="margin-top:40px"><b>Sponsor</b> · COL Nate Huston, U.S. Central Command</p>
   <p><b>Team</b> · Tai Zaidi · Noah Cho · Alex Nazarova · Anissa Basu · Vihaan Shah · Tommy Li · Domenico Pica</p>
 </div></section>
@@ -33,24 +33,20 @@
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">Team</span><span>Dec 1</span></div>
   <h2>Our team</h2>
-  <div class="cols" style="--n:2;align-content:start">
-    <ul>
-      <li><b>Tai Zaidi</b> · Computer Science</li>
-      <li><b>Noah Cho</b> · Computer Science</li>
-      <li><b>Alex Nazarova</b> · Information Science</li>
-      <li><b>Anissa Basu</b> · Computer Science &amp; Economics</li>
-    </ul>
-    <ul>
-      <li><b>Vihaan Shah</b> · Mechanical Engineering, CS &amp; Aerospace</li>
-      <li><b>Tommy Li</b> · Computer Science</li>
-      <li><b>Domenico Pica</b> · Computer Science &amp; EALAC</li>
-    </ul>
+  <div class="tgrid">
+    <div><b>Tai Zaidi</b><span>Computer Science</span></div>
+    <div><b>Noah Cho</b><span>Computer Science</span></div>
+    <div><b>Alex Nazarova</b><span>Information Science</span></div>
+    <div><b>Anissa Basu</b><span>Computer Science &amp; Economics</span></div>
+    <div><b>Vihaan Shah</b><span>Mechanical Engineering, CS &amp; Aerospace</span></div>
+    <div><b>Tommy Li</b><span>Computer Science</span></div>
+    <div><b>Domenico Pica</b><span>Computer Science &amp; EALAC</span></div>
   </div>
 </div></section>
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">Problem</span><span>Dec 1</span></div>
-  <h2 style="margin-bottom:18px">NLOS problem <span class="x">non-line-of-sight</span></h2>
+  <h2 style="margin-bottom:18px">NLOS problem</h2>
   <div class="media"><iframe src="https://drive.google.com/file/d/1X8QwuuydcR1QBhkJPMwQ73AcUuxrHDG5/preview" allow="autoplay; fullscreen" allowfullscreen title="Urban canyon problem"></iframe></div>
 </div></section>
 
@@ -66,9 +62,9 @@
   <table>
     <thead><tr><th>Beneficiary</th><th>Type</th><th>Job</th><th>Discovery focus</th></tr></thead>
     <tbody>
-      <tr><td>C-UAS operator <span class="x">counter-UAS</span></td><td>Primary user</td><td>SIGINT / EW / ISR / C-UAS <span class="x">signals intelligence, electronic warfare, intelligence-surveillance-reconnaissance</span></td><td>Track-loss behavior, sensor handoffs, reacquisition</td></tr>
-      <tr><td>Force protection</td><td>Mission owner</td><td>Assess UAS activity, set posture</td><td>Decision thresholds, intent, QRF <span class="x">quick reaction force</span> timelines</td></tr>
-      <tr><td>SECFOR <span class="x">security forces</span></td><td>Response user</td><td>Perimeter overwatch</td><td>Location accuracy, warnings, QRF coordination</td></tr>
+      <tr><td>C-UAS operator</td><td>Primary user</td><td>SIGINT / EW / ISR / C-UAS</td><td>Track-loss behavior, sensor handoffs, reacquisition</td></tr>
+      <tr><td>Force protection</td><td>Mission owner</td><td>Assess UAS activity, set posture</td><td>Decision thresholds, intent, QRF timelines</td></tr>
+      <tr><td>SECFOR</td><td>Response user</td><td>Perimeter overwatch</td><td>Location accuracy, warnings, QRF coordination</td></tr>
       <tr><td>Deployed personnel</td><td>Protected beneficiary</td><td>Exposed to surveillance and threats</td><td>Warning usefulness, disruption, false alarms</td></tr>
       <tr><td>Host / local government</td><td>External coordination</td><td>Jurisdiction, external operations</td><td>Information sharing, response authority, attribution</td></tr>
     </tbody>
@@ -78,10 +74,10 @@
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">User archetypes · value propositions</span><span>Dec 1</span></div>
   <h2 style="margin-bottom:18px">Who we are building for</h2>
-  <table style="font-size:19px">
+  <table style="font-size:24px">
     <thead><tr><th></th><th>Host-nation relationship owner</th><th>Base security chief</th><th>Base commander</th><th>Personnel on base</th></tr></thead>
     <tbody>
-      <tr><td>Role</td><td>Approves what the U.S. can install on host-nation soil</td><td>Runs the response: posture, QRF, reacquiring the track, local liaison</td><td>Shelter-in-place, FPCON <span class="x">force protection condition</span>, when to lift</td><td>Lives with the outcome of every alert</td></tr>
+      <tr><td>Role</td><td>Approves what the U.S. can install on host-nation soil</td><td>Runs the response: posture, QRF, reacquiring the track, local liaison</td><td>Shelter-in-place, FPCON, when to lift</td><td>Lives with the outcome of every alert</td></tr>
       <tr><td>Need</td><td>Protection with no new visible footprint</td><td>Continuous track: respond to where the drone is now</td><td>Protect people without needlessly halting the mission</td><td>Warnings that are timely, credible and rare</td></tr>
       <tr><td>Pain</td><td>Every visible sensor is a political negotiation</td><td>Drone drops behind buildings; manual reacquisition under time pressure</td><td>Lost track forces longer lockdowns</td><td>Frequent lockdowns stop work; false alarms breed alert fatigue</td></tr>
       <tr><td>Our fit</td><td>Passive acoustic nodes on existing structures</td><td>Holds the track through occlusion; faster reacquisition</td><td>Better track picture, shorter and better-targeted alerts</td><td>Fewer, shorter, more trustworthy shelter-in-place events</td></tr>
@@ -116,7 +112,7 @@
     <div class="card amber"><div class="big">2</div><h3>Acoustic sensors</h3><p>Detect and locate the drone when it is not visible; confirm it is the same drone when it reappears.</p></div>
     <div class="card amber"><div class="big">3</div><h3>Open architecture</h3><p>Different sensors and models, including better ones later. An overhead drone could be added.</p></div>
   </div>
-  <p class="note">Design around existing equipment? No: too many combinations, and they keep changing. Use representative equipment; any part can be swapped.</p>
+  <p class="foot">Design around existing equipment? No: too many combinations, and they keep changing. Use representative equipment; any part can be swapped.</p>
 </div></section>
 
 <section class="sl"><div class="in">
@@ -134,19 +130,19 @@
       <li><b>Mission and stakeholders</b> on the <a href="../index.html#mission" style="color:#9fdcff">project site</a>.</li>
     </ul>
   </div>
-  <p class="note">Firmware compiles and software tests pass; none of this week's hardware has run yet. Radar parts arrive ~Nov 30.</p>
+  <p class="foot">Firmware compiles and software tests pass; none of this week's hardware has run yet. Radar parts arrive ~Nov 30.</p>
 </div></section>
 
 <section class="sl"><div class="in">
-  <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">ROAREE · C2 (command and control)</span><span>Dec 1</span></div>
+  <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">ROAREE · C2</span><span>Dec 1</span></div>
   <h2 style="margin-bottom:20px">Sensors to operator</h2>
-  <div class="steps" style="--n:4;margin-bottom:26px">
+  <div class="flow" style="--n:4;margin-bottom:30px">
     <div><i>1</i><b>Listen</b><span>Nodes hear rotors; radar station sees motion; both report over LoRa</span></div>
     <div><i>2</i><b>Relay</b><span>Base receiver: LoRa to USB serial</span></div>
     <div><i>3</i><b>Fuse</b><span>ROAREE: Kalman track, dashboard, alert, TAK</span></div>
     <div><i>4</i><b>Cue</b><span>Camera tracker told where to look</span></div>
   </div>
-  <table style="font-size:20px">
+  <table style="font-size:23px">
     <thead><tr><th>Link</th><th>Direction</th><th>Carries</th><th>Rate</th></tr></thead>
     <tbody>
       <tr><td>LoRa 915 MHz</td><td>nodes, radar → base</td><td>detections, radar plots, heartbeats</td><td>2 per s per node; radar 5 per s</td></tr>
@@ -177,7 +173,7 @@
       <li><b>Tracking</b> · drone videos with true position; share of frames on the drone</li>
       <li><b>Photo test</b> · 2,200 unseen labeled photos; precision and recall</li></ul></div>
   </div>
-  <p class="note">v3 trained on 10 of the 20 tracking videos, so every version is scored on the other 10 (15,245 frames).</p>
+  <p class="foot">v3 trained on 10 of the 20 tracking videos, so every version is scored on the other 10 (15,245 frames).</p>
 </div></section>
 
 <section class="sl"><div class="in">
@@ -193,7 +189,7 @@
       <tr><td>Photo test precision / recall</td><td>96.2 / 90.7%</td><td>96.2 / 91.2%</td><td>95.6 / 91.3%</td></tr>
     </tbody>
   </table>
-  <p class="note">Birds and kites mostly solved (31% → 2%). Tracking steady at ~94%. Trees remain the gap; next: film our own drone over trees from a rooftop and retrain.</p>
+  <p class="foot">Birds and kites mostly solved (31% → 2%). Tracking steady at ~94%. Trees remain the gap; next: film our own drone over trees from a rooftop and retrain.</p>
 </div></section>
 
 <section class="sl"><div class="in">
@@ -204,21 +200,21 @@
     <div class="card blue"><h3>How it works</h3><p>Each node reports loudness. Node positions are known. Louder node = drone closer to it.</p></div>
     <div class="card amber"><h3>Node count</h3><p>8 per building: street level and roof at every corner. Demo: 4 nodes on 2 corners.</p></div>
   </div>
-  <p class="note">Every report carries loudness, confidence and rotor pitch.</p>
+  <p class="foot">Every report carries loudness, confidence and rotor pitch.</p>
 </div></section>
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">Acoustic node</span><span>Dec 1</span></div>
   <h2>What each node does</h2>
-  <div class="steps" style="--n:6">
+  <div class="flow" style="--n:6;flex:1">
     <div><i>1</i><b>Listen</b><span>4 mics combined for a stronger signal</span></div>
     <div><i>2</i><b>Clean</b><span>Filter wind rumble and hum</span></div>
-    <div><i>3</i><b>FFT</b><span>Fast Fourier transform: sound into frequencies, 15 per second</span></div>
+    <div><i>3</i><b>FFT</b><span>Sound into frequencies, 15 per second</span></div>
     <div><i>4</i><b>Comb</b><span>Evenly spaced peaks: the rotor signature</span></div>
     <div><i>5</i><b>Confirm</b><span>Pattern holds over several frames</span></div>
     <div><i>6</i><b>Alert</b><span>Pitch, loudness, confidence over LoRa</span></div>
   </div>
-  <p class="note">A generator's comb never moves. Traffic and wind have no comb. A drone's comb slides as it speeds up and turns. <a href="../index.html#build" style="color:#9fdcff">Breadboard layouts</a></p>
+  <p class="foot">A generator's comb never moves. Traffic and wind have no comb. A drone's comb slides as it speeds up and turns. <a href="../index.html#build" style="color:#9fdcff">Breadboard layouts</a></p>
 </div></section>
 
 <section class="sl"><div class="in">
@@ -235,7 +231,7 @@
       <li>Base receiver forwards it unchanged</li>
       <li>ROAREE gives each target a persistent ID and fuses it with the acoustic track</li></ul></div>
   </div>
-  <p class="note">Firmware compiles; parts arrive ~Nov 30. <a href="../index.html#build" style="color:#9fdcff">Build › Radar station</a></p>
+  <p class="foot">Firmware compiles; parts arrive ~Nov 30. <a href="../index.html#build" style="color:#9fdcff">Build › Radar station</a></p>
 </div></section>
 
 <section class="sl"><div class="in">
@@ -286,7 +282,7 @@
       <tr><td>End</td><td>Kinetic terminal guidance</td><td>Track and follow only</td></tr>
     </tbody>
   </table>
-  <p class="note">Anvil proves the cue, fly-out and onboard-lock chain in a fielded U.S. product. Ours keeps the track to the operator and can hand it to a defeat system.</p>
+  <p class="foot">Anvil proves the cue, fly-out and onboard-lock chain in a fielded U.S. product. Ours keeps the track to the operator and can hand it to a defeat system.</p>
 </div></section>
 
 </main>
@@ -297,6 +293,6 @@
   <ul id="archive"></ul>
 </section>
 
-<script src="deck.js?v=43"></script>
+<script src="deck.js?v=44"></script>
 </body>
 </html>
