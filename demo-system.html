@@ -101,13 +101,13 @@ circle.ant{fill:var(--lora);stroke:none}
 
 <header style="display:flex;flex-direction:column;gap:6px">
   <h1>Silent Sentinel Demo System</h1>
-  <p class="sub">One building, 4 listening nodes at the corners, 1 radar, 1 camera tracker, 1 RF receiver, fused at the C2 laptop. Pins and ports from <code>firmware/node/config.h</code>, <code>radar/</code>, <code>roaree</code>.</p>
+  <p class="sub">One building, 4 listening nodes at the corners, 1 radar, 1 camera tracker, 1 RF receiver, fused at the C2. Pins and ports from <code>firmware/node/config.h</code>, <code>radar/</code>, <code>roaree</code>.</p>
 </header>
 
 <section id="terms">
   <h2>Terms</h2>
   <dl class="gloss">
-    <div><dt>C2</dt> <dd><b>Command and Control</b>: laptop running the C2 software</dd></div>
+    <div><dt>C2</dt> <dd><b>Command and Control</b>: computer running ROAREE</dd></div>
     <div><dt>LoRa</dt> <dd><b>Long Range</b> radio, 915 MHz</dd></div>
     <div><dt>SF / BW</dt> <dd><b>Spreading Factor / Bandwidth</b> (LoRa settings)</dd></div>
     <div><dt>I2S</dt> <dd><b>Inter-IC Sound</b>: digital audio bus</dd></div>
@@ -173,7 +173,7 @@ circle.ant{fill:var(--lora);stroke:none}
       <!-- C2 table -->
       <rect class="box" x="680" y="200" width="180" height="120" rx="4"/>
       <text class="tb" x="694" y="224">C2 table</text>
-      <text class="s" x="694" y="244">laptop</text>
+      <text class="s" x="694" y="244">computer</text>
       <text class="s" x="694" y="260">base receiver</text>
       <text class="s" x="694" y="276">Pluto SDR</text>
       <text class="tl" x="590" y="190">LoRa</text>
@@ -462,7 +462,7 @@ circle.ant{fill:var(--lora);stroke:none}
     <figcaption>Component side up, as plugged into the breadboard. Only the 9-pin header plugs in. Blue dot = ANT pad; blue line = antenna wire direction.</figcaption>
   </figure>
   <h2 id="base-layout" style="margin-top:8px">Base receiver breadboard, to scale</h2>
-  <p class="def" style="max-width:85ch">Same ESP32 and RFM95W positions as a node, no mics. Sits at the C2 table, powered and read over USB from the laptop.</p>
+  <p class="def" style="max-width:85ch">Same ESP32 and RFM95W positions as a node, no mics. Sits at the C2 table, powered and read over USB from the C2.</p>
   <figure>
 <svg viewBox="0 0 1000 490" role="img" aria-label="Full breadboard drawn to scale, 5 pixels per millimetre, with the mic breakouts, RFM95W and ESP32-S3-DevKitC-1 at their real sizes.">
 <text class="s" x="60" y="20">Scale 5 px = 1 mm · left end = top when mounted · row numbers along top</text>
@@ -597,7 +597,7 @@ circle.ant{fill:var(--lora);stroke:none}
 <section id="base-radar">
   <h2>Base receiver and radar station</h2>
   <figure>
-    <svg viewBox="0 -30 1100 340" role="img" aria-label="Base receiver: RFM95W on SPI to ESP32-S3, USB to laptop. Radar station on site: RD-03D on UART to ESP32-S3, RFM95W on SPI sending plots over LoRa, powered by a USB power bank.">
+    <svg viewBox="0 -30 1100 340" role="img" aria-label="Base receiver: RFM95W on SPI to ESP32-S3, USB to the C2. Radar station on site: RD-03D on UART to ESP32-S3, RFM95W on SPI sending plots over LoRa, powered by a USB power bank.">
       <text class="tb" x="30" y="-10">Base receiver (breadboard)</text>
       <rect class="box" x="30" y="60" width="170" height="100" rx="4"/>
       <text class="tb" x="45" y="88">RFM95W</text><text class="s" x="45" y="108">same pins as node</text><text class="s" x="45" y="124">VIN 3V3 · GND</text>
@@ -612,7 +612,7 @@ circle.ant{fill:var(--lora);stroke:none}
       <line class="pwr" x1="420" y1="240" x2="420" y2="162" marker-end="url(#ap)"/>
       <text class="t" x="300" y="200">USB</text>
       <text class="tp" x="430" y="200">5 V</text>
-      <rect class="box2" x="300" y="242" width="180" height="40" rx="4"/><text class="t" x="315" y="267">C2 laptop</text>
+      <rect class="box2" x="300" y="242" width="180" height="40" rx="4"/><text class="t" x="315" y="267">C2</text>
 
       <text class="tb" x="580" y="-10">Radar station (breadboard, on site)</text>
       <rect class="box" x="580" y="60" width="170" height="130" rx="4"/>
@@ -645,7 +645,7 @@ circle.ant{fill:var(--lora);stroke:none}
 <section id="power">
   <h2>Power</h2>
   <figure>
-    <svg viewBox="0 0 1100 380" role="img" aria-label="Power sources: five USB power banks for the nodes and the radar station, laptop USB for base receiver and Pluto, wall outlet for the laptop.">
+    <svg viewBox="0 0 1100 380" role="img" aria-label="Power sources: five USB power banks for the nodes and the radar station, C2 USB for base receiver and Pluto, wall outlet for the C2.">
       <rect class="boxp" x="30" y="30" width="230" height="70" rx="4"/>
       <text class="tb" x="45" y="56">USB power bank ×5</text><text class="tpl" x="45" y="78">not owned · nodes + radar</text>
       <line class="pwr" x1="260" y1="65" x2="498" y2="65" marker-end="url(#ap)"/>
@@ -655,7 +655,7 @@ circle.ant{fill:var(--lora);stroke:none}
       <text class="s" x="515" y="78">est. ~0.1 A idle, ~0.2 A while LoRa transmits (RFM95W ~90 mA at 17 dBm)</text>
 
       <rect class="box" x="30" y="140" width="230" height="130" rx="4"/>
-      <text class="tb" x="45" y="166">C2 laptop USB ports</text><text class="s" x="45" y="188">2 devices → USB hub if</text><text class="s" x="45" y="204">fewer free ports</text>
+      <text class="tb" x="45" y="166">C2 USB ports</text><text class="s" x="45" y="188">2 devices → USB hub if</text><text class="s" x="45" y="204">fewer free ports</text>
       <path class="pwr" d="M260,165 H498" marker-end="url(#ap)"/>
       <path class="pwr" d="M260,245 H498" marker-end="url(#ap)"/>
       <text class="tp" x="300" y="158">5 V USB-C</text>
@@ -667,7 +667,7 @@ circle.ant{fill:var(--lora);stroke:none}
       <rect class="box" x="30" y="300" width="230" height="60" rx="4"/>
       <text class="tb" x="45" y="326">Wall outlet</text><text class="s" x="45" y="346">extension cord to C2 table</text>
       <path class="pwr" d="M260,345 H498" marker-end="url(#ap)"/>
-      <rect class="box" x="500" y="340" width="560" height="34" rx="4"/><text class="tb" x="515" y="362">C2 laptop</text><text class="s" x="700" y="362">own charger</text>
+      <rect class="box" x="500" y="340" width="560" height="34" rx="4"/><text class="tb" x="515" y="362">C2</text><text class="s" x="700" y="362">own charger</text>
     </svg>
     <figcaption>Node draw is roughly 1 W. A 10,000 mAh bank (~37 Wh) runs a node for well over a day. Some banks turn off below ~100 mA; pick one with an always-on or low-current mode.</figcaption>
   </figure>

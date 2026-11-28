@@ -72,7 +72,7 @@ const BUILDS = {
       mic("m0", "a", 1, "Mic 0", "I2S bus 0 · left"), mic("m1", "j", 1, "Mic 1", "I2S bus 0 · right"),
       mic("m2", "a", 58, "Mic 2", "I2S bus 1 · left"), mic("m3", "j", 58, "Mic 3", "I2S bus 1 · right")],
   },
-  base: { name: "Base receiver", count: "×1", parts: [esp("62.7 × 25.4 mm · LoRa receive, USB to the C2 laptop"), rfm()] },
+  base: { name: "Base receiver", count: "×1", parts: [esp("62.7 × 25.4 mm · LoRa receive, USB to the C2"), rfm()] },
   radar: { name: "Radar station", count: "×1", parts: [esp("62.7 × 25.4 mm · reads the radar, sends plots over LoRa"), rfm(), rd03d()], wires: RADAR_WIRES },
 };
 const BOARD = { id: "bb", name: "Breadboard", info: "830-point · 165.1 × 54.6 mm · 63 rows" };

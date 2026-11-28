@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=41">
+<link rel="stylesheet" href="assets/styles.css?v=42">
 </head>
 <body>
 
@@ -58,7 +58,7 @@
   <section class="slide statement" id="fusion" data-sec="Fusion">
     <div class="wrap cols">
       <h2 class="xl" data-scramble>Beyond<br>line of sight</h2>
-      <p class="body">Group 1 UAS (unmanned aircraft systems) at low altitude in urban terrain are masked from radar and EO/IR by structures. Detections from <a href="#sensors">all sensors</a> feed one <a href="https://github.com/H4D-Silent-Sentinel/sentinel/blob/main/cuas/tracker.py" target="_blank" rel="noopener">Kalman filter</a> in <a href="https://github.com/H4D-Silent-Sentinel/roaree" target="_blank" rel="noopener">ROAREE</a> (Remote Observation, Autonomous Recognition, and Event Evaluation), the C2 (command and control) software on the operator's laptop. Target identity is maintained through coverage gaps. ROAREE cues sensors to the predicted position and publishes tracks to TAK (Team Awareness Kit) as CoT (Cursor on Target). <a href="#system">Architecture</a></p>
+      <p class="body">Group 1 UAS (unmanned aircraft systems) at low altitude in urban terrain are masked from radar and EO/IR by structures. Detections from <a href="#sensors">all sensors</a> feed one <a href="https://github.com/H4D-Silent-Sentinel/sentinel/blob/main/cuas/tracker.py" target="_blank" rel="noopener">Kalman filter</a> in <a href="https://github.com/H4D-Silent-Sentinel/roaree" target="_blank" rel="noopener">ROAREE</a> (Remote Observation, Autonomous Recognition, and Event Evaluation), the C2 (command and control) software. Target identity is maintained through coverage gaps. ROAREE cues sensors to the predicted position and publishes tracks to TAK (Team Awareness Kit) as CoT (Cursor on Target). <a href="#system">Architecture</a></p>
     </div>
   </section>
 
@@ -151,7 +151,7 @@
         <span><i class="lg-plan"></i>In development</span>
       </div>
       <figure class="diagram">
-<svg viewBox="0 0 1200 710" role="img" aria-label="Four listening nodes and the radar station send LoRa reports to the base receiver, which feeds the C2 laptop over USB. Pluto SDR connects to the laptop by USB; Chaser drone Jetson connects over UDP.">
+<svg viewBox="0 0 1200 710" role="img" aria-label="Four listening nodes and the radar station send LoRa reports to the base receiver, which feeds the C2 over USB. Pluto SDR connects to the C2 by USB; Chaser drone Jetson connects over UDP.">
       <!-- nodes -->
       <text class="tb" x="30" y="40">Listening nodes ×4 (building corners)</text>
       <g>
@@ -205,9 +205,9 @@
       <text class="tb" x="465" y="264">Base receiver</text>
       <text class="t" x="465" y="286">RFM95W ⇄ ESP32-S3</text>
       <text class="s" x="465" y="304">firmware: base_rx</text>
-      <text class="tp" x="465" y="338">5 V from laptop USB</text>
+      <text class="tp" x="465" y="338">5 V from C2 USB</text>
 
-      <!-- base to laptop -->
+      <!-- base to C2 -->
       <line class="w" data-link="USB serial · base receiver forwards node reports (8 per second with 4 nodes) and radar plots (5 per second)" data-hz="13" x1="650" y1="295" x2="788" y2="295" marker-start="url(#af)" marker-end="url(#af)"/>
       <text class="t" x="664" y="284">USB serial</text>
       <text class="s" x="664" y="314">PKT → · ← TX</text>
@@ -227,7 +227,7 @@
       <text class="tb" x="465" y="604">Pluto SDR (RF)</text>
       <text class="s" x="465" y="624">drone control/video link</text>
       <text class="s" x="465" y="640">receive only</text>
-      <text class="tp" x="465" y="668">5 V from laptop USB</text>
+      <text class="tp" x="465" y="668">5 V from C2 USB</text>
       <line class="plan" x1="650" y1="625" x2="788" y2="625" marker-end="url(#ao)"/>
       <text class="tpl" x="664" y="615">USB · IQ</text>
 
@@ -237,9 +237,9 @@
       <text class="t" x="790" y="76">Visual-Tracker: YOLO11 + ByteTrack + VLM</text>
       <text class="tpl" x="790" y="96">camera input: none on order</text>
 
-      <!-- laptop -->
+      <!-- C2 -->
       <rect class="box" x="770" y="190" width="400" height="505" rx="6"/>
-      <text class="tb" x="790" y="214">C2 laptop (Mac)</text>
+      <text class="tb" x="790" y="214">C2</text>
       <text class="s" x="790" y="232">C2 software: fusion, tracking, cueing</text>
       <rect class="box2" x="790" y="250" width="360" height="120" rx="4"/>
       <text class="tb" x="805" y="274">Fusion</text>
@@ -271,7 +271,7 @@
       <rect class="box2" x="1010" y="520" width="140" height="40" rx="4"/>
       <text class="t" x="1022" y="545">CoT → TAK (opt.)</text>
       <text class="s" x="1010" y="590">outputs (browser / TAK)</text>
-      <text class="tp" x="1010" y="680">laptop charger ← wall</text>
+      <text class="tp" x="1010" y="680">C2 power ← wall</text>
       <a href="#build" data-board="node"><rect class="go" x="30" y="60" width="260" height="532" rx="4"/></a>
       <a href="#build" data-board="base"><rect class="go" x="450" y="240" width="200" height="110" rx="4"/></a>
       <a href="#build" data-board="radar"><rect class="go" x="450" y="430" width="200" height="120" rx="4"/></a>
@@ -324,7 +324,7 @@
       <line class="w" x1="300" y1="49.0" x2="438" y2="49.0" marker-end="url(#af)"/>
       <a href="#sensors"><rect class="box2" x="30" y="172" width="270" height="58" rx="4"/><text class="tb" x="46" y="196">Sensors</text><text class="s" x="46" y="216">acoustic, radar, camera, RF</text></a>
       <line class="w" x1="165" y1="230" x2="165" y2="322" marker-end="url(#af)"/>
-      <a href="https://github.com/H4D-Silent-Sentinel/roaree" target="_blank" rel="noopener"><rect class="box" x="30" y="324" width="270" height="58" rx="4"/><text class="tb" x="46" y="348">ROAREE (C2 laptop)</text><text class="s" x="46" y="368">dashboard · audio alert · Tango 2</text></a>
+      <a href="https://github.com/H4D-Silent-Sentinel/roaree" target="_blank" rel="noopener"><rect class="box" x="30" y="324" width="270" height="58" rx="4"/><text class="tb" x="46" y="348">ROAREE (C2)</text><text class="s" x="46" y="368">dashboard · audio alert · Tango 2</text></a>
       <line class="w" x1="300" y1="353.0" x2="438" y2="353.0" marker-end="url(#af)"/>
       <line class="net" x1="165" y1="382" x2="165" y2="474" marker-end="url(#an)"/>
       <text class="tn" x="175" y="434">CoT (Cursor on Target)</text>
@@ -370,7 +370,7 @@
           <div class="mmc-bs"><h4>Buy-in and support</h4><p class="def">Who must approve or back it</p><ul><li>COL Huston and CENTCOM</li><li>Host-nation coordination: political sensitivity is the key risk</li><li>Operators: tracks must appear in ATAK/TAK</li></ul></div>
           <div class="mmc-de"><h4>Deployment</h4><p class="def">How it reaches use</p><ul><li>Phase 1: acoustic nodes and fusion software at one base</li><li>Phase 2: existing radar, cameras, RF over CoT and SAPIENT</li><li>Phase 3: chaser drone with onboard AI</li><li>Tests: datasets, bench, then field outside NYC airspace</li></ul></div>
           <div class="mmc-be"><h4>Beneficiaries</h4><p class="def">Who gains from it</p><ul><li><a href="#ch-operator">C-UAS operator</a>: primary user</li><li><a href="#ch-fp">Force protection</a>: mission owner</li><li><a href="#ch-secfor">SECFOR</a>: response user</li><li><a href="#ch-personnel">Deployed personnel</a>: protected</li><li><a href="#ch-host">Host / local government</a>: external coordination</li></ul></div>
-          <div class="mmc-bc"><h4>Mission budget / cost</h4><p class="def">What it costs</p><ul><li>$1,000 class budget; ~$818 spent (3 orders)</li><li>~$125 per acoustic node</li><li>Software runs on a laptop</li><li>No custom radar: feeds come from what bases already have</li></ul></div>
+          <div class="mmc-bc"><h4>Mission budget / cost</h4><p class="def">What it costs</p><ul><li>$1,000 class budget; ~$818 spent (3 orders)</li><li>~$125 per acoustic node</li><li>C2 software runs on any computer</li><li>No custom radar: feeds come from what bases already have</li></ul></div>
           <div class="mmc-ma"><h4>Mission achievement / impact factors</h4><p class="def">How success is measured</p><ul><li>Risk: hearing rotors through city noise and echoes (multipath)</li><li>Next milestone: one node tells a drone from street noise, then a 4-node test</li><li>Success: track kept through the gap; time to reacquire when the drone reappears</li><li>Visual tracker tested: 0.7% false alarms, 0.15 s average reacquire</li></ul></div>
       </div>
       <p class="def">From the <a href="#briefings">12/1 briefing</a>; counts updated to the current build.</p>
@@ -445,11 +445,11 @@
   <div class="wrap legal"><span>Silent Sentinel · Hacking for Defense, Columbia University</span></div>
 </footer>
 
-<script src="assets/app.js?v=41" defer></script>
+<script src="assets/app.js?v=42" defer></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"}}</script>
-<script type="module" src="assets/boards.js?v=41"></script>
-<script type="module" src="assets/hero3d.js?v=41"></script>
-<script type="module" src="assets/sensors3d.js?v=41"></script>
-<script src="assets/diagrams.js?v=41" defer></script>
+<script type="module" src="assets/boards.js?v=42"></script>
+<script type="module" src="assets/hero3d.js?v=42"></script>
+<script type="module" src="assets/sensors3d.js?v=42"></script>
+<script src="assets/diagrams.js?v=42" defer></script>
 </body>
 </html>
