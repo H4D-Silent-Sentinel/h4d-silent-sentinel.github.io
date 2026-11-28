@@ -297,7 +297,7 @@
       <figure class="diagram">
     <svg viewBox="0 0 1344 640" role="img" aria-label="Chain of stakeholders from CENTCOM to deployed personnel. ROAREE feeds the C-UAS operator directly and sends the track as CoT to a TAK server, which puts it on the map for the base commander, force protection lead, intelligence analyst and SECFOR. Reports go up the chain and orders come down.">
       <rect class="box" x="440" y="20" width="780" height="58" rx="4"/>
-      <text class="tb" x="456" y="44">CENTCOM</text><text class="s" x="456" y="64">U.S. Central Command · sponsor, COL Nate Huston</text>
+      <text class="tb" x="456" y="44">CENTCOM</text><text class="s" x="456" y="64">U.S. Central Command · sponsor, COL Nate Huston (Ret.)</text>
       <line class="s-tick" x1="864" y1="32" x2="864" y2="66"/><text class="t" x="880" y="54">Requirement: track custody, open architecture</text>
       <rect class="box" x="440" y="96" width="780" height="58" rx="4"/>
       <text class="tb" x="456" y="120">Host nation</text><text class="s" x="456" y="140">Host / local government · external coordination</text>
@@ -363,7 +363,7 @@
 
       <h2 class="mmc-h" data-scramble>Mission Model Canvas</h2>
       <div class="mmc">
-          <div class="mmc-kp"><h4>Key partners</h4><p class="def">Outside help the mission depends on</p><ul><li>COL Nate Huston, <a href="#ch-centcom">CENTCOM</a> (sponsor)</li><li>Lennart Schulze, computer vision researcher</li><li>Alon Simon Levin, PhD, sensor fusion</li><li>Yaron Zussman, sensor integration</li><li>Host-nation stakeholders, through the sponsor</li><li>Radar, camera and RF vendors: ROAREE takes their feeds</li></ul></div>
+          <div class="mmc-kp"><h4>Key partners</h4><p class="def">Outside help the mission depends on</p><ul><li>COL Nate Huston (Ret.), <a href="#ch-centcom">CENTCOM</a> (sponsor)</li><li>Lennart Schulze, computer vision researcher</li><li>Alon Simon Levin, PhD, sensor fusion</li><li>Yaron Zussman, sensor integration</li><li>Host-nation stakeholders, through the sponsor</li><li>Radar, camera and RF vendors: ROAREE takes their feeds</li></ul></div>
           <div class="mmc-ka"><h4>Key activities</h4><p class="def">Work the team does</p><ul><li>Beneficiary interviews</li><li>Build and field-test <a href="#build" data-board="node">acoustic nodes</a></li><li>Node firmware: rotor detection, LoRa reports</li><li>Fusion software: <a href="https://github.com/H4D-Silent-Sentinel/roaree" target="_blank" rel="noopener">ROAREE</a>, one track per drone</li><li>Integrate radar, cameras, RF, TAK</li><li>Chaser onboard AI on the Jetson Orin Nano</li></ul></div>
           <div class="mmc-kr"><h4>Key resources</h4><p class="def">Hardware, data, people, money</p><ul><li>Acoustic nodes: ESP32-S3, 4 MEMS mics, LoRa (demo: 4)</li><li><a href="#build" data-board="radar">RD-03D radar station</a></li><li>Pluto SDR (RF)</li><li>Jetson Orin Nano</li><li>Public drone-audio and radar-track datasets</li><li>Street maps: OpenStreetMap, Google Earth</li><li>$1,000 class budget</li></ul></div>
           <div class="mmc-vp"><h4>Value propositions</h4><p class="def">What beneficiaries gain</p><ul><li>One track that holds when a sensor loses the drone</li><li>Cues radar, cameras and the chaser to the drone's position</li><li>Works with sensors bases already own</li><li>~$125 per acoustic node</li><li>Visual tracker: ~94% of frames on target (10 held-out videos)</li></ul></div>
