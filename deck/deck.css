@@ -126,26 +126,5 @@ body.deck-page { background: #000; }
 /* team: centered columns, small single-color service marks */
 .sl .tgrid > div, .sl .tgrid > div:first-child { align-items: center; text-align: center; padding: 0 16px 10px; }
 .sl .tgrid .svc { width: 64px; height: 64px; object-position: center; margin: 14px auto 0; }
-/* canvas change marks (deck only) */
-.sl .mmc li.del { display: list-item; color: #ff8f78; text-decoration: line-through; opacity: .85; }
-.sl .mmc li.del::before { background: var(--pwr); }
-.sl .mmc li.add { color: #8ff0c4; }
-.sl .mmc li.add::before { background: var(--net); }
-.sl .mmc li.add a { color: #8ff0c4; }
-.sl .mmc-key { display: flex; gap: 22px; font: 400 20px/1 var(--mono); color: var(--muted); }
-.sl .mmc-key span::before { content: ""; display: inline-block; width: 12px; height: 12px; margin-right: 8px; }
-.sl .mmc-key .k-add { color: #8ff0c4; } .sl .mmc-key .k-add::before { background: var(--net); }
-.sl .mmc-key .k-del { color: #ff8f78; text-decoration: line-through; } .sl .mmc-key .k-del::before { background: var(--pwr); }
-.sl .mmc-key span:last-child::before { display: none; }
 .sl .imp .mmc li { font-size: 19px; line-height: 1.28; padding-bottom: 5px; }
 .sl .imp .mmc h4 { font-size: 23px; }
-/* canvas changes slide */
-.sl .mmc-diff { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; min-height: 0; }
-.sl .mmc-diff .dcol { border: 1px solid var(--holo-dim); background: rgba(6,10,14,.85); padding: 26px 30px; display: flex; flex-direction: column; justify-content: space-evenly; }
-.sl .mmc-diff .add { border-top: 3px solid var(--net); } .sl .mmc-diff .del { border-top: 3px solid var(--pwr); }
-.sl .mmc-diff h3 { font-size: 40px; margin: 0; }
-.sl .mmc-diff .add h3 { color: var(--net); } .sl .mmc-diff .del h3 { color: var(--pwr); }
-.sl .mmc-diff h4 { margin: 0 0 6px; font: 700 17px/1 var(--display); letter-spacing: .18em; text-transform: uppercase; color: #9fdcff; }
-.sl .mmc-diff ul li { font-size: 26px; margin-bottom: 6px; }
-.sl .mmc-diff .add li::before { background: var(--net); } .sl .mmc-diff .del li::before { background: var(--pwr); }
-.sl .mmc-diff .del li { text-decoration: line-through; text-decoration-color: rgba(255,122,92,.7); }

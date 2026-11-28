@@ -7,19 +7,8 @@
 
   // shared figures: <div class="imp" data-import="#system figure.diagram" data-wrap="system">
   const imps = [...deck.querySelectorAll("[data-import]")];
-  const diffs = [...deck.querySelectorAll("[data-diff]")];
-  if (imps.length || diffs.length) fetch("../index.html").then(r => r.text()).then(html => {
+  if (imps.length) fetch("../index.html").then(r => r.text()).then(html => {
     const doc = new DOMParser().parseFromString(html, "text/html");
-    // canvas changes: added / removed items per box
-    for (const el of diffs) {
-      const boxes = [...doc.querySelectorAll(el.dataset.diff + " > div")];
-      const col = cls => boxes.map(b => {
-        const items = [...b.querySelectorAll("li." + cls)].map(li => `<li>${li.textContent.trim()}</li>`).join("");
-        return items ? `<div class="grp"><h4>${b.querySelector("h4").textContent}</h4><ul>${items}</ul></div>` : "";
-      }).join("");
-      el.innerHTML = `<div class="dcol add"><h3>Added</h3>${col("add")}</div><div class="dcol del"><h3>Removed</h3>${col("del")}</div>`;
-    }
-    const defs = doc.querySelector("body > svg"); if (defs) document.body.prepend(document.importNode(defs, true));
     for (const el of imps) {
       const src = doc.querySelector(el.dataset.import); if (!src) continue;
       const node = document.importNode(src, true);

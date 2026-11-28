@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=45">
+<link rel="stylesheet" href="assets/styles.css?v=46">
 </head>
 <body>
 
@@ -365,13 +365,13 @@
       <div class="mmc">
           <div class="mmc-kp"><h4>Key partners</h4><p class="def">Outside help the mission depends on</p><ul><li>COL Nate Huston, <a href="#ch-centcom">CENTCOM</a> (sponsor)</li><li>Lennart Schulze, computer vision researcher</li><li>Alon Simon Levin, PhD, sensor fusion</li><li>Yaron Zussman, sensor integration</li><li>Host-nation stakeholders, through the sponsor</li><li>Radar, camera and RF vendors: ROAREE takes their feeds</li></ul></div>
           <div class="mmc-ka"><h4>Key activities</h4><p class="def">Work the team does</p><ul><li>Beneficiary interviews</li><li>Build and field-test <a href="#build" data-board="node">acoustic nodes</a></li><li>Node firmware: rotor detection, LoRa reports</li><li>Fusion software: <a href="https://github.com/H4D-Silent-Sentinel/roaree" target="_blank" rel="noopener">ROAREE</a>, one track per drone</li><li>Integrate radar, cameras, RF, TAK</li><li>Chaser onboard AI on the Jetson Orin Nano</li></ul></div>
-          <div class="mmc-kr"><h4>Key resources</h4><p class="def">Hardware, data, people, money</p><ul><li class="del">6 acoustic nodes</li><li class="add">Acoustic nodes: ESP32-S3, 4 MEMS mics, LoRa (demo: 4)</li><li class="add"><a href="#build" data-board="radar">RD-03D radar station</a></li><li>Pluto SDR (RF)</li><li>Jetson Orin Nano</li><li class="del">Our own UAS</li><li>Public drone-audio and radar-track datasets</li><li>Street maps: OpenStreetMap, Google Earth</li><li>$1,000 class budget</li><li class="del">$753 spent</li></ul></div>
-          <div class="mmc-vp"><h4>Value propositions</h4><p class="def">What beneficiaries gain</p><ul><li class="add">One track that holds when a sensor loses the drone</li><li class="del">Predicts where the drone reappears</li><li>Cues radar, cameras and the chaser to the drone's position</li><li>Works with sensors bases already own</li><li>~$125 per acoustic node</li><li class="del">95.7% tracking accuracy</li><li class="add">Visual tracker: ~94% of frames on target (10 held-out videos)</li></ul></div>
+          <div class="mmc-kr"><h4>Key resources</h4><p class="def">Hardware, data, people, money</p><ul><li>Acoustic nodes: ESP32-S3, 4 MEMS mics, LoRa (demo: 4)</li><li><a href="#build" data-board="radar">RD-03D radar station</a></li><li>Pluto SDR (RF)</li><li>Jetson Orin Nano</li><li>Public drone-audio and radar-track datasets</li><li>Street maps: OpenStreetMap, Google Earth</li><li>$1,000 class budget</li></ul></div>
+          <div class="mmc-vp"><h4>Value propositions</h4><p class="def">What beneficiaries gain</p><ul><li>One track that holds when a sensor loses the drone</li><li>Cues radar, cameras and the chaser to the drone's position</li><li>Works with sensors bases already own</li><li>~$125 per acoustic node</li><li>Visual tracker: ~94% of frames on target (10 held-out videos)</li></ul></div>
           <div class="mmc-bs"><h4>Buy-in and support</h4><p class="def">Who must approve or back it</p><ul><li>COL Huston and CENTCOM</li><li>Host-nation coordination: political sensitivity is the key risk</li><li>Operators: tracks must appear in ATAK/TAK</li></ul></div>
           <div class="mmc-de"><h4>Deployment</h4><p class="def">How it reaches use</p><ul><li>Phase 1: acoustic nodes and fusion software at one base</li><li>Phase 2: existing radar, cameras, RF over CoT and SAPIENT</li><li>Phase 3: chaser drone with onboard AI</li><li>Tests: datasets, bench, then field outside NYC airspace</li></ul></div>
           <div class="mmc-be"><h4>Beneficiaries</h4><p class="def">Who gains from it</p><ul><li><a href="#ch-operator">C-UAS operator</a>: primary user</li><li><a href="#ch-fp">Force protection</a>: mission owner</li><li><a href="#ch-secfor">SECFOR</a>: response user</li><li><a href="#ch-personnel">Deployed personnel</a>: protected</li><li><a href="#ch-host">Host / local government</a>: external coordination</li></ul></div>
-          <div class="mmc-bc"><h4>Mission budget / cost</h4><p class="def">What it costs</p><ul><li class="add">$1,000 class budget; ~$818 spent (3 orders)</li><li>~$125 per acoustic node</li><li>C2 software runs on any computer</li><li>No custom radar: feeds come from what bases already have</li><li class="del">Chaser: Jetson Orin Nano on our own UAS</li></ul></div>
-          <div class="mmc-ma"><h4>Mission achievement / impact factors</h4><p class="def">How success is measured</p><ul><li>Risk: hearing rotors through city noise and echoes (multipath)</li><li class="add">Next milestone: one node tells a drone from street noise, then a 4-node test</li><li>Success: track kept through the gap; time to reacquire when the drone reappears</li><li>Visual tracker tested: 0.7% false alarms, 0.15 s average reacquire</li></ul></div>
+          <div class="mmc-bc"><h4>Mission budget / cost</h4><p class="def">What it costs</p><ul><li>$1,000 class budget; ~$818 spent (3 orders)</li><li>~$125 per acoustic node</li><li>C2 software runs on any computer</li><li>No custom radar: feeds come from what bases already have</li></ul></div>
+          <div class="mmc-ma"><h4>Mission achievement / impact factors</h4><p class="def">How success is measured</p><ul><li>Risk: hearing rotors through city noise and echoes (multipath)</li><li>Next milestone: one node tells a drone from street noise, then a 4-node test</li><li>Success: track kept through the gap; time to reacquire when the drone reappears</li><li>Visual tracker tested: 0.7% false alarms, 0.15 s average reacquire</li></ul></div>
       </div>
       <p class="def">From the <a href="#briefings">12/1 briefing</a>; counts updated to the current build.</p>
     </div>
@@ -445,11 +445,11 @@
   <div class="wrap legal"><span>Silent Sentinel · Hacking for Defense, Columbia University</span></div>
 </footer>
 
-<script src="assets/app.js?v=45" defer></script>
+<script src="assets/app.js?v=46" defer></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"}}</script>
-<script type="module" src="assets/boards.js?v=45"></script>
-<script type="module" src="assets/hero3d.js?v=45"></script>
-<script type="module" src="assets/sensors3d.js?v=45"></script>
-<script src="assets/diagrams.js?v=45" defer></script>
+<script type="module" src="assets/boards.js?v=46"></script>
+<script type="module" src="assets/hero3d.js?v=46"></script>
+<script type="module" src="assets/sensors3d.js?v=46"></script>
+<script src="assets/diagrams.js?v=46" defer></script>
 </body>
 </html>
