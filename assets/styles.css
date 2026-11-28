@@ -435,3 +435,6 @@ h1, h2 { text-shadow: 0 0 22px rgba(127,212,255,.2); }
 .mmc-bc { grid-area: bc; --c: #c9cdd2 !important; } .mmc-ma { grid-area: ma; --c: #c9cdd2 !important; }
 @media (max-width: 1150px) { .mmc { grid-template-columns: 1fr 1fr; grid-template-areas: "be vp" "bs de" "kp ka" "kr kr" "bc ma"; } }
 @media (max-width: 700px) { .mmc { grid-template-columns: 1fr; grid-template-areas: "be" "vp" "bs" "de" "kp" "ka" "kr" "bc" "ma"; } .mission th, .mission td { padding: 9px 10px; } }
+.h4d-eb a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.h4d-eb img { height: 22px; width: auto; }
+.h4d-eb { display: flex; align-items: center; gap: .6em; }

@@ -67,3 +67,6 @@ body.deck-page { background: #000; }
 .sl .imp .mmc h4 { font-size: 18px; margin-bottom: 6px; }
 .sl .imp .mmc li { font-size: 14px; padding: 0 0 3px 13px; line-height: 1.25; }
 .sl .imp .mmc li::before { width: 5px; height: 5px; top: .5em; }
+.sl .hd span:first-child { display: flex; align-items: center; gap: 12px; }
+.sl .hd img.h4d { height: 30px; margin: -8px 0; }
+.sl .h4d-big { height: 120px; width: auto; align-self: flex-start; margin-bottom: 26px; }
