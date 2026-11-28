@@ -7,7 +7,7 @@
 <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="../assets/styles.css?v=52">
-<link rel="stylesheet" href="deck.css?v=59">
+<link rel="stylesheet" href="deck.css?v=60">
 </head>
 <body class="deck-page">
 
@@ -150,26 +150,26 @@
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">MVP &amp; testing</span><span>Dec 1</span></div>
-  <h2>Updates</h2>
-  <div class="cols" style="--n:2">
-    <ul>
-      <li><b>Camera tracker linked to ROAREE</b>: Visual-Tracker sends tracks and receives cues; merged to main with moving-camera compensation.</li>
-      <li><b>Radar station over LoRa</b>: RD-03D, ESP32-S3 and RFM95W on the roof; up to 3 targets per packet, 5 per second, to the base receiver.</li>
-      <li><b>Full building layout</b>: 8 listening nodes (street and roof at every corner), roof receiver, 4 roof radars facing out.</li>
-    </ul>
-    <ul>
-      <li><b>Proximity alert</b>: ROAREE shows distance to the nearest node and beeps faster as the drone closes.</li>
-      <li><b>Hand controller</b>: TBS Tango 2 mutes sensor groups, ignores a node, toggles TAK output, selects a track.</li>
-      <li><b>Mission and stakeholders</b> on the <a href="../index.html#mission" style="color:#9fdcff">project site</a>.</li>
-    </ul>
-  </div>
-  <p class="foot">Status: firmware compiles, software tests pass, not yet run on hardware. Radar parts ~Nov 30.</p>
+  <h2 style="font-size:54px;margin-bottom:14px">Architecture</h2>
+  <div class="imp" data-import="#system figure.diagram" data-wrap="system"></div>
 </div></section>
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">MVP &amp; testing</span><span>Dec 1</span></div>
-  <h2 style="font-size:54px;margin-bottom:14px">Architecture</h2>
-  <div class="imp" data-import="#system figure.diagram" data-wrap="system"></div>
+  <h2 style="font-size:54px;margin-bottom:14px">Listening node</h2>
+  <div class="imp demo" data-demo="Listening node: inside one breadboard"></div>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">MVP &amp; testing</span><span>Dec 1</span></div>
+  <h2 style="font-size:54px;margin-bottom:14px">Node layout</h2>
+  <div class="imp demo" data-demo="Node breadboard layout, to scale"></div>
+</div></section>
+
+<section class="sl"><div class="in">
+  <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">MVP &amp; testing</span><span>Dec 1</span></div>
+  <h2 style="font-size:54px;margin-bottom:14px">Base receiver and radar station</h2>
+  <div class="imp demo" data-demo="Base receiver and radar station"></div>
 </div></section>
 
 <section class="sl"><div class="in">
@@ -337,6 +337,6 @@
   <ul id="archive"></ul>
 </section>
 
-<script src="deck.js?v=55"></script>
+<script src="deck.js?v=61"></script>
 </body>
 </html>

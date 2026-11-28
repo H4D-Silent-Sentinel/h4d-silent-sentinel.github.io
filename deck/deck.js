@@ -7,7 +7,7 @@
 
   // shared figures: <div class="imp" data-import="#system figure.diagram" data-wrap="system">
   const imps = [...deck.querySelectorAll("[data-import]")];
-  if (imps.length) fetch("../index.html").then(r => r.text()).then(html => {
+  if (imps.length) fetch("../index.html", { cache: "no-cache" }).then(r => r.text()).then(html => {
     const doc = new DOMParser().parseFromString(html, "text/html");
     for (const el of imps) {
       const src = doc.querySelector(el.dataset.import); if (!src) continue;
@@ -25,6 +25,29 @@
         }
         node.style.transform = `scale(${k})`;
       }
+    }
+  });
+
+  // figures from the demo-system page: <div class="imp demo" data-demo="Heading prefix">
+  // rendered in a shadow root with that page's own styles (dark theme) so class names don't clash
+  const demos = [...deck.querySelectorAll("[data-demo]")];
+  if (demos.length) fetch("../demo-system.html", { cache: "no-cache" }).then(r => r.text()).then(html => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const css = [...doc.querySelectorAll("style")].map(s => s.textContent).join("\n")
+      .replace(/:root\[data-theme="dark"\]/g, ":host").replace(/:root(?!\[)/g, ":host-light");
+    const defs = [...doc.querySelectorAll("svg")].find(s => s.querySelector("marker"));
+    const h2s = [...doc.querySelectorAll("h2")], svgs = [...doc.querySelectorAll("svg")];
+    for (const el of demos) {
+      const h = h2s.find(x => x.textContent.trim().startsWith(el.dataset.demo)); if (!h) continue;
+      const svg = svgs.find(s => s !== defs && (h.compareDocumentPosition(s) & Node.DOCUMENT_POSITION_FOLLOWING)); if (!svg) continue;
+      const root = el.attachShadow({ mode: "open" });
+      root.innerHTML = `<style>${css}
+        :host{display:block;width:100%;height:100%}
+        svg.fig{display:block;width:100%;height:100%;min-width:0;color:var(--fg);font-family:var(--mono)}
+        .box{fill:rgba(22,29,38,.85)}</style>`;
+      if (defs) root.appendChild(document.importNode(defs, true)).setAttribute("style", "position:absolute;width:0;height:0");
+      const n = document.importNode(svg, true); n.classList.add("fig"); n.setAttribute("preserveAspectRatio", "xMidYMid meet");
+      root.appendChild(n);
     }
   });
 
