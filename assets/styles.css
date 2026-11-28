@@ -399,3 +399,39 @@ h1, h2 { text-shadow: 0 0 22px rgba(127,212,255,.2); }
 .bd-links .btn { margin-left: auto; }
 .statement .body a, .hero .lede a { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(127,212,255,.45); }
 .statement .body a:hover, .hero .lede a:hover { color: #fff; border-color: #fff; }
+
+/* mission: stakeholder chain, table, mission model canvas */
+.mk-p { fill: var(--pwr); }
+.s-tick { stroke: rgba(255,255,255,.14); stroke-width: 1; stroke-dasharray: 2 4; }
+.mission { justify-content: flex-start; }
+.mission figure.diagram { margin: 0 0 22px; border: 1px solid var(--holo-dim); background: var(--corners), rgba(6,10,14,.92); padding: 22px; overflow-x: auto; }
+.mission .tbl { overflow-x: auto; border: 1px solid var(--holo-dim); background: rgba(6,10,14,.92); margin-bottom: 12px; }
+.mission table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.45; }
+.mission th, .mission td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--text); }
+.mission th { font: 700 13px/1 var(--display); letter-spacing: .18em; text-transform: uppercase; color: #9fdcff; }
+.mission tr:last-child td { border-bottom: 0; }
+.mission td.role b { display: block; color: #fff; font-weight: 500; }
+.mission td.role span { font: 400 12px/1.3 var(--mono); color: #9fdcff; }
+.mission td a, .mission .def a, .mmc a { color: #9fdcff; text-decoration: none; border-bottom: 1px solid rgba(127,212,255,.35); }
+.mission tr:target td { background: rgba(127,212,255,.08); }
+.mission .chip { display: inline-block; padding: 2px 9px; border-radius: 10px; font: 500 12px/1.4 var(--mono); white-space: nowrap; }
+.mission .chip.ok { background: rgba(111,211,168,.14); color: var(--net); }
+.mission .chip.wip { background: rgba(255,181,71,.12); color: var(--accent); }
+.mission .chip.no { background: rgba(255,122,92,.13); color: var(--pwr); }
+.mission .def { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+.mission .def b { color: #fff; font-weight: 500; }
+.mmc-h { margin-top: 70px; }
+.mmc { display: grid; grid-template-columns: repeat(10, 1fr); grid-template-areas:
+  "kp kp ka ka vp vp bs bs be be" "kp kp kr kr vp vp de de be be" "bc bc bc bc bc ma ma ma ma ma"; gap: 10px; margin: 18px 0 12px; }
+.mmc > div { --c: var(--holo); border: 1px solid var(--holo-dim); border-top: 3px solid var(--c); background: rgba(6,10,14,.92); padding: 18px 18px 16px; min-width: 0; }
+.mmc h4 { margin: 0 0 4px; font: 800 22px/1.05 var(--display); letter-spacing: .04em; text-transform: uppercase; color: var(--c); }
+.mmc .def { font: 400 12px/1.35 var(--mono); color: var(--muted); margin: 0 0 12px; }
+.mmc ul { list-style: none; margin: 0; padding: 0; }
+.mmc li { position: relative; padding: 0 0 8px 16px; font-size: 14.5px; line-height: 1.45; color: var(--text); }
+.mmc li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 6px; height: 6px; background: var(--c); opacity: .8; }
+.mmc-kp { grid-area: kp; } .mmc-ka { grid-area: ka; } .mmc-kr { grid-area: kr; }
+.mmc-vp { grid-area: vp; --c: var(--accent) !important; } .mmc-bs { grid-area: bs; --c: var(--net) !important; }
+.mmc-de { grid-area: de; --c: var(--net) !important; } .mmc-be { grid-area: be; --c: var(--net) !important; }
+.mmc-bc { grid-area: bc; --c: #c9cdd2 !important; } .mmc-ma { grid-area: ma; --c: #c9cdd2 !important; }
+@media (max-width: 1150px) { .mmc { grid-template-columns: 1fr 1fr; grid-template-areas: "be vp" "bs de" "kp ka" "kr kr" "bc ma"; } }
+@media (max-width: 700px) { .mmc { grid-template-columns: 1fr; grid-template-areas: "be" "vp" "bs" "de" "kp" "ka" "kr" "bc" "ma"; } .mission th, .mission td { padding: 9px 10px; } }

@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=39">
+<link rel="stylesheet" href="assets/styles.css?v=40">
 </head>
 <body>
 
@@ -19,6 +19,7 @@
     <marker id="af" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-fg" d="M0,0L10,5L0,10z"/></marker>
     <marker id="al" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-l" d="M0,0L10,5L0,10z"/></marker>
     <marker id="an" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-n" d="M0,0L10,5L0,10z"/></marker>
+    <marker id="ap" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-p" d="M0,0L10,5L0,10z"/></marker>
     <marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-o" d="M0,0L10,5L0,10z"/></marker>
   </defs>
 </svg>
@@ -29,6 +30,7 @@
     <ul id="menu">
       <li><a href="#capability">Capability</a></li>
       <li><a href="#system">System</a></li>
+      <li><a href="#mission">Mission</a></li>
       <li><a href="#build">Build</a></li>
       <li><a href="#progress">Progress</a></li>
       <li><a href="#briefings">Briefings</a></li>
@@ -281,6 +283,100 @@
   </section>
 
   <!-- 9 progress: awards layout -->
+  <!-- mission: stakeholders up and down the chain, mission model canvas -->
+  <section class="slide mission" id="mission" data-sec="Mission">
+    <div class="wrap">
+      <div class="eyebrow">Mission</div>
+      <h2 data-scramble>Stakeholders</h2>
+      <div class="legend">
+        <span><i class="lg-usb"></i>Direct</span>
+        <span><i class="lg-net"></i>Reports up / CoT</span>
+        <span><i class="lg-pwr"></i>Orders down</span>
+        <span><i class="lg-plan"></i>Not set up</span>
+      </div>
+      <figure class="diagram">
+    <svg viewBox="0 0 1344 640" role="img" aria-label="Chain of stakeholders from CENTCOM to deployed personnel. ROAREE feeds the C-UAS operator directly and sends the track as CoT to a TAK server, which puts it on the map for the base commander, force protection lead, intelligence analyst and SECFOR. Reports go up the chain and orders come down.">
+      <rect class="box" x="440" y="20" width="780" height="58" rx="4"/>
+      <text class="tb" x="456" y="44">CENTCOM</text><text class="s" x="456" y="64">U.S. Central Command · sponsor, COL Nate Huston</text>
+      <line class="s-tick" x1="864" y1="32" x2="864" y2="66"/><text class="t" x="880" y="54">Requirement: track custody, open architecture</text>
+      <rect class="box" x="440" y="96" width="780" height="58" rx="4"/>
+      <text class="tb" x="456" y="120">Host nation</text><text class="s" x="456" y="140">Host / local government · external coordination</text>
+      <line class="s-tick" x1="864" y1="108" x2="864" y2="142"/><text class="t" x="880" y="130">Approves what U.S. forces install</text>
+      <rect class="box" x="440" y="172" width="780" height="58" rx="4"/>
+      <text class="tb" x="456" y="196">Base commander</text><text class="s" x="456" y="216">Mission and risk owner</text>
+      <line class="s-tick" x1="864" y1="184" x2="864" y2="218"/><text class="t" x="880" y="206">Shelter-in-place; force protection condition</text>
+      <rect class="box" x="440" y="248" width="780" height="58" rx="4"/>
+      <text class="tb" x="456" y="272">Force protection lead</text><text class="s" x="456" y="292">Base security chief · mission owner</text>
+      <line class="s-tick" x1="864" y1="260" x2="864" y2="294"/><text class="t" x="880" y="282">Posture, QRF (quick reaction force) launch</text>
+      <rect class="box" x="440" y="324" width="780" height="58" rx="4"/>
+      <text class="tb" x="456" y="348">C-UAS operator</text><text class="s" x="456" y="368">Counter-UAS · primary user</text>
+      <line class="s-tick" x1="864" y1="336" x2="864" y2="370"/><text class="t" x="880" y="358">Holds the track, cues sensors</text>
+      <rect class="box" x="440" y="400" width="780" height="58" rx="4"/>
+      <text class="tb" x="456" y="424">Intelligence analyst</text><text class="s" x="456" y="444">S2 / ISR (intelligence, surveillance, reconnaissance)</text>
+      <line class="s-tick" x1="864" y1="412" x2="864" y2="446"/><text class="t" x="880" y="434">Pattern of life, attribution to the pilot</text>
+      <rect class="box" x="440" y="476" width="780" height="58" rx="4"/>
+      <text class="tb" x="456" y="500">SECFOR</text><text class="s" x="456" y="520">Security forces · response user</text>
+      <line class="s-tick" x1="864" y1="488" x2="864" y2="522"/><text class="t" x="880" y="510">Ground response to the drone and pilot</text>
+      <rect class="box" x="440" y="552" width="780" height="58" rx="4"/>
+      <text class="tb" x="456" y="576">Deployed personnel</text><text class="s" x="456" y="596">Protected beneficiaries</text>
+      <line class="s-tick" x1="864" y1="564" x2="864" y2="598"/><text class="t" x="880" y="586">Shelter on order</text>
+      <a href="#briefings"><rect class="box2" x="30" y="20" width="270" height="58" rx="4"/><text class="tb" x="46" y="44">Weekly briefings</text><text class="s" x="46" y="64">progress, demo, design choices</text></a>
+      <line class="w" x1="300" y1="49.0" x2="438" y2="49.0" marker-end="url(#af)"/>
+      <a href="#sensors"><rect class="box2" x="30" y="172" width="270" height="58" rx="4"/><text class="tb" x="46" y="196">Sensors</text><text class="s" x="46" y="216">acoustic, radar, camera, RF</text></a>
+      <line class="w" x1="165" y1="230" x2="165" y2="322" marker-end="url(#af)"/>
+      <a href="https://github.com/H4D-Silent-Sentinel/roaree" target="_blank" rel="noopener"><rect class="box" x="30" y="324" width="270" height="58" rx="4"/><text class="tb" x="46" y="348">ROAREE (C2 laptop)</text><text class="s" x="46" y="368">dashboard · audio alert · Tango 2</text></a>
+      <line class="w" x1="300" y1="353.0" x2="438" y2="353.0" marker-end="url(#af)"/>
+      <line class="net" x1="165" y1="382" x2="165" y2="474" marker-end="url(#an)"/>
+      <text class="tn" x="175" y="434">CoT (Cursor on Target)</text>
+      <rect class="boxp" x="30" y="476" width="270" height="58" rx="4"/><text class="tb" x="46" y="500">TAK server</text><text class="tpl" x="46" y="520">Team Awareness Kit · not set up</text>
+      <path class="plan" d="M300,505.0 H370 V201.0 H438" marker-end="url(#ao)"/>
+      <path class="plan" d="M300,505.0 H370 V277.0 H438" marker-end="url(#ao)"/>
+      <path class="plan" d="M300,505.0 H370 V429.0 H438" marker-end="url(#ao)"/>
+      <path class="plan" d="M300,505.0 H370 V505.0 H438" marker-end="url(#ao)"/>
+      <text class="tpl" x="306" y="550">track on the map</text>
+      <line class="net" x1="1250" y1="581.0" x2="1250" y2="201.0" marker-end="url(#an)"/>
+      <line class="pwr" x1="1282" y1="201.0" x2="1282" y2="581.0" marker-end="url(#ap)"/>
+      <text class="tn" transform="translate(1242 391.0) rotate(-90)" text-anchor="middle">reports up</text>
+      <text class="tp" transform="translate(1300 391.0) rotate(-90)" text-anchor="middle">orders down</text>
+      <line class="s-tick" x1="1220" y1="201.0" x2="1282" y2="201.0"/>
+      <line class="s-tick" x1="1220" y1="277.0" x2="1282" y2="277.0"/>
+      <line class="s-tick" x1="1220" y1="353.0" x2="1282" y2="353.0"/>
+      <line class="s-tick" x1="1220" y1="429.0" x2="1282" y2="429.0"/>
+      <line class="s-tick" x1="1220" y1="505.0" x2="1282" y2="505.0"/>
+      <line class="s-tick" x1="1220" y1="581.0" x2="1282" y2="581.0"/>
+    </svg>
+      </figure>
+      <div class="tbl mtbl"><table>
+        <thead><tr><th>Role</th><th>Equity</th><th>Receives from Silent Sentinel</th><th>State</th></tr></thead>
+        <tbody>
+          <tr id="ch-centcom"><td class="role"><b>CENTCOM</b> <span>U.S. Central Command</span></td><td>Track custody across sensors; any sensor can be swapped</td><td><a href="#briefings">Weekly briefings</a>, demo, open interfaces (UDP JSON, CoT)</td><td><span class="chip ok">weekly</span></td></tr>
+          <tr id="ch-host"><td class="role"><b>Host / local government</b></td><td>No new visible footprint; no diplomatic incidents</td><td>Passive acoustic nodes on existing walls; small roof radars</td><td><span class="chip wip">design</span></td></tr>
+          <tr id="ch-commander"><td class="role"><b>Base commander</b></td><td>Protect people without needlessly halting the mission</td><td>The track on the TAK map: fewer, shorter, better-targeted shelter-in-place orders</td><td><span class="chip no">TAK server not set up</span></td></tr>
+          <tr id="ch-fp"><td class="role"><b>Force protection lead</b> <span>base security chief</span></td><td>Continuous track, so the response targets where the drone is now</td><td>The track on the TAK map: position, sources, uncertainty</td><td><span class="chip no">TAK server not set up</span></td></tr>
+          <tr id="ch-operator"><td class="role"><b>C-UAS operator</b> <span>counter-unmanned aircraft systems</span></td><td>Continuous situational awareness, fast reacquisition</td><td><a href="https://github.com/H4D-Silent-Sentinel/roaree" target="_blank" rel="noopener">ROAREE</a> dashboard, radar scope, proximity audio alert, <a href="https://github.com/H4D-Silent-Sentinel/tango" target="_blank" rel="noopener">Tango 2</a> hand controller</td><td><span class="chip ok">built; not run with hardware</span></td></tr>
+          <tr id="ch-analyst"><td class="role"><b>Intelligence analyst</b> <span>S2 / ISR</span></td><td>Track history for pattern of life and finding the pilot</td><td>ROAREE event log and track history (<code>/state.json</code>); CoT to TAK</td><td><span class="chip wip">log built; TAK not set up</span></td></tr>
+          <tr id="ch-secfor"><td class="role"><b>SECFOR</b> <span>security forces</span></td><td>Actionable location when the track is lost</td><td>The track on ATAK (Android Team Awareness Kit) handhelds</td><td><span class="chip no">TAK server not set up</span></td></tr>
+          <tr id="ch-personnel"><td class="role"><b>Deployed personnel</b></td><td>Warnings that are timely, credible and rare</td><td>Fewer and shorter shelter-in-place orders, decided by the commander</td><td><span class="chip wip">indirect</span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="def"><b>Equity</b>: what the role needs from the outcome. <b>Receives</b>: the output that reaches them. <b>State</b>: whether that output works today. Roles and needs from the <a href="#briefings">12/1 briefing</a>.</p>
+
+      <h2 class="mmc-h" data-scramble>Mission Model Canvas</h2>
+      <div class="mmc">
+          <div class="mmc-kp"><h4>Key partners</h4><p class="def">Outside help the mission depends on</p><ul><li>COL Nate Huston, <a href="#ch-centcom">CENTCOM</a> (sponsor)</li><li>Lennart Schulze, computer vision researcher</li><li>Alon Simon Levin, PhD, sensor fusion</li><li>Yaron Zussman, sensor integration</li><li>Host-nation stakeholders, through the sponsor</li><li>Radar, camera and RF vendors: ROAREE takes their feeds</li></ul></div>
+          <div class="mmc-ka"><h4>Key activities</h4><p class="def">Work the team does</p><ul><li>Beneficiary interviews</li><li>Build and field-test <a href="#build" data-board="node">acoustic nodes</a></li><li>Node firmware: rotor detection, LoRa reports</li><li>Fusion software: <a href="https://github.com/H4D-Silent-Sentinel/roaree" target="_blank" rel="noopener">ROAREE</a>, one track per drone</li><li>Integrate radar, cameras, RF, TAK</li><li>Chaser onboard AI on the Jetson Orin Nano</li></ul></div>
+          <div class="mmc-kr"><h4>Key resources</h4><p class="def">Hardware, data, people, money</p><ul><li>Acoustic nodes: ESP32-S3, 4 MEMS mics, LoRa (demo: 4)</li><li><a href="#build" data-board="radar">RD-03D radar station</a></li><li>Pluto SDR (RF)</li><li>Jetson Orin Nano</li><li>Public drone-audio and radar-track datasets</li><li>Street maps: OpenStreetMap, Google Earth</li><li>$1,000 class budget</li></ul></div>
+          <div class="mmc-vp"><h4>Value propositions</h4><p class="def">What beneficiaries gain</p><ul><li>One track that holds when a sensor loses the drone</li><li>Cues radar, cameras and the chaser to the drone's position</li><li>Works with sensors bases already own</li><li>~$125 per acoustic node</li><li>Visual tracker: ~94% of frames on target (10 held-out videos)</li></ul></div>
+          <div class="mmc-bs"><h4>Buy-in and support</h4><p class="def">Who must approve or back it</p><ul><li>COL Huston and CENTCOM</li><li>Host-nation coordination: political sensitivity is the key risk</li><li>Operators: tracks must appear in ATAK/TAK</li></ul></div>
+          <div class="mmc-de"><h4>Deployment</h4><p class="def">How it reaches use</p><ul><li>Phase 1: acoustic nodes and fusion software at one base</li><li>Phase 2: existing radar, cameras, RF over CoT and SAPIENT</li><li>Phase 3: chaser drone with onboard AI</li><li>Tests: datasets, bench, then field outside NYC airspace</li></ul></div>
+          <div class="mmc-be"><h4>Beneficiaries</h4><p class="def">Who gains from it</p><ul><li><a href="#ch-operator">C-UAS operator</a>: primary user</li><li><a href="#ch-fp">Force protection</a>: mission owner</li><li><a href="#ch-secfor">SECFOR</a>: response user</li><li><a href="#ch-personnel">Deployed personnel</a>: protected</li><li><a href="#ch-host">Host / local government</a>: external coordination</li></ul></div>
+          <div class="mmc-bc"><h4>Mission budget / cost</h4><p class="def">What it costs</p><ul><li>$1,000 class budget; ~$818 spent (3 orders)</li><li>~$125 per acoustic node</li><li>Software runs on a laptop</li><li>No custom radar: feeds come from what bases already have</li></ul></div>
+          <div class="mmc-ma"><h4>Mission achievement / impact factors</h4><p class="def">How success is measured</p><ul><li>Risk: hearing rotors through city noise and echoes (multipath)</li><li>Next milestone: one node tells a drone from street noise, then a 4-node test</li><li>Success: track kept through the gap; time to reacquire when the drone reappears</li><li>Visual tracker tested: 0.7% false alarms, 0.15 s average reacquire</li></ul></div>
+      </div>
+      <p class="def">From the <a href="#briefings">12/1 briefing</a>; counts updated to the current build.</p>
+    </div>
+  </section>
+
   <section class="slide progress" id="progress" data-sec="Progress">
     <div class="wrap two">
       <div>
@@ -349,11 +445,11 @@
   <div class="wrap legal"><span>Silent Sentinel · Hacking for Defense, Columbia University</span></div>
 </footer>
 
-<script src="assets/app.js?v=39" defer></script>
+<script src="assets/app.js?v=40" defer></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"}}</script>
-<script type="module" src="assets/boards.js?v=39"></script>
-<script type="module" src="assets/hero3d.js?v=39"></script>
-<script type="module" src="assets/sensors3d.js?v=39"></script>
-<script src="assets/diagrams.js?v=39" defer></script>
+<script type="module" src="assets/boards.js?v=40"></script>
+<script type="module" src="assets/hero3d.js?v=40"></script>
+<script type="module" src="assets/sensors3d.js?v=40"></script>
+<script src="assets/diagrams.js?v=40" defer></script>
 </body>
 </html>
