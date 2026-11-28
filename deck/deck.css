@@ -114,3 +114,11 @@ body.deck-page { background: #000; }
 .sl .tgrid > div { border: 1px solid var(--holo-dim); border-top: 3px solid var(--holo); background: rgba(6,10,14,.85); padding: 30px; display: flex; flex-direction: column; justify-content: flex-end; }
 .sl .tgrid b { font: 800 50px/1 var(--display); text-transform: uppercase; color: #fff; margin-bottom: 12px; }
 .sl .tgrid span { font-size: 24px; color: #c9d3db; }
+/* team: one row of 7 tall columns split by vertical dividers */
+.sl .tgrid { grid-template-columns: repeat(7, 1fr); grid-auto-rows: auto; gap: 0; align-items: stretch; margin-top: 10px; }
+.sl .tgrid > div { border: 0; border-left: 1px solid var(--holo-dim); background: none; padding: 0 22px 10px; justify-content: flex-end; }
+.sl .tgrid > div:first-child { border-left: 0; padding-left: 0; }
+.sl .tgrid b { font-size: 46px; line-height: 1; margin-bottom: 18px; }
+.sl .tgrid span { font-size: 21px; line-height: 1.3; min-height: 2.6em; }
+.sl .tgrid span { min-height: 3.9em; }
+.sl .tgrid > div { border-left-color: rgba(127,212,255,.35); }
