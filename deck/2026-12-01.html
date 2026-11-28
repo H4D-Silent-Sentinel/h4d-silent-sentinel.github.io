@@ -32,7 +32,7 @@
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">Team</span><span>Dec 1</span></div>
-  <h2>Our team</h2>
+  <h2>Team</h2>
   <div class="tgrid">
     <div><b>Tai<br>Zaidi</b><span>Computer Science</span><img class="svc" src="../assets/army-mark.svg" alt="U.S. Army"></div>
     <div><b>Noah<br>Cho</b><span>Computer Science</span><img class="svc" src="../assets/usmc-mark.png" alt="U.S. Marine Corps"></div>
@@ -73,7 +73,7 @@
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">User archetypes · value propositions</span><span>Dec 1</span></div>
-  <h2 style="margin-bottom:18px">Who we are building for</h2>
+  <h2 style="margin-bottom:18px">Stakeholders</h2>
   <table style="font-size:24px">
     <thead><tr><th></th><th>Host-nation relationship owner</th><th>Base security chief</th><th>Base commander</th><th>Personnel on base</th></tr></thead>
     <tbody>
@@ -87,7 +87,7 @@
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">Integration up and down the chain</span><span>Dec 1</span></div>
-  <h2 style="font-size:54px;margin-bottom:14px">Stakeholders</h2>
+  <h2 style="font-size:54px;margin-bottom:14px">Integration</h2>
   <div class="imp" data-import="#mission figure.diagram" data-wrap="mission"></div>
 </div></section>
 
@@ -97,27 +97,27 @@
   <div class="cols" style="--n:3">
     <div class="card blue"><h3>Open architecture</h3><p>Don't depend on specific sensors or models. Swap or add parts without a redesign.</p></div>
     <div class="card blue"><h3>Track custody</h3><p>When a drone leaves camera or radar view, acoustic sensors keep the track.</p></div>
-    <div class="card blue"><h3>Seamless handoff</h3><p>The operator doesn't care which sensor supplies the data, only that it is still the same drone.</p></div>
-    <div class="card"><h3>Prototype, not perfect</h3><p>Exact accuracy is not the goal; parts can be simulated.</p></div>
-    <div class="card"><h3>Explain the choices</h3><p>Why each part was chosen and how it would be improved.</p></div>
-    <div class="card amber"><h3>Key point</h3><p>The handoff between sensors. Solve it and the other limits get easier.</p></div>
+    <div class="card blue"><h3>Single track</h3><p>The operator needs the same drone on one track, regardless of which sensor reports it.</p></div>
+    <div class="card"><h3>Prototype scope</h3><p>Exact accuracy is not the goal; parts can be simulated.</p></div>
+    <div class="card"><h3>Design rationale</h3><p>Why each part was chosen and how it would be improved.</p></div>
+    <div class="card amber"><h3>Priority</h3><p>Track continuity across sensors. The other limits depend on it.</p></div>
   </div>
 </div></section>
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">Sponsor feedback</span><span>Dec 1</span></div>
-  <h2>What to demonstrate</h2>
+  <h2>Demo priorities</h2>
   <div class="cols" style="--n:3">
     <div class="card amber"><div class="big">1</div><h3>Track custody</h3><p>One continuous track as the drone moves between sensors. Two tracks of the same drone are merged.</p></div>
     <div class="card amber"><div class="big">2</div><h3>Acoustic sensors</h3><p>Detect and locate the drone when it is not visible; confirm it is the same drone when it reappears.</p></div>
     <div class="card amber"><div class="big">3</div><h3>Open architecture</h3><p>Different sensors and models, including better ones later. An overhead drone could be added.</p></div>
   </div>
-  <p class="foot">Design around existing equipment? No: too many combinations, and they keep changing. Use representative equipment; any part can be swapped.</p>
+  <p class="foot">Existing base equipment: not required. Representative parts; any part swappable.</p>
 </div></section>
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">This week</span><span>Dec 1</span></div>
-  <h2>What changed</h2>
+  <h2>Updates</h2>
   <div class="cols" style="--n:2">
     <ul>
       <li><b>Camera tracker linked to ROAREE</b>: Visual-Tracker sends tracks and receives cues; merged to main with moving-camera compensation.</li>
@@ -130,12 +130,12 @@
       <li><b>Mission and stakeholders</b> on the <a href="../index.html#mission" style="color:#9fdcff">project site</a>.</li>
     </ul>
   </div>
-  <p class="foot">Firmware compiles and software tests pass; none of this week's hardware has run yet. Radar parts arrive ~Nov 30.</p>
+  <p class="foot">Status: firmware compiles, software tests pass, not yet run on hardware. Radar parts ~Nov 30.</p>
 </div></section>
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">ROAREE · C2</span><span>Dec 1</span></div>
-  <h2 style="margin-bottom:20px">Sensors to operator</h2>
+  <h2 style="margin-bottom:20px">ROAREE</h2>
   <div class="flow" style="--n:4;margin-bottom:30px">
     <div><i>1</i><b>Listen</b><span>Nodes hear rotors; radar station sees motion; both report over LoRa</span></div>
     <div><i>2</i><b>Relay</b><span>Base receiver: LoRa to USB serial</span></div>
@@ -189,23 +189,23 @@
       <tr><td>Photo test precision / recall</td><td>96.2 / 90.7%</td><td>96.2 / 91.2%</td><td>95.6 / 91.3%</td></tr>
     </tbody>
   </table>
-  <p class="foot">Birds and kites mostly solved (31% → 2%). Tracking steady at ~94%. Trees remain the gap; next: film our own drone over trees from a rooftop and retrain.</p>
+  <p class="foot">False boxes on birds and kites: 31% → 2%. On target: ~94% in all versions. Trees: weakest case. Next: rooftop footage over trees, retrain.</p>
 </div></section>
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">Acoustic network</span><span>Dec 1</span></div>
-  <h2>Finding the drone by loudness</h2>
+  <h2>Localization</h2>
   <div class="cols" style="--n:3">
-    <div class="card blue"><h3>No precise timing</h3><p>LoRa cannot sync nodes closely enough to time sound arrival, so position comes from how loud each node hears it.</p></div>
-    <div class="card blue"><h3>How it works</h3><p>Each node reports loudness. Node positions are known. Louder node = drone closer to it.</p></div>
-    <div class="card amber"><h3>Node count</h3><p>8 per building: street level and roof at every corner. Demo: 4 nodes on 2 corners.</p></div>
+    <div class="card blue"><h3>Timing</h3><p>LoRa cannot sync nodes closely enough to time sound arrival, so position comes from how loud each node hears it.</p></div>
+    <div class="card blue"><h3>Method</h3><p>Each node reports loudness. Node positions are known. Louder node = drone closer to it.</p></div>
+    <div class="card amber"><h3>Nodes</h3><p>8 per building: street level and roof at every corner. Demo: 4 nodes on 2 corners.</p></div>
   </div>
   <p class="foot">Every report carries loudness, confidence and rotor pitch.</p>
 </div></section>
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">Acoustic node</span><span>Dec 1</span></div>
-  <h2>What each node does</h2>
+  <h2>Node pipeline</h2>
   <div class="flow" style="--n:6;flex:1">
     <div><i>1</i><b>Listen</b><span>4 mics combined for a stronger signal</span></div>
     <div><i>2</i><b>Clean</b><span>Filter wind rumble and hum</span></div>
@@ -214,12 +214,12 @@
     <div><i>5</i><b>Confirm</b><span>Pattern holds over several frames</span></div>
     <div><i>6</i><b>Alert</b><span>Pitch, loudness, confidence over LoRa</span></div>
   </div>
-  <p class="foot">A generator's comb never moves. Traffic and wind have no comb. A drone's comb slides as it speeds up and turns. <a href="../index.html#build" style="color:#9fdcff">Breadboard layouts</a></p>
+  <p class="foot">Generator: fixed comb. Traffic and wind: no comb. Drone: comb shifts with throttle. <a href="../index.html#build" style="color:#9fdcff">Breadboard layouts</a></p>
 </div></section>
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">Radar station</span><span>Dec 1</span></div>
-  <h2>Radar over LoRa</h2>
+  <h2>Radar station</h2>
   <div class="cols" style="--n:2">
     <div class="card blue"><h3>Hardware</h3><ul>
       <li>RD-03D 24 GHz radar: up to 3 moving targets, ~8 m</li>
@@ -266,7 +266,7 @@
 
 <section class="sl"><div class="in">
   <div class="hd"><span><img class="h4d" src="../assets/h4d.png" alt="H4D">Backup · chaser</span><span>Nov 17</span></div>
-  <h2 style="margin-bottom:18px">The science behind the overwatch and chaser</h2>
+  <h2 style="margin-bottom:18px">Overwatch and chaser</h2>
   <div class="media"><iframe src="https://drive.google.com/file/d/1Vu0gg1iEtoqQXM2AIfnnCSErE6E8CQiV/preview" allow="autoplay; fullscreen" allowfullscreen title="Overwatch and chaser science"></iframe></div>
 </div></section>
 
@@ -282,7 +282,7 @@
       <tr><td>End</td><td>Kinetic terminal guidance</td><td>Track and follow only</td></tr>
     </tbody>
   </table>
-  <p class="foot">Anvil proves the cue, fly-out and onboard-lock chain in a fielded U.S. product. Ours keeps the track to the operator and can hand it to a defeat system.</p>
+  <p class="foot">Anvil: cue, autonomous fly-out and onboard lock, fielded. Silent Sentinel: tracking only; the track can go to a defeat system.</p>
 </div></section>
 
 </main>
