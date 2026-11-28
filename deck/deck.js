@@ -7,8 +7,18 @@
 
   // shared figures: <div class="imp" data-import="#system figure.diagram" data-wrap="system">
   const imps = [...deck.querySelectorAll("[data-import]")];
-  if (imps.length) fetch("../index.html").then(r => r.text()).then(html => {
+  const diffs = [...deck.querySelectorAll("[data-diff]")];
+  if (imps.length || diffs.length) fetch("../index.html").then(r => r.text()).then(html => {
     const doc = new DOMParser().parseFromString(html, "text/html");
+    // canvas changes: added / removed items per box
+    for (const el of diffs) {
+      const boxes = [...doc.querySelectorAll(el.dataset.diff + " > div")];
+      const col = cls => boxes.map(b => {
+        const items = [...b.querySelectorAll("li." + cls)].map(li => `<li>${li.textContent.trim()}</li>`).join("");
+        return items ? `<div class="grp"><h4>${b.querySelector("h4").textContent}</h4><ul>${items}</ul></div>` : "";
+      }).join("");
+      el.innerHTML = `<div class="dcol add"><h3>Added</h3>${col("add")}</div><div class="dcol del"><h3>Removed</h3>${col("del")}</div>`;
+    }
     const defs = doc.querySelector("body > svg"); if (defs) document.body.prepend(document.importNode(defs, true));
     for (const el of imps) {
       const src = doc.querySelector(el.dataset.import); if (!src) continue;
@@ -17,9 +27,14 @@
       const w = document.createElement("div"); w.className = el.dataset.wrap || ""; w.appendChild(node); el.appendChild(w);
       // shrink to fit the slide body (slide units, independent of window size)
       if (node.classList.contains("mmc")) {
-        node.style.height = "auto";
-        const k = Math.min(1, el.clientHeight / node.scrollHeight);
-        Object.assign(node.style, { transformOrigin: "0 0", transform: `scale(${k})`, width: `${100 / k}%` });
+        node.style.height = "auto"; node.style.transformOrigin = "0 0";
+        // largest scale at which the widened canvas still fits the slide body
+        let k = 1;
+        for (; k > 0.4; k -= 0.01) {
+          node.style.width = `${100 / k}%`;
+          if (node.scrollHeight * k <= el.clientHeight) break;
+        }
+        node.style.transform = `scale(${k})`;
       }
     }
   });
