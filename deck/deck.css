@@ -123,3 +123,6 @@ body.deck-page { background: #000; }
 .sl .tgrid span { min-height: 3.9em; }
 .sl .tgrid > div { border-left-color: rgba(127,212,255,.35); }
 .sl .tgrid .svc { display: block; width: 120px; height: 120px; object-fit: contain; object-position: left center; margin-top: 18px; }
+/* team: centered columns, small single-color service marks */
+.sl .tgrid > div, .sl .tgrid > div:first-child { align-items: center; text-align: center; padding: 0 16px 10px; }
+.sl .tgrid .svc { width: 64px; height: 64px; object-position: center; margin: 14px auto 0; }
