@@ -13,8 +13,13 @@ function start() {
   const C = { holo: 0x7fd4ff, amber: 0xffb547, radar: 0x7fb2ff, net: 0x6fd3a8, rf: 0xc58cff, white: 0xe8f6ff, red: 0xff7a5c };
   const BLD = { x0: -20, x1: 20, y0: -15, y1: 15, h: 14 };
   const WALL = { x0: -50, x1: 75, y0: -45, y1: 48, h: 2.6 };
-  const NODES = [[-20, -15, "N1"], [20, -15, "N2"], [20, 15, "N3"], [-20, 15, "N4"]];
-  const RADAR = { x: 50, y: 0, yaw: Math.PI, half: Math.PI / 3, range: 76 };
+  const ROOF = BLD.h + 1.2;
+  // every corner: one node at street level, one on the roof
+  const NODES = [[-20, -15], [20, -15], [20, 15], [-20, 15]].flatMap(([x, y], i) => [[x, y, 3, `N${2 * i + 1}`], [x, y, ROOF, `N${2 * i + 2}`]]);
+  // 4 radars on the roof edges facing out, ±60° each; base receiver on the roof
+  const RANGE = 30, HALF = Math.PI / 3;
+  const RADARS = [[20, 0, 0], [0, 15, Math.PI / 2], [-20, 0, Math.PI], [0, -15, -Math.PI / 2]].map(([x, y, yaw]) => ({ x, y, z: ROOF, yaw }));
+  const RX = { x: 0, y: 0, z: BLD.h + .8 };
   const TABLE = { x: 60, y: 8 }, SDR = { x: 62, y: 10.5 };
   const OPER = { x: -28, y: 62 }; // drone operator on the street
   const HEAR = 46, ALT = 12;
@@ -71,13 +76,16 @@ function start() {
   for (let z = 3.5; z < BLD.h; z += 3.5) line([V(BLD.x0, BLD.y0, z), V(BLD.x1, BLD.y0, z), V(BLD.x1, BLD.y1, z), V(BLD.x0, BLD.y1, z), V(BLD.x0, BLD.y0, z)], C.holo, .2);
 
   // ---- sensors
-  const nodes = NODES.map(([x, y, n]) => {
-    const m = add(new THREE.Mesh(new THREE.OctahedronGeometry(1.1), fmat(C.amber, .9))); m.position.copy(V(x, y, 3));
-    return { x, y, m, last: -1, lab: label(n, "#ffcf85", .8) };
+  const nodes = NODES.map(([x, y, z, n]) => {
+    const m = add(new THREE.Mesh(new THREE.OctahedronGeometry(1.1), fmat(C.amber, .9))); m.position.copy(V(x, y, z));
+    return { x, y, z, m, last: -1, lab: label(n, "#ffcf85", .8) };
   });
-  nodes.forEach(n => n.lab.position.copy(V(n.x + (n.x < 0 ? -9 : 2), n.y + (n.y < 0 ? -3 : 3), 5)));
-  wireBox(RADAR.x - 1, RADAR.y - 1.4, RADAR.x + 1, RADAR.y + 1.4, 0, 2.6, C.radar, 1, .25);
-  const radarLab = label("RD-03D radar", "#a9ccff"); radarLab.position.copy(V(RADAR.x - 2, RADAR.y - 4, 5.5));
+  nodes.forEach(n => n.lab.position.copy(V(n.x + (n.x < 0 ? -6 : 2), n.y + (n.y < 0 ? -3 : 3), n.z + 2)));
+  for (const r of RADARS) wireBox(r.x - 1.2, r.y - 1.2, r.x + 1.2, r.y + 1.2, BLD.h, 2.4, C.radar, 1, .25);
+  const radarLab = label("RD-03D radars ×4", "#a9ccff"); radarLab.position.copy(V(24, -4, ROOF + 4));
+  wireBox(RX.x - 2, RX.y - 1.5, RX.x + 2, RX.y + 1.5, BLD.h, 1.6, C.white, .9, .15);
+  line([V(RX.x, RX.y, BLD.h + 1.6), V(RX.x, RX.y, BLD.h + 5)], C.white, .7);
+  const rxLab = label("base receiver", "#e8f6ff", .8); rxLab.position.copy(V(RX.x - 6, RX.y + 3, BLD.h + 6));
   wireBox(TABLE.x - 5, TABLE.y - 4, TABLE.x + 5, TABLE.y + 4, .9, .1, C.white, .6, .04);
   for (const [dx, dy] of [[-4.6, -3.6], [4.6, -3.6], [-4.6, 3.6], [4.6, 3.6]]) line([V(TABLE.x + dx, TABLE.y + dy, 0), V(TABLE.x + dx, TABLE.y + dy, .9)], C.white, .4);
   wireBox(SDR.x - .9, SDR.y - .6, SDR.x + .9, SDR.y + .6, 1, .5, C.rf, 1, .3);
@@ -93,23 +101,14 @@ function start() {
   // ---- per-modality effects
   const G = [0, 1, 2, 3].map(() => add(new THREE.Group()));
   // 0 acoustic: wavefronts from the drone, nodes in range report over LoRa
-  // 1 radar: coverage fan, blind zone behind the building, chirps at 5 Hz
-  const arcPts = (r, a0, a1, n = 60) => Array.from({ length: n + 1 }, (_, i) => { const a = a0 + (a1 - a0) * i / n; return V(RADAR.x + Math.cos(a) * r, RADAR.y + Math.sin(a) * r, .06); });
-  const fanArc = arcPts(RADAR.range, RADAR.yaw - RADAR.half, RADAR.yaw + RADAR.half), apex = V(RADAR.x, RADAR.y, .06), tri = [];
-  for (let i = 0; i < 60; i++) tri.push(apex, fanArc[i], fanArc[i + 1]);
-  add(new THREE.Mesh(new THREE.BufferGeometry().setFromPoints(tri), fmat(C.radar, .08)), G[1]);
-  line([apex, ...fanArc, apex], C.radar, .7, G[1]);
-  for (const r of [20, 40, 60]) line(arcPts(r, RADAR.yaw - RADAR.half, RADAR.yaw + RADAR.half), C.radar, .3, G[1]);
-  { // radar shadow of the building, clipped to the fan
-    const ang = ([x, y]) => Math.atan2(y - RADAR.y, x - RADAR.x);
-    const cs = [[BLD.x1, BLD.y0], [BLD.x1, BLD.y1], [BLD.x0, BLD.y0], [BLD.x0, BLD.y1]].map(p => ({ p, a: (ang(p) + Math.PI * 2) % (Math.PI * 2) }));
-    cs.sort((a, b) => a.a - b.a); const A = cs[0].p, B = cs[3].p;
-    const ext = p => { const a = ang(p), r = RADAR.range; return [RADAR.x + Math.cos(a) * r, RADAR.y + Math.sin(a) * r]; };
-    const poly = [[BLD.x0, BLD.y0].map(Number), A, ext(A), ext(B), B].slice(1);
-    const sh = new THREE.Shape(poly.map(([x, y]) => new THREE.Vector2(x, y)));
-    const m = add(new THREE.Mesh(new THREE.ShapeGeometry(sh), fmat(C.red, .07)), G[1]); m.rotation.x = Math.PI / 2; m.position.y = .08;
-    line([...poly, poly[0]].map(([x, y]) => V(x, y, .09)), C.red, .35, G[1]);
-    const lb = label("radar blind zone", "#ff9c85", .8); lb.position.copy(V(-38, -8, 2)); G[1].add(lb);
+  // 1 radar: four roof-edge coverage fans at roof height, chirps at 5 Hz
+  for (const rd of RADARS) {
+    const arcPts = (r, n = 40) => Array.from({ length: n + 1 }, (_, i) => { const a = rd.yaw - HALF + 2 * HALF * i / n; return V(rd.x + Math.cos(a) * r, rd.y + Math.sin(a) * r, rd.z); });
+    const fanArc = arcPts(RANGE), apex = V(rd.x, rd.y, rd.z), tri = [];
+    for (let i = 0; i < 40; i++) tri.push(apex, fanArc[i], fanArc[i + 1]);
+    add(new THREE.Mesh(new THREE.BufferGeometry().setFromPoints(tri), fmat(C.radar, .08)), G[1]);
+    line([apex, ...fanArc, apex], C.radar, .7, G[1]);
+    for (const r of [10, 20]) line(arcPts(r), C.radar, .3, G[1]);
   }
   const beam = line([V(0, 0), V(1, 1)], C.radar, .9, G[1]);
   // 2 camera: the chaser drone's camera and onboard Jetson follow the target
@@ -134,20 +133,12 @@ function start() {
   function packet(group, a, b, col, dur, lift = 4) { const m = add(new THREE.Mesh(new THREE.SphereGeometry(.45, 8, 6), fmat(col, 1)), group); fx.push({ m, group, a, b, lift, dur, t0: now }); }
 
   // ---- geometry helpers
-  const blocked = (ax, ay, bx, by) => {
-    let t0 = 0, t1 = 1; const dx = bx - ax, dy = by - ay;
-    for (const [p, q] of [[-dx, ax - BLD.x0], [dx, BLD.x1 - ax], [-dy, ay - BLD.y0], [dy, BLD.y1 - ay]]) {
-      if (p === 0) { if (q < 0) return false; continue; }
-      const r = q / p; if (p < 0) { if (r > t1) return false; if (r > t0) t0 = r; } else { if (r < t0) return false; if (r < t1) t1 = r; }
-    }
-    return t0 < t1;
-  };
-  const radarSees = (x, y) => { const dx = x - RADAR.x, dy = y - RADAR.y; if (Math.hypot(dx, dy) > RADAR.range) return false; const a = Math.atan2(dy, dx) - RADAR.yaw; return Math.abs(Math.atan2(Math.sin(a), Math.cos(a))) <= RADAR.half && !blocked(RADAR.x, RADAR.y, x, y); };
+  const sees = (r, x, y) => { const dx = x - r.x, dy = y - r.y; if (Math.hypot(dx, dy) > RANGE) return false; const a = Math.atan2(dy, dx) - r.yaw; return Math.abs(Math.atan2(Math.sin(a), Math.cos(a))) <= HALF; };
 
   // ---- views: street first, then one per modality (camera position, look-at, drone area)
   const VIEWS = [
-    { pos: V(-92, -62, 30), look: V(-22, -6, 4), drone: [-38, -6] },     // acoustic: west side, behind the building from the radar
-    { pos: V(100, 30, 26), look: V(18, -10, 2), drone: [24, -24] },        // radar: east yard, inside the fan
+    { pos: V(-92, -62, 30), look: V(-22, -6, 8), drone: [-38, -6] },     // acoustic: west side
+    { pos: V(96, 36, 34), look: V(26, -4, 12), drone: [38, -8] },          // radar: east yard, inside the east radar's fan
     { pos: V(66, 50, 15), look: V(40, -16, 12), drone: [32, -26] },    // camera: in the fixed field of view
     { pos: V(-46, 100, 16), look: V(-18, 36, 12), drone: [-10, 30] },      // RF: link from the street to the drone
   ];
@@ -164,7 +155,7 @@ function start() {
     to = k < 0 ? STREET : VIEWS[k]; tw = reduce ? 1 : 0;
     G.forEach((g, i) => g.visible = i === k);
     nodes.forEach(n => n.lab.material.opacity = k === 0 ? 1 : .45);
-    radarLab.material.opacity = k === 1 ? 1 : .45; sdrLab.material.opacity = k === 3 ? 1 : .45;
+    radarLab.material.opacity = k === 1 ? 1 : .45; sdrLab.material.opacity = k === 3 ? 1 : .45; rxLab.material.opacity = k <= 1 ? 1 : .45;
   }
   const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   function moveCamera(dt) {
@@ -190,15 +181,15 @@ function start() {
     if (step === 0) {
       if (now % .4 < dt) ring(G[0], dpos.x, dpos.y, ALT, C.amber, 1, HEAR, 2.4, .85);
       for (const n of nodes) {
-        const hear = Math.hypot(n.x - dpos.x, n.y - dpos.y) < HEAR;
+        const hear = Math.hypot(n.x - dpos.x, n.y - dpos.y, n.z - ALT) < HEAR;
         n.m.material.opacity = hear ? 1 : .3;
-        if (hear && now - n.last >= .5) { n.last = now; ring(G[0], n.x, n.y, 3, C.amber, .5, 5, .7); packet(G[0], V(n.x, n.y, 3), V(TABLE.x, TABLE.y, 1.2), C.amber, 1.1, 6); }
+        if (hear && now - n.last >= .5) { n.last = now; ring(G[0], n.x, n.y, n.z, C.amber, .5, 5, .7); packet(G[0], V(n.x, n.y, n.z), V(RX.x, RX.y, RX.z + 1), C.amber, 1.1, 6); }
       }
     } else nodes.forEach(n => n.m.material.opacity = .8);
     if (step === 1) {
-      const seen = radarSees(dpos.x, dpos.y);
-      beam.visible = seen; if (seen) beam.geometry.setFromPoints([V(RADAR.x, RADAR.y, 2), D]);
-      if (now % .2 < dt) { packet(G[1], V(RADAR.x, RADAR.y, 2), D, C.radar, .25, 0); if (seen) ring(G[1], dpos.x, dpos.y, ALT, C.radar, .5, 4, .5); }
+      const r = RADARS.find(rd => sees(rd, dpos.x, dpos.y)), seen = !!r;
+      beam.visible = seen; if (seen) beam.geometry.setFromPoints([V(r.x, r.y, r.z), D]);
+      if (seen && now % .2 < dt) { packet(G[1], V(r.x, r.y, r.z), D, C.radar, .25, 0); ring(G[1], dpos.x, dpos.y, ALT, C.radar, .5, 4, .5); packet(G[1], V(r.x, r.y, r.z), V(RX.x, RX.y, RX.z + 1), C.radar, .5, 1); }
     }
     if (step === 2) {
       // chaser holds a stand-off behind the target; its camera stays on the target

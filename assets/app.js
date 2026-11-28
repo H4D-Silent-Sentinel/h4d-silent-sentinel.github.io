@@ -178,10 +178,13 @@
   FX.sim = (() => {
     const pin = pins.find(pn => pn.sec.id === "capability");
     const BLD = { x0: -20, x1: 20, y0: -15, y1: 15 };
-    const NODES = [[-20, -15], [20, -15], [20, 15], [-20, 15]].map(([x, y], i) => ({ x, y, n: `N${i + 1}` }));
-    const RADAR = { x: 50, y: 0, yaw: Math.PI, half: Math.PI / 3, range: 76 };
+    // every corner has a street-level and a roof node; 4 roof-edge radars face out (±60°, short range)
+    const CORNERS = [[-20, -15], [20, -15], [20, 15], [-20, 15]];
+    const NODES = CORNERS.flatMap(([x, y], i) => [{ x, y, n: `N${2 * i + 1}` }, { x, y, n: `N${2 * i + 2}` }]);
+    const RANGE = 30, HALF = Math.PI / 3;
+    const RADARS = [[20, 0, 0], [0, 15, Math.PI / 2], [-20, 0, Math.PI], [0, -15, -Math.PI / 2]].map(([x, y, yaw]) => ({ x, y, yaw }));
     const HEAR = 46;
-    const PATH = [[16, -40], [2, -34], [-14, -31], [-32, -24], [-42, -4], [-38, 18], [-18, 31], [4, 33], [24, 30]];
+    const PATH = [[36, -10], [44, -38], [18, -52], [-14, -50], [-38, -34], [-44, -6]];
     const segLen = []; let total = 0;
     for (let i = 0; i < PATH.length - 1; i++) { const l = Math.hypot(PATH[i + 1][0] - PATH[i][0], PATH[i + 1][1] - PATH[i][1]); segLen.push(l); total += l; }
     const posAt = q => {
@@ -192,21 +195,13 @@
       }
       const e = PATH[PATH.length - 1]; return { x: e[0], y: e[1] };
     };
-    const blocked = (ax, ay, bx, by) => {
-      let t0 = 0, t1 = 1; const dx = bx - ax, dy = by - ay;
-      for (const [p, q] of [[-dx, ax - BLD.x0], [dx, BLD.x1 - ax], [-dy, ay - BLD.y0], [dy, BLD.y1 - ay]]) {
-        if (p === 0) { if (q < 0) return false; continue; }
-        const r = q / p;
-        if (p < 0) { if (r > t1) return false; if (r > t0) t0 = r; } else { if (r < t0) return false; if (r < t1) t1 = r; }
-      }
-      return t0 < t1;
+    const sees = (r, p) => {
+      const dx = p.x - r.x, dy = p.y - r.y;
+      if (Math.hypot(dx, dy) > RANGE) return false;
+      const a = Math.atan2(dy, dx) - r.yaw;
+      return Math.abs(Math.atan2(Math.sin(a), Math.cos(a))) <= HALF;
     };
-    const radarSees = p => {
-      const dx = p.x - RADAR.x, dy = p.y - RADAR.y;
-      if (Math.hypot(dx, dy) > RADAR.range) return false;
-      const a = Math.atan2(dy, dx) - RADAR.yaw;
-      return Math.abs(Math.atan2(Math.sin(a), Math.cos(a))) <= RADAR.half && !blocked(RADAR.x, RADAR.y, p.x, p.y);
-    };
+    const radarSees = p => RADARS.some(r => sees(r, p));
     const hearingAt = d => NODES.filter(n => Math.hypot(n.x - d.x, n.y - d.y) < HEAR);
     // drone path occupies 0.06..0.94 of the pinned scroll
     const Q = p => (p - 0.06) / 0.88;
@@ -266,45 +261,37 @@
       for (let x = cx % gs; x < w; x += gs) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, h); c.stroke(); }
       for (let y = cy % gs; y < h; y += gs) { c.beginPath(); c.moveTo(0, y); c.lineTo(w, y); c.stroke(); }
 
-      // radar coverage and building shadow
-      c.fillStyle = `rgba(${RAD},${st.seen ? 0.12 : 0.05})`; c.strokeStyle = `rgba(${RAD},0.45)`;
-      c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y)); c.arc(X(RADAR.x), Y(RADAR.y), RADAR.range * s, RADAR.yaw - RADAR.half, RADAR.yaw + RADAR.half); c.closePath(); c.fill(); c.stroke();
-      const corners = [[BLD.x1, BLD.y0], [BLD.x1, BLD.y1], [BLD.x0, BLD.y0], [BLD.x0, BLD.y1]];
-      const ang = ([x, y]) => Math.atan2(y - RADAR.y, x - RADAR.x);
-      const sorted = corners.slice().sort((A, B) => { const a = ang(A), b = ang(B); return (a < 0 ? a + 2 * Math.PI : a) - (b < 0 ? b + 2 * Math.PI : b); });
-      const A = sorted[0], B = sorted[3], far = 200;
-      const ext = ([x, y]) => { const a = ang([x, y]); return [x + Math.cos(a) * far, y + Math.sin(a) * far]; };
-      c.save(); c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y)); c.arc(X(RADAR.x), Y(RADAR.y), RADAR.range * s, RADAR.yaw - RADAR.half, RADAR.yaw + RADAR.half); c.closePath(); c.clip();
-      c.fillStyle = "rgba(0,0,0,0.75)"; c.beginPath(); c.moveTo(X(A[0]), Y(A[1])); c.lineTo(X(ext(A)[0]), Y(ext(A)[1])); c.lineTo(X(ext(B)[0]), Y(ext(B)[1])); c.lineTo(X(B[0]), Y(B[1])); c.closePath(); c.fill();
-      c.restore();
-      if (!reduce) {
-        const sw = RADAR.yaw - RADAR.half + ((t * 0.9) % 1) * 2 * RADAR.half;
-        c.strokeStyle = `rgba(${RAD},0.3)`; c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y));
-        c.lineTo(X(RADAR.x + Math.cos(sw) * RADAR.range), Y(RADAR.y + Math.sin(sw) * RADAR.range)); c.stroke();
+      // radar coverage: one fan per roof-edge radar
+      for (const r of RADARS) {
+        const on = st.seen && sees(r, st.d);
+        c.fillStyle = `rgba(${RAD},${on ? 0.14 : 0.05})`; c.strokeStyle = `rgba(${RAD},0.45)`;
+        c.beginPath(); c.moveTo(X(r.x), Y(r.y)); c.arc(X(r.x), Y(r.y), RANGE * s, r.yaw - HALF, r.yaw + HALF); c.closePath(); c.fill(); c.stroke();
       }
 
       c.fillStyle = "#07080a"; c.strokeStyle = "rgba(255,255,255,0.85)"; c.lineWidth = 1.5;
       c.fillRect(X(BLD.x0), Y(BLD.y0), 40 * s, 30 * s); c.strokeRect(X(BLD.x0), Y(BLD.y0), 40 * s, 30 * s); c.lineWidth = 1;
       const fs = Math.max(10, Math.round(1.15 * s));
       c.font = `500 ${fs}px 'IBM Plex Mono', monospace`; c.textAlign = "center";
-      c.fillStyle = "rgba(255,255,255,0.5)"; c.fillText("STRUCTURE", X(0), Y(0) + fs / 3);
+      c.fillStyle = "rgba(255,255,255,0.5)"; c.fillText("STRUCTURE", X(0), Y(-3) + fs / 3);
 
       const live = Q(p) >= 0;
       if (live) {
         c.setLineDash([3, 5]);
         if (st.acoustic) for (const n of st.hearing) { c.strokeStyle = `rgba(${ACC},0.35)`; c.beginPath(); c.moveTo(X(n.x), Y(n.y)); c.lineTo(X(st.est.x), Y(st.est.y)); c.stroke(); }
-        if (st.seen) { c.strokeStyle = `rgba(${RAD},0.45)`; c.beginPath(); c.moveTo(X(RADAR.x), Y(RADAR.y)); c.lineTo(X(st.est.x), Y(st.est.y)); c.stroke(); }
+        if (st.seen) for (const r of RADARS) if (sees(r, st.d)) { c.strokeStyle = `rgba(${RAD},0.45)`; c.beginPath(); c.moveTo(X(r.x), Y(r.y)); c.lineTo(X(st.est.x), Y(st.est.y)); c.stroke(); }
         c.setLineDash([]);
       }
-      for (const n of NODES) {
-        const on = live && st.acoustic && st.hearing.includes(n);
+      for (let k = 0; k < NODES.length; k += 2) { // street and roof node share a corner in top view
+        const n = NODES[k], on = live && st.acoustic && st.hearing.includes(n);
         c.fillStyle = "#000"; c.strokeStyle = on ? `rgb(${ACC})` : "#5a6068"; c.lineWidth = 2;
         c.beginPath(); c.arc(X(n.x), Y(n.y), Math.max(5, 0.75 * s), 0, Math.PI * 2); c.fill(); c.stroke(); c.lineWidth = 1;
         c.fillStyle = on ? `rgb(${ACC})` : "#8a9098";
-        c.fillText(n.n, X(n.x + (n.x < 0 ? -3 : 3)), Y(n.y + (n.y < 0 ? -2.4 : 3.8)));
+        c.fillText(`${n.n} · ${NODES[k + 1].n}`, X(n.x + (n.x < 0 ? -4 : 4)), Y(n.y + (n.y < 0 ? -2.4 : 3.8)));
       }
-      c.fillStyle = `rgb(${RAD})`; c.fillRect(X(RADAR.x) - 5, Y(RADAR.y) - 5, 10, 10);
-      c.fillStyle = `rgba(${RAD},0.85)`; c.fillText("RADAR", X(RADAR.x + 4), Y(RADAR.y) + 3.6 * s);
+      c.fillStyle = `rgb(${RAD})`;
+      for (const r of RADARS) c.fillRect(X(r.x) - 4, Y(r.y) - 4, 8, 8);
+      c.fillStyle = "rgba(255,255,255,0.85)"; c.fillRect(X(0) - 4, Y(4) - 3, 8, 6);
+      c.fillStyle = "rgba(255,255,255,0.5)"; c.fillText("RECEIVER", X(0), Y(4) + 3.4 * s);
 
       if (live) {
         // trail: deterministic history over the last part of the path

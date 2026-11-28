@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=35">
+<link rel="stylesheet" href="assets/styles.css?v=38">
 </head>
 <body>
 
@@ -70,14 +70,14 @@
         <h2 data-scramble>Track and Follow</h2>
         <ol class="steps">
           <li><span>01</span>Visual Line of Sight</li>
-          <li><span>02</span>No Line of Sight</li>
+          <li><span>02</span>Out of radar range</li>
           <li><span>03</span>Acoustic nodes locate</li>
           <li><span>04</span>Radar reacquires</li>
         </ol>
         <div class="step-body">
           <p>Radar detects the target. TRK-01 opens.</p>
-          <p>The structure blocks radar line of sight. TRK-01 continues on its last estimate.</p>
-          <p>Acoustic nodes detect the rotors and update TRK-01. Sound does not need line of sight.</p>
+          <p>The target leaves radar range. TRK-01 continues on its last estimate.</p>
+          <p>Acoustic nodes at street level and on the roof detect the rotors and update TRK-01.</p>
           <p>Radar detects the target again. Radar and acoustic detections are fused. TRK-01 keeps its identifier and history.</p>
         </div>
         <dl class="readout" aria-label="Simulation readout">
@@ -126,8 +126,8 @@
           </ol>
         </div>
         <div class="step-body cards">
-          <article><div class="big">01</div><h3>Acoustic Node</h3><p>4 ICS-43434 MEMS (micro-electro-mechanical systems) microphones on an ESP32-S3. Detects rotor blade-pass harmonics. Position from relative received level across nodes. Passive.</p><dl><div><dt>Link</dt><dd>LoRa 915 MHz</dd></div><div><dt>Nodes</dt><dd>4, one per corner</dd></div></dl><p class="card-links"><a href="#build" data-board="node">Layout</a><a href="https://github.com/H4D-Silent-Sentinel/sentinel" target="_blank" rel="noopener">Source</a></p></article>
-          <article><div class="big">02</div><h3>Radar Node</h3><p>RD-03D 24 GHz radar on an ESP32-S3 with an RFM95W radio, on site. Range, azimuth and radial velocity of moving targets.</p><dl><div><dt>Link</dt><dd>LoRa 915 MHz via base receiver</dd></div><div><dt>Coverage</dt><dd>±60° azimuth, ~8 m bench</dd></div></dl><p class="card-links"><a href="#build" data-board="radar">Layout</a><a href="https://github.com/H4D-Silent-Sentinel/radar" target="_blank" rel="noopener">Source</a></p></article>
+          <article><div class="big">01</div><h3>Acoustic Node</h3><p>4 ICS-43434 MEMS (micro-electro-mechanical systems) microphones on an ESP32-S3. Detects rotor blade-pass harmonics. Position from relative received level across nodes. Passive.</p><dl><div><dt>Link</dt><dd>LoRa 915 MHz</dd></div><div><dt>Nodes</dt><dd>8 per building: every corner, street and roof · demo: 4 (2 corners)</dd></div></dl><p class="card-links"><a href="#build" data-board="node">Layout</a><a href="https://github.com/H4D-Silent-Sentinel/sentinel" target="_blank" rel="noopener">Source</a></p></article>
+          <article><div class="big">02</div><h3>Radar Node</h3><p>RD-03D 24 GHz radar on an ESP32-S3 with an RFM95W radio, on the roof facing out. Range, azimuth and radial velocity of moving targets.</p><dl><div><dt>Link</dt><dd>LoRa 915 MHz via base receiver</dd></div><div><dt>Coverage</dt><dd>±60° each, 4 per building for 360° · ~8 m (RD-03D) · demo: 1</dd></div></dl><p class="card-links"><a href="#build" data-board="radar">Layout</a><a href="https://github.com/H4D-Silent-Sentinel/radar" target="_blank" rel="noopener">Source</a></p></article>
           <article><div class="big">03</div><h3>Camera Node</h3><p>YOLO11 (You Only Look Once) detection, ByteTrack association and VLM (vision-language model) confirmation on the chaser drone's onboard Jetson Orin Nano. Reports bearing and label.</p><dl><div><dt>Link</dt><dd>UDP 47010</dd></div><div><dt>Compute</dt><dd>Jetson Orin Nano, onboard</dd></div></dl><p class="card-links"><a href="https://github.com/H4D-Silent-Sentinel/Visual-Tracker" target="_blank" rel="noopener">Source</a></p></article>
           <article><div class="big">04</div><h3>RF Node</h3><p>ADALM-Pluto SDR (software-defined radio). Detects 2.4 and 5.8 GHz control and video links. Passive.</p><dl><div><dt>Hardware</dt><dd>ADALM-Pluto</dd></div><div><dt>State</dt><dd>In development</dd></div></dl></article>
         </div>
@@ -349,11 +349,11 @@
   <div class="wrap legal"><span>Silent Sentinel · Hacking for Defense, Columbia University</span></div>
 </footer>
 
-<script src="assets/app.js?v=35" defer></script>
+<script src="assets/app.js?v=38" defer></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"}}</script>
-<script type="module" src="assets/boards.js?v=35"></script>
-<script type="module" src="assets/hero3d.js?v=35"></script>
-<script type="module" src="assets/sensors3d.js?v=35"></script>
-<script src="assets/diagrams.js?v=35" defer></script>
+<script type="module" src="assets/boards.js?v=38"></script>
+<script type="module" src="assets/hero3d.js?v=38"></script>
+<script type="module" src="assets/sensors3d.js?v=38"></script>
+<script src="assets/diagrams.js?v=38" defer></script>
 </body>
 </html>
